@@ -2,14 +2,14 @@
   "name": "孙韩林 · 每日小窝",
   "short_name": "每日小窝",
   "description": "孙韩林的个人工作台 - 每日任务、求职推荐、视频创作、内容复盘、家常菜谱",
-  "start_url": "/",
+  "start_url": "/yujiu/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F9F6FF",
   "theme_color": "#D4C5F0",
   "lang": "zh-CN",
   "dir": "ltr",
-  "scope": "/",
+  "scope": "/yujiu/",
   "icons": [
     {
       "src": "icon-192.png",
@@ -36,21 +36,21 @@
       "name": "今日任务",
       "short_name": "任务",
       "description": "查看今日任务清单",
-      "url": "/?tab=tasks",
+      "url": "/yujiu/?tab=tasks",
       "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
     },
     {
       "name": "视频创作",
       "short_name": "视频",
       "description": "查看AI制作视频口令",
-      "url": "/?tab=video",
+      "url": "/yujiu/?tab=video",
       "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
     },
     {
       "name": "每日菜谱",
       "short_name": "菜谱",
       "description": "查看每日家常菜推荐",
-      "url": "/?tab=recipe",
+      "url": "/yujiu/?tab=recipe",
       "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
     }
   ]
