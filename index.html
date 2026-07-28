@@ -1,0 +1,2867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#C4B5E8">
+<meta name="msapplication-TileColor" content="#C4B5E8">
+<title>Sun的工作台</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --primary: #B8A4D9;
+  --primary-light: #D4C5E8;
+  --primary-soft: #F0EAF8;
+  --primary-bg: #FAF7FF;
+  --bg: #F8F6FC;
+  --card: #FFFFFF;
+  --text: #3D3550;
+  --text-2: #6B6178;
+  --text-3: #9A92A8;
+  --border: #EDE7F5;
+  --success: #8AC79E;
+  --warning: #F4B860;
+  --danger: #E89494;
+  --shadow: 0 2px 12px rgba(180, 160, 220, 0.08);
+  --shadow-lg: 0 8px 24px rgba(180, 160, 220, 0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 14px; -webkit-font-smoothing: antialiased; }
+body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: calc(20px + var(--safe-bottom)); }
+
+/* ===== 侧边栏（细） ===== */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 56px;
+  background: linear-gradient(180deg, #F5F0FA 0%, #EFE8F7 100%);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: calc(16px + var(--safe-top)) 0 16px;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar::-webkit-scrollbar { display: none; }
+.sb-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 10px 4px; margin: 2px 6px;
+  border-radius: 12px; cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-2);
+  font-size: 10px; font-weight: 600;
+  text-align: center;
+  border: none; background: transparent;
+  flex-shrink: 0;
+}
+.sb-item .sb-icon { font-size: 20px; line-height: 1; }
+.sb-item.active { background: var(--primary-light); color: #5B4378; }
+.sb-item:active { transform: scale(0.92); }
+
+/* ===== 顶部 ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(248, 246, 252, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: calc(12px + var(--safe-top)) 16px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.topbar-title { font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.topbar-actions { display: flex; gap: 8px; }
+.topbar-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.7); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; color: var(--text-2);
+}
+.topbar-btn:active { background: var(--primary-soft); }
+
+/* ===== 主内容 ===== */
+.main { padding: 14px 14px 30px; }
+.page { display: none; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== 卡片 ===== */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-flat { background: transparent; box-shadow: none; border: none; padding: 0; }
+.card-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.card-title-bar { width: 4px; height: 16px; background: var(--primary); border-radius: 3px; }
+
+/* ===== 首页问候 ===== */
+.greeting-card {
+  background: linear-gradient(135deg, #C4B5E8 0%, #D4C5E8 50%, #E0D2F0 100%);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: #fff;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.greeting-card::before { content: ''; position: absolute; top: -30px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 50%; }
+.greeting-card::after { content: '☀️'; position: absolute; top: 12px; right: 16px; font-size: 22px; opacity: 0.9; }
+.greeting-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.greeting-date { font-size: 12px; opacity: 0.85; }
+.greeting-subtitle { font-size: 13px; opacity: 0.9; margin-top: 8px; }
+
+/* ===== 4个统计卡片 ===== */
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid var(--border);
+  text-align: center;
+  position: relative;
+}
+.stat-card .stat-icon { font-size: 22px; margin-bottom: 4px; }
+.stat-card .stat-num { font-size: 22px; font-weight: 700; color: var(--text); margin: 4px 0; }
+.stat-card .stat-label { font-size: 11px; color: var(--text-3); }
+
+/* ===== 快捷动作 ===== */
+.quick-actions {
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 8px;
+  margin-bottom: 10px;
+}
+.quick-actions::-webkit-scrollbar { display: none; }
+.quick-btn {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 4px;
+  padding: 8px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  text-decoration: none;
+}
+.quick-btn:active { background: var(--primary-soft); }
+.quick-btn .qa-icon { font-size: 14px; }
+
+/* ===== 知识速览 ===== */
+.knowledge-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  display: flex; gap: 12px;
+  align-items: flex-start;
+}
+.knowledge-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--primary-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.knowledge-content { flex: 1; min-width: 0; }
+.knowledge-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.knowledge-tag { display: inline-block; padding: 2px 8px; background: var(--primary-soft); color: var(--primary); border-radius: 10px; font-size: 10px; }
+
+/* ===== 任务列表 ===== */
+.task-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.task-item:active { background: var(--primary-soft); }
+.task-item.completed { background: #F5FAF7; border-color: #D4EAD8; }
+.task-item.completed .task-text { text-decoration: line-through; color: var(--text-3); }
+.task-check {
+  width: 22px; height: 22px; border: 2px solid var(--primary-light);
+  border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.task-check.checked { background: var(--success); border-color: var(--success); }
+.task-check.checked::after { content: ''; width: 6px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-top: -2px; }
+.task-content { flex: 1; min-width: 0; }
+.task-text { font-size: 13px; font-weight: 600; color: var(--text); }
+.task-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.task-tag { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; margin-right: 4px; }
+.task-tag.t1 { background: #FFE8E8; color: #C86262; }
+.task-tag.t2 { background: #E8F4FF; color: #4A7AB8; }
+.task-tag.t3 { background: #FFF4E8; color: #C88A30; }
+.task-tag.t4 { background: #E8F8E8; color: #5A9A5A; }
+.task-tag.t5 { background: #F4E8FF; color: #8B5BC0; }
+.task-del {
+  width: 24px; height: 24px; border: none; background: transparent;
+  color: var(--text-3); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.task-del:active { background: #FFE8E8; color: var(--danger); }
+
+/* ===== 进度条 ===== */
+.progress-bar {
+  height: 8px; background: var(--primary-soft); border-radius: 4px; overflow: hidden;
+  margin: 8px 0;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: 4px; transition: width 0.4s ease;
+}
+
+/* ===== 健身视频卡 ===== */
+.video-card {
+  display: flex; gap: 12px; align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px; margin-bottom: 10px;
+  cursor: pointer;
+}
+.video-card:active { background: var(--primary-soft); }
+.video-thumb {
+  width: 70px; height: 70px; border-radius: 10px;
+  background: linear-gradient(135deg, #C4B5E8, #D4C5E8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: #fff; flex-shrink: 0;
+  position: relative;
+}
+.video-thumb::after {
+  content: '▶'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.video-info { flex: 1; min-width: 0; }
+.video-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.video-meta { font-size: 11px; color: var(--text-3); }
+.video-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 10px; background: var(--primary-soft); color: var(--primary);
+  margin-right: 4px;
+}
+
+/* ===== 分类筛选 ===== */
+.filter-tabs {
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px;
+  margin-bottom: 8px;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tab {
+  flex: 0 0 auto; padding: 6px 14px;
+  background: var(--primary-soft); color: var(--primary);
+  border-radius: 16px; font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer;
+}
+.filter-tab.active { background: var(--primary); color: #fff; }
+
+/* ===== 表单 ===== */
+.form-group { margin-bottom: 12px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; display: block; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 13px; outline: none; background: var(--card);
+  font-family: inherit; color: var(--text);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); }
+.form-textarea { resize: vertical; min-height: 70px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn {
+  padding: 11px 18px; border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:active { background: var(--primary-light); transform: scale(0.96); }
+.btn-block { width: 100%; }
+.btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+
+/* ===== 饼图 ===== */
+.pie-chart {
+  width: 140px; height: 140px; margin: 0 auto;
+  position: relative;
+}
+.pie-legend { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.pie-leg-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.pie-leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* ===== 工具栏 ===== */
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.tool-chip {
+  padding: 6px 12px; background: var(--primary-soft);
+  border-radius: 16px; font-size: 12px; color: var(--primary);
+  border: none; cursor: pointer; font-weight: 600;
+}
+.tool-chip.active { background: var(--primary); color: #fff; }
+
+/* ===== 列表 ===== */
+.list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.list-item-info { flex: 1; min-width: 0; }
+.list-item-title { font-size: 13px; font-weight: 600; }
+.list-item-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.list-item-amount { font-size: 14px; font-weight: 700; color: var(--danger); }
+.list-item-amount.income { color: var(--success); }
+
+/* ===== 提醒分组 ===== */
+.reminder-group-title { font-size: 13px; font-weight: 700; color: var(--text-2); margin: 14px 0 8px; padding-left: 4px; }
+.reminder-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.reminder-check {
+  width: 22px; height: 22px; border: 2px solid var(--primary-light);
+  border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.reminder-check.checked { background: var(--success); border-color: var(--success); }
+.reminder-check.checked::after { content: ''; width: 6px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-top: -2px; }
+.reminder-time { font-size: 11px; color: var(--text-2); font-weight: 600; min-width: 50px; }
+.reminder-content { flex: 1; min-width: 0; }
+.reminder-title { font-size: 13px; font-weight: 600; }
+.reminder-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+/* ===== 英语口语 ===== */
+.scene-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.scene-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.scene-sent { padding: 8px 0; border-bottom: 1px dashed var(--border); cursor: pointer; }
+.scene-sent:last-child { border-bottom: none; }
+.scene-sent-en { font-size: 13px; color: var(--text); font-weight: 500; }
+.scene-sent-cn { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.scene-sent-icon { float: right; color: var(--primary); }
+
+/* ===== 单词打卡 ===== */
+.word-card {
+  background: linear-gradient(135deg, #C4B5E8 0%, #D4C5E8 100%);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: #fff;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.word-en { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.word-phonetic { font-size: 13px; opacity: 0.85; margin-bottom: 8px; }
+.word-cn { font-size: 14px; opacity: 0.95; }
+.word-actions { display: flex; gap: 8px; margin-top: 12px; }
+.word-btn {
+  flex: 1; padding: 10px; background: rgba(255,255,255,0.25);
+  border: none; border-radius: 20px; color: #fff;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.word-btn:active { background: rgba(255,255,255,0.4); }
+
+/* ===== 书籍 ===== */
+.book-card {
+  display: flex; gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.book-cover {
+  width: 60px; height: 80px; border-radius: 6px;
+  background: linear-gradient(135deg, #C4B5E8, #D4C5E8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fff; flex-shrink: 0;
+  font-weight: 700;
+}
+.book-info { flex: 1; min-width: 0; }
+.book-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.book-author { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+.book-desc { font-size: 11px; color: var(--text-2); line-height: 1.5; margin-bottom: 6px; }
+.book-progress-text { font-size: 10px; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
+.book-progress-bar { height: 4px; background: var(--primary-soft); border-radius: 2px; overflow: hidden; }
+.book-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.3s; }
+
+/* ===== 数据分析 ===== */
+.da-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.da-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.da-step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.da-step-content { flex: 1; min-width: 0; }
+.da-step-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.da-step-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+.da-code {
+  background: #2D2A3E; color: #C9B8E8;
+  padding: 12px; border-radius: 8px;
+  font-family: "SF Mono", "Consolas", monospace;
+  font-size: 11px; line-height: 1.6;
+  overflow-x: auto; margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(60, 50, 80, 0.92); color: #fff;
+  padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+  z-index: 9999; opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== FAB ===== */
+.fab {
+  position: fixed; right: 18px; bottom: calc(20px + var(--safe-bottom));
+  width: 50px; height: 50px;
+  background: var(--primary); color: #fff;
+  border-radius: 50%; border: none;
+  font-size: 24px; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(180, 160, 220, 0.4);
+  z-index: 80;
+  display: flex; align-items: center; justify-content: center;
+}
+.fab:active { transform: scale(0.92); }
+
+/* ===== 段子记录 ===== */
+.quote-card {
+  background: var(--card);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  font-size: 13px; line-height: 1.8;
+  color: var(--text);
+  font-style: italic;
+}
+.quote-author { font-size: 11px; color: var(--text-3); text-align: right; margin-top: 6px; font-style: normal; }
+
+/* ===== 分类预览 ===== */
+.cat-tabs {
+  display: flex; gap: 8px; overflow-x: auto; padding: 0 0 10px;
+  margin-bottom: 8px;
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex: 0 0 auto; padding: 6px 14px;
+  background: var(--primary-soft); color: var(--primary);
+  border-radius: 16px; font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer;
+}
+.cat-tab.active { background: var(--primary); color: #fff; }
+
+/* ===== 视频脚本 ===== */
+.script-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.script-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.script-type {
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+.script-body {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 12px; line-height: 1.8;
+  color: var(--text-2);
+  white-space: pre-wrap;
+  margin-bottom: 10px;
+}
+.script-prompt {
+  background: linear-gradient(135deg, #FAF7FF, #F0EAF8);
+  border: 1px dashed var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 12px; line-height: 1.8;
+  white-space: pre-wrap;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+/* ===== 求职卡片兼容 ===== */
+.job-card-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-left: 3px solid var(--primary);
+  transition: all 0.2s;
+}
+.job-card-item:active { background: var(--primary-soft); }
+
+/* ===== 数据视频卡片 ===== */
+.data-video-row {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 4px 0 10px; margin-bottom: 8px;
+}
+.data-video-row::-webkit-scrollbar { display: none; }
+.data-video-chip {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 4px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF4444 100%);
+  color: #fff; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer; text-decoration: none;
+}
+.data-video-chip:active { transform: scale(0.95); }
+.data-video-chip.dv2 { background: linear-gradient(135deg, #00A1D6, #00B5E5); }
+.tool-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 14px;
+}
+.tool-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 6px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+}
+.tool-tile:active { background: var(--primary-soft); }
+.tool-tile-icon { font-size: 22px; margin-bottom: 4px; }
+.tool-tile-name { font-size: 11px; font-weight: 600; color: var(--text-2); }
+
+/* ===== 工具栏 ===== */
+.search-bar {
+  display: flex; gap: 8px; margin-bottom: 12px;
+}
+.search-input {
+  flex: 1; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 20px;
+  font-size: 13px; outline: none; background: var(--card);
+}
+.search-input:focus { border-color: var(--primary); }
+
+/* ===== 隐藏滚动条 ===== */
+::-webkit-scrollbar { width: 0; display: none; }
+
+/* ===== 小标签 ===== */
+.section-tab {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+.section-tab .filter-tab { padding: 5px 12px; font-size: 11px; }
+
+/* ===== 章节 ===== */
+.chapter-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.chapter-item.completed { background: #F5FAF7; border-color: #D4EAD8; }
+.chapter-num { font-size: 11px; color: var(--primary); font-weight: 700; }
+.chapter-title { font-size: 13px; font-weight: 600; margin: 4px 0; }
+.chapter-progress { height: 3px; background: var(--primary-soft); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+.chapter-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; }
+.chapter-item { cursor: pointer; }
+.chapter-item:active { background: var(--primary-soft); }
+.chapter-detail {
+  display: none;
+  margin: 10px 0 0 0;
+  padding: 12px 14px;
+  background: var(--primary-soft);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--text-1);
+  animation: chapterExpand 0.25s ease;
+}
+.chapter-detail.open { display: block; }
+@keyframes chapterExpand {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 1000px; }
+}
+.chapter-detail p { margin: 6px 0; }
+.chapter-toggle {
+  font-size: 11px; color: var(--primary); font-weight: 600;
+  margin-top: 6px;
+}
+
+/* ===== 速算汇总 ===== */
+.summary-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.summary-item .num { font-size: 18px; font-weight: 700; color: var(--text); }
+.summary-item .label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+/* ===== 提醒时区 ===== */
+.time-period {
+  font-size: 16px; font-weight: 700;
+  margin: 14px 0 8px;
+  padding-left: 4px;
+}
+
+/* ===== 书籍阅读器弹窗 ===== */
+.reader-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  backdrop-filter: blur(4px);
+}
+.reader-overlay.active { display: block; }
+.reader-modal {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 88vh;
+  background: var(--bg);
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: flex; flex-direction: column;
+  animation: readerUp 0.3s ease;
+}
+@keyframes readerUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.reader-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.reader-title {
+  font-size: 15px; font-weight: 700;
+  flex: 1; text-align: center;
+  padding: 0 10px;
+}
+.reader-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: none;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.reader-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.reader-cover {
+  width: 80px; height: 110px; border-radius: 8px;
+  background: linear-gradient(135deg, #C4B5E8, #D4C5E8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #fff; font-weight: 700;
+  margin: 0 auto 14px;
+}
+.reader-section-title {
+  font-size: 14px; font-weight: 700;
+  margin: 16px 0 8px;
+  color: var(--primary);
+}
+.reader-section-title:first-child { margin-top: 0; }
+.reader-text {
+  font-size: 13px; line-height: 1.85;
+  color: var(--text-1);
+  text-align: justify;
+}
+.reader-point {
+  font-size: 13px; line-height: 1.8;
+  color: var(--text-1);
+  margin-bottom: 8px;
+  padding-left: 18px;
+  position: relative;
+}
+.reader-point::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-size: 12px;
+}
+.reader-quote {
+  background: var(--card);
+  border-left: 3px solid var(--primary);
+  padding: 10px 14px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 10px 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-2);
+  font-style: italic;
+}
+.reader-footer {
+  padding: 10px 16px 20px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+}
+.reader-progress-slider {
+  flex: 1;
+  -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 3px;
+  background: var(--primary-soft);
+  outline: none;
+}
+.reader-progress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--primary); cursor: pointer;
+  box-shadow: 0 2px 6px rgba(196,181,232,0.5);
+}
+.reader-progress-val {
+  font-size: 12px; font-weight: 600;
+  color: var(--primary);
+  min-width: 36px; text-align: right;
+}
+</style>
+</head>
+<body>
+
+<!-- 侧边栏 -->
+<aside class="sidebar" id="sidebar">
+  <button class="sb-item active" data-page="home"><span class="sb-icon">🏠</span><span>首页</span></button>
+  <button class="sb-item" data-page="tasks"><span class="sb-icon">✓</span><span>任务</span></button>
+  <button class="sb-item" data-page="fitness"><span class="sb-icon">💪</span><span>健身</span></button>
+  <button class="sb-item" data-page="create"><span class="sb-icon">🎬</span><span>创作</span></button>
+  <button class="sb-item" data-page="jobs"><span class="sb-icon">💼</span><span>求职</span></button>
+  <button class="sb-item" data-page="study"><span class="sb-icon">🇬🇧</span><span>英语</span></button>
+  <button class="sb-item" data-page="read"><span class="sb-icon">📖</span><span>阅读</span></button>
+  <button class="sb-item" data-page="data"><span class="sb-icon">📊</span><span>数据</span></button>
+  <button class="sb-item" data-page="money"><span class="sb-icon">💰</span><span>记账</span></button>
+  <button class="sb-item" data-page="remind"><span class="sb-icon">⏰</span><span>提醒</span></button>
+  <button class="sb-item" data-page="recipe"><span class="sb-icon">🍳</span><span>菜谱</span></button>
+</aside>
+
+<!-- 顶部 -->
+<header class="topbar">
+  <div class="topbar-title" id="topbarTitle">🏠 Sun的工作台</div>
+  <div class="topbar-actions">
+    <button class="topbar-btn" onclick="goApp('weixin')">💬</button>
+    <button class="topbar-btn" onclick="showToast('已刷新内容')">🔄</button>
+  </div>
+</header>
+
+<!-- 主内容 -->
+<main class="main">
+
+<!-- ===== 首页 ===== -->
+<div class="page active" id="page-home">
+
+  <!-- 问候 -->
+  <div class="greeting-card">
+    <div class="greeting-title" id="greeting">晚上好，Sun 👋</div>
+    <div class="greeting-date" id="greetingDate">7月27日 星期一</div>
+    <div class="greeting-subtitle" id="greetingSub">今天辛苦啦～坚持就是胜利</div>
+  </div>
+
+  <!-- 4个统计卡 -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-num" id="taskNum">0/0</div>
+      <div class="stat-label">今日任务</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💧</div>
+      <div class="stat-num" id="waterNum">0/5</div>
+      <div class="stat-label">喝水进度</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💪</div>
+      <div class="stat-num" id="fitNum">0/6</div>
+      <div class="stat-label">运动打卡</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-num" id="moneyNum">¥0</div>
+      <div class="stat-label">今日花费</div>
+    </div>
+  </div>
+
+  <!-- 快捷动作 -->
+  <div class="quick-actions">
+    <button class="quick-btn" onclick="goPage('tasks')"><span class="qa-icon">+</span>加任务</button>
+    <button class="quick-btn" onclick="addWater()"><span class="qa-icon">💧</span>喝水</button>
+    <button class="quick-btn" onclick="goPage('fitness')"><span class="qa-icon">💪</span>运动</button>
+    <button class="quick-btn" onclick="goPage('create')"><span class="qa-icon">🎬</span>创作</button>
+    <button class="quick-btn" onclick="goPage('study')"><span class="qa-icon">📚</span>学习</button>
+    <button class="quick-btn" onclick="goPage('money')"><span class="qa-icon">💰</span>记账</button>
+  </div>
+
+  <!-- 今日进度 -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>今日完成度</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-size:13px;color:var(--text-2);">已完成 <span id="doneCount" style="color:var(--primary);font-weight:700;">0</span> / <span id="totalCount">0</span> 项</span>
+      <span style="font-size:13px;font-weight:700;color:var(--primary);" id="donePercent">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- 运营知识速览 -->
+  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📚 运营知识速览 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">每日更新</span></div>
+
+  <div id="knowledgeList">
+    <div class="knowledge-card">
+      <div class="knowledge-icon">📈</div>
+      <div class="knowledge-content">
+        <div class="knowledge-title">抖音流量池机制：为什么你的视频卡在500播放</div>
+        <span class="knowledge-tag">底层逻辑</span>
+      </div>
+    </div>
+    <div class="knowledge-card">
+      <div class="knowledge-icon">🎯</div>
+      <div class="knowledge-content">
+        <div class="knowledge-title">抖音四大爆款内容公式（92.7%爆款验证）</div>
+        <span class="knowledge-tag">选题技巧</span>
+      </div>
+    </div>
+    <div class="knowledge-card">
+      <div class="knowledge-icon">🔥</div>
+      <div class="knowledge-content">
+        <div class="knowledge-title">小红书爆款笔记标题模板：直接套用</div>
+        <span class="knowledge-tag">实操干货</span>
+      </div>
+    </div>
+    <div class="knowledge-card">
+      <div class="knowledge-icon">💼</div>
+      <div class="knowledge-content">
+        <div class="knowledge-title">数据分析师30天转型计划：从入门到面试</div>
+        <span class="knowledge-tag">求职方向</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 任务页 ===== -->
+<div class="page" id="page-tasks">
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>今日任务 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;" id="taskDate"></span></div>
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:10px;">完成任务后点击左侧圆圈打勾，可随时增删</div>
+    <div id="taskList"></div>
+
+    <div class="add-task-bar" style="display:flex;gap:8px;margin-top:12px;">
+      <input type="text" class="form-input" id="newTaskInput" placeholder="+ 添加新任务..." maxlength="40" style="border-radius:20px;">
+      <button class="btn btn-primary" onclick="addTask()">添加</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 健身页 ===== -->
+<div class="page" id="page-fitness">
+
+  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:24px;font-weight:700;" id="fitStreak">0</div>
+        <div style="font-size:11px;opacity:0.85;">连续打卡(天)</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:18px;font-weight:700;" id="fitWeight">--kg</div>
+        <div style="font-size:11px;opacity:0.85;">体重记录</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>🎯 选择训练部位</div>
+  <div class="filter-tabs" id="fitParts">
+    <button class="filter-tab active" data-part="all">全部</button>
+    <button class="filter-tab" data-part="leg">瘦腿</button>
+    <button class="filter-tab" data-part="hip">提臀</button>
+    <button class="filter-tab" data-part="back">背部</button>
+    <button class="filter-tab" data-part="arm">手臂</button>
+    <button class="filter-tab" data-part="abs">腹部</button>
+    <button class="filter-tab" data-part="stretch">拉伸</button>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>🎬 博主视频推荐</div>
+  <div id="fitVideoList"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>📅 本周计划</div>
+  <div class="card">
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周一·三·五</div><div class="list-item-sub">核心训练</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">腹部 15min</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周二·四</div><div class="list-item-sub">下半身塑形</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">腿部 20min</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周六</div><div class="list-item-sub">全身综合</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">全身 30min</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周日</div><div class="list-item-sub">拉伸放松</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">拉伸 10min</div></div>
+  </div>
+
+  <!-- 健身计时器 -->
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title"><div class="card-title-bar"></div>🏃 健身计时器</div>
+    <div style="text-align:center;padding:14px;background:linear-gradient(135deg,#C4B5E8,#D4C5E8);border-radius:14px;color:#fff;margin-bottom:10px;">
+      <div style="font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:3px;" id="timerDisplay">00:00:00</div>
+      <div style="font-size:11px;opacity:0.85;margin-top:4px;">目标：1小时</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary btn-block" id="timerBtn" onclick="toggleTimer()">开始</button>
+      <button class="btn btn-outline" onclick="resetTimer()">重置</button>
+    </div>
+  </div>
+
+</div>
+<div class="page" id="page-create">
+
+  <div class="card-title"><div class="card-title-bar"></div>🎬 视频创作中心</div>
+
+  <div class="tool-grid">
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('douyin')"><div class="tool-tile-icon">🎤</div><div class="tool-tile-name">抖音</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('xiaohongshu')"><div class="tool-tile-icon">📕</div><div class="tool-tile-name">小红书</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('kuaishou')"><div class="tool-tile-icon">⚡</div><div class="tool-tile-name">快手</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('bilibili')"><div class="tool-tile-icon">📺</div><div class="tool-tile-name">B站</div></a>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>🤖 AI漫剧学习</div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:10px;">
+      从剧本创作到AI工具使用，系统学习AI短剧制作全流程，每天看一段快速入门。
+    </div>
+    <div class="form-row">
+      <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 看抖音教程</button>
+      <button class="btn btn-outline btn-sm" onclick="goApp('bilibili')">📺 看B站教程</button>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-top:10px;"><div class="card-title-bar"></div>📝 今日爆款脚本 <span style="font-size:11px;color:var(--primary);font-weight:400;margin-left:auto;" id="scriptUpdate">每日从抖音爬取更新</span></div>
+
+  <div class="filter-tabs" id="scriptFilter">
+    <button class="filter-tab active" data-cat="all">全部</button>
+    <button class="filter-tab" data-cat="heal">治愈陪伴</button>
+    <button class="filter-tab" data-cat="funny">反差搞笑</button>
+    <button class="filter-tab" data-cat="emotion">情感共鸣</button>
+    <button class="filter-tab" data-cat="tutorial">干货教程</button>
+  </div>
+
+  <div id="scriptList"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>💼 快速跳转</div>
+  <div class="tool-grid">
+    <a class="tool-tile" href="javascript:void(0)" onclick="goPage('jobs')"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">求职推荐</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss')"><div class="tool-tile-icon">👔</div><div class="tool-tile-name">BOSS直聘</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin')"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">猎聘</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian')"><div class="tool-tile-icon">📋</div><div class="tool-tile-name">智联</div></a>
+  </div>
+
+</div>
+
+<!-- ===== 求职页 ===== -->
+<div class="page" id="page-jobs">
+
+  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">💼 求职推荐</div>
+    <div style="font-size:12px;opacity:0.85;">基于你的简历每日推荐匹配岗位 · 点击直达对应App投递</div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>📥 一键跳转招聘App</div>
+  <div class="tool-grid">
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">👔</div><div class="tool-tile-name">BOSS直聘</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin');"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">猎聘</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian');"><div class="tool-tile-icon">📋</div><div class="tool-tile-name">智联</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('lagou');"><div class="tool-tile-icon">🚀</div><div class="tool-tile-name">拉勾</div></a>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>🔥 今日匹配岗位 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">每日更新</span></div>
+  <div id="jobList"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>🎯 专项搜索</div>
+  <div class="tool-grid">
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">数据分析</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📱</div><div class="tool-tile-name">内容运营</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🎬</div><div class="tool-tile-name">视频剪辑</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📕</div><div class="tool-tile-name">小红书运营</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🤖</div><div class="tool-tile-name">AI/大数据</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">✍️</div><div class="tool-tile-name">标书/招投标</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">新媒体运营</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🎥</div><div class="tool-tile-name">短视频编导</div></a>
+  </div>
+
+  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📌 薪资参考（成都）</div>
+  <div class="card">
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">数据分析师</div><div class="list-item-sub">初级·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">6-10K</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">新媒体运营</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">7-12K</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">视频剪辑</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">8-15K</div></div>
+    <div class="list-item"><div class="list-item-info"><div class="list-item-title">标书专员</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">5-8K</div></div>
+  </div>
+
+</div>
+
+<!-- ===== 学习页 ===== -->
+<div class="page" id="page-study">
+
+  <div class="card-title"><div class="card-title-bar"></div>🇬🇧 英语学习</div>
+
+  <div class="filter-tabs" id="studyFilter">
+    <button class="filter-tab active" data-study="word">单词打卡</button>
+    <button class="filter-tab" data-study="scene">场景口语</button>
+    <button class="filter-tab" data-study="nce">新概念</button>
+    <button class="filter-tab" data-study="movie">影视精听</button>
+  </div>
+
+  <!-- 单词打卡 -->
+  <div id="studyWord">
+    <div class="word-card">
+      <div style="font-size:11px;opacity:0.85;margin-bottom:6px;">📅 今日单词 · 第 <span id="wordDay">1</span> 天</div>
+      <div class="word-en" id="wordEn">abandon</div>
+      <div class="word-phonetic" id="wordPhonetic">/əˈbændən/</div>
+      <div class="word-cn" id="wordCn">v. 放弃；抛弃；离弃</div>
+      <div class="word-actions">
+        <button class="word-btn" onclick="speakWord()">🔊 朗读</button>
+        <button class="word-btn" onclick="markWordKnown()">✓ 认识</button>
+        <button class="word-btn" onclick="nextWord()">→ 下一个</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 单词打卡记录</div>
+      <div class="summary-grid">
+        <div class="summary-item"><div class="num" id="wordTotal">0</div><div class="label">累计学习</div></div>
+        <div class="summary-item"><div class="num" id="wordStreak">0</div><div class="label">连续天数</div></div>
+        <div class="summary-item"><div class="num" id="wordToday">0</div><div class="label">今日已学</div></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-2);margin-top:10px;">📚 词库：四级高频 / 雅思核心 / BEC商务 / 求职面试</div>
+      <div class="form-row" style="margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="changeWordBook('cet4')">四级词汇</button>
+        <button class="btn btn-outline btn-sm" onclick="changeWordBook('ielts')">雅思核心</button>
+        <button class="btn btn-outline btn-sm" onclick="changeWordBook('job')">求职面试</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 场景口语 -->
+  <div id="studyScene" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div style="font-size:13px;color:var(--text-2);">每天10分钟，攻克一个真实场景。点击句子可听到标准发音。</div>
+    </div>
+    <div id="sceneList"></div>
+  </div>
+
+  <!-- 新概念 -->
+  <div id="studyNce" style="display:none;">
+    <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;text-align:center;">
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px;">📖 新概念英语</div>
+      <div style="font-size:12px;opacity:0.85;">经典教材 · 每天一课</div>
+    </div>
+    <div id="nceList"></div>
+  </div>
+
+  <!-- 影视精听 -->
+  <div id="studyMovie" style="display:none;">
+    <div class="card">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;">🎬 经典美剧片段练习，沉浸式学口语</div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">🎬</div>
+      <div class="video-info">
+        <div class="video-title">《老友记》1-10季精听资源</div>
+        <div class="video-meta">英语学习必备 · B站</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">📺</div>
+      <div class="video-info">
+        <div class="video-title">《破产姐妹》Max毒舌金句</div>
+        <div class="video-meta">地道美式口语 · B站</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">🎥</div>
+      <div class="video-info">
+        <div class="video-title">TED演讲精选100集</div>
+        <div class="video-meta">演讲技巧 · B站</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 阅读页 ===== -->
+<div class="page" id="page-read">
+
+  <div class="card-title"><div class="card-title-bar"></div>📖 阅读中心</div>
+
+  <div class="filter-tabs" id="readFilter">
+    <button class="filter-tab active" data-read="book">📚 书籍</button>
+    <button class="filter-tab" data-read="podcast">🎙️ 播客</button>
+    <button class="filter-tab" data-read="quote">💡 金句</button>
+  </div>
+
+  <!-- 书籍 -->
+  <div id="readBook">
+    <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">📚 今日推荐</div>
+      <div style="font-size:12px;opacity:0.85;" id="todayBookTip">每天读一点，告别内耗焦虑</div>
+    </div>
+    <div id="bookList"></div>
+  </div>
+
+  <!-- 播客 -->
+  <div id="readPodcast" style="display:none;">
+    <div class="card">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;">🎙️ 通勤路上听，悄悄变优秀</div>
+    </div>
+    <div id="podcastList"></div>
+  </div>
+
+  <!-- 金句 -->
+  <div id="readQuote" style="display:none;">
+    <div class="card">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;">💡 每天一句，温柔治愈</div>
+    </div>
+    <div id="quoteList"></div>
+  </div>
+
+</div>
+
+<!-- ===== 数据分析页 ===== -->
+<div class="page" id="page-data">
+
+  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">📊 数据分析之旅</div>
+    <div style="font-size:12px;opacity:0.85;">从基础到业务，重新拾起数据分析</div>
+    <div class="progress-bar" style="background:rgba(255,255,255,0.25);margin-top:10px;">
+      <div class="progress-fill" id="daProgress" style="width:0%;background:#fff;"></div>
+    </div>
+    <div style="font-size:11px;opacity:0.85;margin-top:4px;">进度：<span id="daProgressText">0%</span> · 共12章节</div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>📚 学习路径</div>
+  <div id="daList"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>🎬 B站学习视频推荐</div>
+  <div class="data-video-row">
+    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">🐍 Python入门</a>
+    <a class="data-video-chip dv2" href="javascript:void(0)" onclick="goApp('bilibili')">🗄️ SQL教程</a>
+    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">📊 Excel进阶</a>
+    <a class="data-video-chip dv2" href="javascript:void(0)" onclick="goApp('bilibili')">📈 数据可视化</a>
+    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">📉 统计学</a>
+  </div>
+  <div class="card">
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">🐍</div>
+      <div class="video-info">
+        <div class="video-title">Python数据分析入门（黑马程序员）</div>
+        <div class="video-meta">零基础友好 · 240集 · B站千万播放</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">🗄️</div>
+      <div class="video-info">
+        <div class="video-title">SQL必知必会（尚硅谷）</div>
+        <div class="video-meta">面试必备 · 50集 · 求职必刷</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">📊</div>
+      <div class="video-info">
+        <div class="video-title">Excel数据分析高级技巧</div>
+        <div class="video-meta">数据透视表+VLOOKUP+PQ · 30集</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">📈</div>
+      <div class="video-info">
+        <div class="video-title">数据分析师面试真题100讲</div>
+        <div class="video-meta">业务题+SQL+统计学 · 面试冲刺</div>
+      </div>
+    </div>
+    <div class="video-card" onclick="goApp('bilibili')">
+      <div class="video-thumb">🤖</div>
+      <div class="video-info">
+        <div class="video-title">数据分析+AI：用ChatGPT做分析</div>
+        <div class="video-meta">AI赋能数据分析 · 2026新趋势</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>🎯 工具推荐</div>
+  <div class="tool-grid">
+    <a class="tool-tile" onclick="addDaCheck('Excel')"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">Excel</div></a>
+    <a class="tool-tile" onclick="addDaCheck('Python')"><div class="tool-tile-icon">🐍</div><div class="tool-tile-name">Python</div></a>
+    <a class="tool-tile" onclick="addDaCheck('SQL')"><div class="tool-tile-icon">🗄️</div><div class="tool-tile-name">SQL</div></a>
+    <a class="tool-tile" onclick="addDaCheck('Tableau')"><div class="tool-tile-icon">📈</div><div class="tool-tile-name">Tableau</div></a>
+  </div>
+
+</div>
+
+<!-- ===== 记账页 ===== -->
+<div class="page" id="page-money">
+
+  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
+    <div style="font-size:11px;opacity:0.85;">本月支出</div>
+    <div style="font-size:28px;font-weight:700;margin:4px 0;" id="monthTotal">¥0</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
+      <div><div style="font-size:14px;font-weight:700;" id="todayTotal">¥0</div><div style="font-size:10px;opacity:0.85;">今日</div></div>
+      <div><div style="font-size:14px;font-weight:700;" id="monthTotal2">¥0</div><div style="font-size:10px;opacity:0.85;">本月</div></div>
+      <div><div style="font-size:14px;font-weight:700;" id="recordCount">0</div><div style="font-size:10px;opacity:0.85;">记录数</div></div>
+    </div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>💸 记一笔</div>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">金额</label><input type="number" class="form-input" id="moneyAmount" placeholder="0.00"></div>
+      <div class="form-group"><label class="form-label">类型</label>
+        <select class="form-select" id="moneyType">
+          <option value="expense">支出</option>
+          <option value="income">收入</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">分类</label>
+      <select class="form-select" id="moneyCat">
+        <option value="🍱">🍱 餐饮</option>
+        <option value="🛒">🛒 日用</option>
+        <option value="🚇">🚇 交通</option>
+        <option value="🎬">🎬 娱乐</option>
+        <option value="📚">📚 学习</option>
+        <option value="💊">💊 医疗</option>
+        <option value="👕">👕 服饰</option>
+        <option value="💰">💰 工资</option>
+        <option value="🎁">🎁 红包</option>
+        <option value="📦">📦 其他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <input type="text" class="form-input" id="moneyNote" placeholder="可选" maxlength="30">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="addMoney()">记一笔</button>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>📊 本月分类占比</div>
+  <div class="card">
+    <div id="moneyChart"></div>
+    <div class="pie-legend" id="moneyLegend"></div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>📋 支出记录</div>
+  <div id="moneyList"></div>
+
+</div>
+
+<!-- ===== 提醒页 ===== -->
+<div class="page" id="page-remind">
+
+  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;text-align:center;">
+    <div style="font-size:13px;opacity:0.85;" id="remindDate">7月27日 周一</div>
+    <div style="font-size:28px;font-weight:700;margin:6px 0;" id="remindCount">0 项待办</div>
+    <div style="font-size:11px;opacity:0.85;">已完成 <span id="remindDone">0</span> 项</div>
+  </div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>➕ 添加提醒</div>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">时间</label><input type="time" class="form-input" id="remindTime"></div>
+      <div class="form-group"><label class="form-label">时段</label>
+        <select class="form-select" id="remindPeriod">
+          <option value="morning">🌅 上午</option>
+          <option value="afternoon">☀️ 下午</option>
+          <option value="evening">🌙 晚上</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">内容</label>
+      <input type="text" class="form-input" id="remindContent" placeholder="例如：喂小鸡崽" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <input type="text" class="form-input" id="remindSub" placeholder="可选">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="addRemind()">添加提醒</button>
+  </div>
+
+  <div id="remindList"></div>
+
+</div>
+
+<!-- ===== 菜谱页 ===== -->
+<div class="page" id="page-recipe">
+
+  <div class="card-title"><div class="card-title-bar"></div>🍳 今日推荐</div>
+  <div class="card" id="recipeCard"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>📅 明日预告</div>
+  <div class="card" id="recipeTomorrow"></div>
+
+  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>📚 菜谱库</div>
+  <div id="recipeList"></div>
+
+</div>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">提示</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="fabAction()">+</button>
+
+<script>
+// ==================== 基础数据 ====================
+const defaultTasks = [
+  { id: 1, text: '健身运动 1小时', tag: 't1', tagText: '运动', meta: '💪 帕梅拉跟练' },
+  { id: 2, text: '英语口语练习 30分钟', tag: 't2', tagText: '口语', meta: '📚 场景/新概念' },
+  { id: 3, text: '早睡（23:00前）', tag: 't3', tagText: '作息', meta: '🌙 健康第一' },
+  { id: 4, text: '早起（9:00前）', tag: 't3', tagText: '作息', meta: '☀️ 早起一天' },
+  { id: 5, text: '🐤 喂小鸡崽', tag: 't4', tagText: '生活', meta: '喂食/换水' },
+  { id: 6, text: '🐟 有鱼生活打卡', tag: 't4', tagText: '生活', meta: '今日签到' },
+  { id: 7, text: '投递简历 5份', tag: 't1', tagText: '求职', meta: '💼 每日坚持' },
+  { id: 8, text: '🤖 AI漫剧学习', tag: 't5', tagText: '学习', meta: '30分钟' },
+  { id: 9, text: '📖 阅读/看书', tag: 't5', tagText: '成长', meta: '今日章节' },
+  { id: 10, text: '发布视频内容', tag: 't2', tagText: '创作', meta: '🎬 顽顽崽/顽顽妹' },
+  { id: 11, text: '学做一道菜', tag: 't4', tagText: '生活', meta: '🍳 今日菜谱' }
+];
+
+const allJobs = [
+  { title: '数据分析师', company: '乐狗科技', salary: '8-12K', tags: ['数据分析', '电商', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B8%88' },
+  { title: '短视频内容运营', company: '微光聚梦', salary: '13-20K', tags: ['短视频', '内容运营', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%86%85%E5%AE%B9%E8%BF%90%E8%90%A5' },
+  { title: '小红书运营', company: '某MCN', salary: '6-10K', tags: ['小红书', '运营', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E8%BF%90%E8%90%A5' },
+  { title: '视频剪辑师', company: '某传媒', salary: '8-15K', tags: ['剪辑', '后期', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E8%A7%86%E9%A2%91%E5%89%AA%E8%BE%91' },
+  { title: '新媒体运营', company: '某互联网', salary: '7-12K', tags: ['新媒体', '抖音', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E6%96%B0%E5%AA%92%E4%BD%93%E8%BF%90%E8%90%A5' },
+  { title: '内容运营专员', company: '某电商', salary: '6-9K', tags: ['内容', '电商', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%86%85%E5%AE%B9%E8%BF%90%E8%90%A5' }
+];
+
+const fitVideos = [
+  { part: 'leg', title: '20分钟瘦腿操', author: '周六野', views: '445万', tag: '腿部塑形', emoji: '🦵', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E7%98%A6%E8%85%BF' },
+  { part: 'leg', title: '大腿内侧燃脂训练', author: '帕梅拉', views: '298万', tag: '瘦大腿', emoji: '🦵', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E7%98%A6%E5%A4%A7%E8%85%BF' },
+  { part: 'leg', title: '小腿塑形，消除肌肉腿', author: '美丽芭蕾', views: '189万', tag: '瘦小腿', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E7%BE%8E%E4%B8%BD%E8%8B%9F%E8%90%8A%20%E5%B0%8F%E8%85%BF' },
+  { part: 'hip', title: '10分钟蜜桃臀训练', author: '帕梅拉', views: '362万', tag: '提臀', emoji: '🍑', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E6%8F%90%E8%87%80' },
+  { part: 'hip', title: '居家翘臀养成', author: '周六野', views: '198万', tag: '翘臀', emoji: '🍑', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E7%BF%98%E8%87%80' },
+  { part: 'back', title: '10分钟背部塑形', author: '帕梅拉', views: '276万', tag: '美背', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E8%83%8C%E9%83%A8' },
+  { part: 'back', title: '改善斜方肌·颈背拉伸', author: '周六野', views: '425万', tag: '斜方肌', emoji: '💆', url: 'https://search.bilibili.com/all?keyword=%E6%96%9C%E6%96%B9%E8%82%8C%20%E7%96%B2%E6%8B%89' },
+  { part: 'arm', title: '10分钟手臂紧致', author: '帕梅拉', views: '341万', tag: '拜拜肉', emoji: '💪', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E6%89%8B%E8%87%82' },
+  { part: 'arm', title: '天鹅臂·去除拜拜肉', author: '美丽芭蕾', views: '512万', tag: '手臂', emoji: '🦢', url: 'https://search.bilibili.com/all?keyword=%E5%A4%A9%E9%B9%85%E8%87%82' },
+  { part: 'abs', title: '10分钟马甲线训练', author: '帕梅拉', views: '478万', tag: '马甲线', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E9%A9%AC%E7%94%B2%E7%BA%BF' },
+  { part: 'stretch', title: '6分钟全身拉伸', author: '周六野', views: '289万', tag: '拉伸', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E6%8B%89%E4%BC%B8' },
+  { part: 'stretch', title: '睡前瑜伽·深度放松', author: '海洋瑜伽', views: '167万', tag: '睡前', emoji: '🌙', url: 'https://search.bilibili.com/all?keyword=%E4%BC%91%E5%89%8D%E7%91%9C%E4%BC%BD' }
+];
+
+const scripts = [
+  {
+    cat: 'heal', type: '治愈萌系3D动态漫', color: '#B8A4D9',
+    title: '📱 来自噜噜：洗完澡撒娇日常',
+    source: '噜噜 · 15秒 · 12.3万赞',
+    body: '🔍 原视频分析：噜噜洗完澡后钻进被窝抱着噜妹撒娇，噜妹嫌弃推开。\n📊 爆款原因：撒娇+嫌弃的反差萌组合，真实生活感引发共鸣。\n🎯 可复刻点：卧室场景易搭建、对话简洁有梗、互动自然可爱。',
+    prompt: `【视频类型】治愈萌系3D动态漫
+【时长】15秒
+【人物】顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤）、顽顽妹（橙色小老虎女孩，圆脸大眼睛，头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）
+【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜
+【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏
+【字幕】白色黑体字，居中显示
+【分镜1 0-2秒 卧室全景】
+镜头：中景，顽顽妹躺在床上盖着被子，顽顽崽站在床边，开心地看着顽顽妹
+台词：顽顽崽：刚洗完澡好舒服。
+字幕同步显示台词
+【分镜2 2-5秒 互动特写】
+镜头：近景，顽顽崽爬上床，钻进被子里，抱着顽顽妹撒娇
+台词：顽顽崽：被子，我冷，把被子给我抱抱。顽顽妹（嫌弃）：你能不能别学我。
+字幕同步显示台词
+【分镜3 5-8秒 表情特写】
+镜头：特写顽顽崽的脸，露出委屈又倔强的表情，同时向顽顽妹撒娇
+台词：顽顽崽：我就是这样。顽顽妹（生气）：啊，你压我头发了！
+字幕同步显示台词
+【分镜4 8-12秒 情绪爆发】
+镜头：中景，顽顽妹皱起眉头，一把把顽顽崽从床上推下去
+台词：顽顽妹：啊
+【分镜5 12-15秒 搞笑收尾】
+镜头：特写坐在地上的顽顽崽，一脸委屈地看着床上的顽顽妹
+【制作要求】
+1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱
+2. 光影：暖黄色温馨室内光，突出治愈氛围
+3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点` },
+  {
+    cat: 'funny', type: '反差搞笑动态漫', color: '#E89494',
+    title: '📱 来自噜妹：零食被偷吃的日常',
+    source: '噜妹 · 18秒 · 8.9万赞',
+    body: '🔍 原视频分析：噜妹藏起来的零食被噜噜偷吃，发现后追着噜噜满屋跑。\n📊 爆款原因：偷吃+追逐=经典搞笑套路，动作节奏感强适合抖音。\n🎯 可复刻点：追逐戏节奏可套用各种场景，表情包级反应超好用。',
+    prompt: `【视频类型】搞笑萌系3D动态漫
+【时长】18秒
+【人物】顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤）、顽顽妹（橙色小老虎女孩，圆脸大眼睛，头顶粉黄花朵，穿粉色碎花连衣裙，带假睫毛）
+【场景】温馨客厅，沙发上有零食袋，电视开着
+【BGM】前半段悬疑调皮，后半段追逐搞笑快节奏
+【字幕】白色圆体字，居中显示
+【分镜1 0-2秒 零食特写】
+镜头：特写桌上的零食袋，一只手偷偷伸进来拿走
+字幕：有人偷偷摸摸的...
+【分镜2 2-5秒 偷吃被发现】
+镜头：中景，顽顽崽蹲在角落偷吃，嘴角还有零食渣
+台词：顽顽崽（心虚）：我没吃！我没吃！
+顽顽妹（突然出现）：你在干嘛！
+【分镜3 5-9秒 追逐戏】
+镜头：快速切换，客厅-走廊-厨房，顽顽妹追着顽顽崽跑
+台词：顽顽妹：你给我站住！
+顽顽崽：我就是太饿了！
+音效：跑步声+搞笑音效
+【分镜4 9-13秒 被抓住】
+镜头：中景，顽顽崽被堵在角落，双手举过头顶
+台词：顽顽崽（委屈）：我就吃了一点点...
+顽顽妹（叉腰）：那是一整袋！
+【分镜5 13-18秒 搞笑收尾】
+镜头：特写，俩人在沙发上，顽顽崽用零食讨好顽顽妹
+台词：顽顽崽：给你留了最后一片...
+顽顽妹：哼！（但接过了零食）
+【制作要求】
+1. 人物动作：追逐戏节奏感要强，喘气表情要夸张可爱
+2. 光影：明亮暖色调，客厅灯光
+3. 音效：奔跑音效+零食咀嚼音+搞笑转场音` },
+  {
+    cat: 'emotion', type: '情感共鸣动态漫', color: '#8AC79E',
+    title: '📱 来自噜噜&噜妹：第一次养小鸡',
+    source: '噜噜&噜妹 · 22秒 · 15.6万赞',
+    body: '🔍 原视频分析：两人一起照顾刚孵出的小鸡崽，手忙脚乱的温馨日常。\n📊 爆款原因：养宠物=流量密码，萌宠+萌娃双重暴击。\n🎯 可复刻点：任何"第一次做XX"的系列都能用，温馨+可爱=安全牌。',
+    prompt: `【视频类型】温馨治愈3D动态漫
+【时长】22秒
+【人物】顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤）、顽顽妹（橙色小老虎女孩，圆脸大眼睛，头顶粉黄花朵，穿粉色碎花连衣裙，带假睫毛）
+【场景】阳光明媚的阳台，有一个小纸箱，里面是毛茸茸的黄色小鸡崽
+【BGM】柔和钢琴+小鸟叫声，温馨治愈风格
+【字幕】白色圆体字，居中显示
+【分镜1 0-3秒 初见面】
+镜头：中景，两人蹲在小纸箱前，眼睛里全是小星星
+台词：顽顽崽：哇！好小！
+顽顽妹：好可爱！
+【分镜2 3-7秒 喂食】
+镜头：特写，顽顽妹小心翼翼地把小米放在手心，小鸡崽啄食
+台词：顽顽妹（小声）：乖，慢慢吃～
+顽顽崽（紧张）：别怕别怕！
+【分镜3 7-12秒 小意外】
+镜头：中景，小鸡崽突然从纸箱里跳出来，两人手忙脚乱
+台词：顽顽崽：啊啊啊跑了跑了！
+顽顽妹：快抓住它！
+音效：翅膀扑腾声+紧张音乐
+【分镜4 12-17秒 成功】
+镜头：近景，顽顽妹双手捧着小鸡崽，顽顽崽在旁边傻笑
+台词：顽顽崽：吓死我了...
+顽顽妹：我们要好好养它。
+【分镜5 17-22秒 温馨收尾】
+镜头：远景，两人坐在阳台，小鸡崽在脚边，阳光洒下
+字幕：从此多了个小生命
+【制作要求】
+1. 人物动作：紧张时表情夸张可爱，温柔时眼神要柔软
+2. 光影：温暖金色下午阳光，模拟逆光效果
+3. 音效：小鸟叫声+轻柔环境音+温馨钢琴BGM` },
+  {
+    cat: 'tutorial', type: '干货教程动态漫', color: '#F4B860',
+    title: '📱 来自噜妹：如何正确喂小鸡崽',
+    source: '噜妹 · 20秒 · 9.2万赞',
+    body: '🔍 原视频分析：噜妹一本正经教喂鸡，结果自己把鸡食撒了一地，反差喜剧效果拉满。\n📊 爆款原因：教程开头+翻车结尾=天然段子结构。\n🎯 可复刻点：任何"教别人但自己翻车"的场景都是爆款公式。',
+    prompt: `【视频类型】搞笑教程3D动态漫
+【时长】20秒
+【人物】顽顽妹（橙色小老虎女孩，圆脸大眼睛，头顶粉黄花朵，穿粉色碎花连衣裙，带假睫毛）、顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤，在旁边围观）
+【场景】厨房/阳台，台面上有鸡饲料、小碗、水盆
+【BGM】前半段正经教学音乐，后半段搞笑翻车音效
+【字幕】白字粉底圆体，居中
+【分镜1 0-3秒 正经开场】
+镜头：中景，顽顽妹面对镜头，表情认真
+台词：顽顽妹：今天教大家如何正确喂小鸡崽，超级简单！
+字幕：👩‍🏫 顽顽妹小课堂
+【分镜2 3-7秒 教学演示】
+镜头：近景，顽顽妹拿起鸡饲料袋，准备倒进碗里
+台词：顽顽妹：第一步，取适量饲料...
+音效：正常教学BGM
+【分镜3 7-12秒 翻车】
+镜头：特写，饲料袋突然撕开大口子，饲料撒了一地
+台词：顽顽妹：啊！不是这样的！
+音效：搞笑翻车音效+乌鸦声
+【分镜4 12-16秒 顽顽崽补刀】
+镜头：中景，顽顽崽从旁边探出头，笑得前仰后合
+台词：顽顽崽：好厉害呀老师！教得真棒！
+顽顽妹（脸红）：走开啦！
+【分镜5 16-20秒 收尾】
+镜头：两人一起蹲在地上捡饲料，小鸡崽也过来帮忙啄
+字幕：教学失败 × 快乐加倍 ✓
+【制作要求】
+1. 人物动作：顽顽妹翻车时手忙脚乱要夸张，顽顽崽的嘲笑要欠揍但可爱
+2. 光影：明亮自然光，暖色调厨房
+3. 音效：翻车音效+乌鸦声是笑点的关键` },
+  {
+    cat: 'heal', type: '治愈萌系3D动态漫',
+    title: '📱 来自噜噜：下雨天不出门的理由',
+    source: '噜噜 · 14秒 · 18.7万赞',
+    body: '🔍 原视频分析：窗外下大雨，噜噜裹着毯子缩在沙发上，噜妹端来热可可，画面极度治愈。\n📊 爆款原因：下雨+被窝+热饮=人间治愈三件套。\n🎯 可复刻点：天气类内容在任何平台都高互动，配上"你今天那里下雨了吗"引发评论。',
+    prompt: `【视频类型】治愈萌系3D动态漫
+【时长】14秒
+【人物】顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤，裹着灰色毛毯）、顽顽妹（橙色小老虎女孩，圆脸大眼睛，头顶粉黄花朵，穿粉色碎花连衣裙，带假睫毛）
+【场景】温馨客厅，窗外下着大雨，雨滴敲打玻璃，室内暖黄灯光
+【BGM】轻柔Lo-Fi钢琴 + 雨声白噪音
+【字幕】白色圆体字，左对齐
+【分镜1 0-3秒 雨景】
+镜头：窗外特写，雨滴顺着玻璃流下，背景模糊的城市街景
+字幕：下雨了...
+【分镜2 3-6秒 顽顽崽缩在沙发】
+镜头：中景，顽顽崽裹着毯子缩在沙发角落，看着窗外发呆
+顽顽崽OS：今天不出门了
+【分镜3 6-10秒 顽顽妹端来热可可】
+镜头：缓慢推近，顽顽妹从厨房走出来，手里端着两杯热可可，冒着热气
+顽顽妹：给你，暖暖身子。
+顽顽崽：你怎么知道我想喝这个...
+【分镜4 10-14秒 温馨结尾】
+镜头：中景，两人并肩坐在沙发上，各自捧着热可可，窗外雨声继续
+顽顽妹：我最喜欢下雨天。
+顽顽崽：我也是。
+字幕：你那里，今天下雨了吗？
+【制作要求】
+1. 光影：暖黄室内光 vs 冷灰窗外雨景，形成强烈对比突出"室内安全感"
+2. 音效：真实雨声录音+轻柔钢琴，热可可冒热气用特效粒子
+3. 速度：慢节奏，配合Lo-Fi音乐，每个镜头停留足够久让人感受氛围` },
+  {
+    cat: 'funny', type: '反差搞笑动态漫',
+    title: '📱 来自噜噜&噜妹：谁洗碗的终极对决',
+    source: '噜噜&噜妹 · 25秒 · 22.1万赞',
+    body: '🔍 原视频分析：饭后两人都不想洗碗，用石头剪刀布决斗，结果噜噜连输5把的名场面。\n📊 爆款原因：石头剪刀布梗永不过时+连续反转=高完播率保证。\n🎯 可复刻点：任何"PK决斗"类内容都能套用，输的人做家务/请客/倒垃圾等。',
+    prompt: `【视频类型】搞笑萌系3D动态漫
+【时长】25秒
+【人物】顽顽崽（橙色胖胖小老虎，圆脸大眼睛，穿蓝色云朵短裤）、顽顽妹（橙色小老虎女孩，头顶粉黄花朵，穿粉色碎花连衣裙，带假睫毛）
+【场景】餐厅，桌上摆着吃完的碗筷，背景是开放式厨房
+【BGM】开头西部决斗风紧张音乐，中间搞笑反转音效，结尾轻松俏皮
+【字幕】白色黑体字，居中，对决时有出拳动画
+【分镜1 0-3秒 宣战】
+镜头：中景，两人面对面站在餐桌旁，眼神交锋
+顽顽崽：老规矩，石头剪刀布，输的洗碗！
+顽顽妹：来啊，怕你啊！
+字幕：⚔️ 终 极 对 决 ⚔️
+【分镜2 3-6秒 第一轮】
+镜头：特写两人的手，慢动作出拳
+结果：顽顽崽（剪刀）vs 顽顽妹（石头）
+顽顽崽：...再来！
+字幕：Round 1 — 顽顽崽败！
+【分镜3 6-12秒 连续输】
+镜头：快速蒙太奇，3组不同的出拳结果，全部顽顽崽输
+每轮配搞笑音效，顽顽崽表情从自信→怀疑→崩溃
+字幕：Round 2 败！ Round 3 败！ Round 4 败！
+【分镜4 12-18秒 最后一搏】
+镜头：特写，顽顽崽眼神决绝，深呼吸，出拳
+顽顽崽（大喊）：我出布！！
+结果：顽顽妹出剪刀
+音效：乌鸦叫+凄凉BGM
+顽顽妹：你已经连续说了5把布了...
+【分镜5 18-25秒 收尾】
+镜头：中景，顽顽崽戴着围裙在洗碗，背景里顽顽妹躺在沙发上吃水果看电视
+顽顽崽（小声嘀咕）：下次我一定赢...
+顽顽妹（头也不回）：你说啥？
+顽顽崽：没、没啥...
+字幕：这就是命 ✌️
+【制作要求】
+1. 人物动作：每次输的时候表情递进要明显——自信→惊讶→怀疑人生→崩溃
+2. 光影：餐厅暖光，对决时加些许战斗番特效光晕开玩笑
+3. 音效：出拳音效+胜负判定音+乌鸦叫是笑点关键` }
+];
+
+const scenes = [
+  { title: '🍽️ 餐厅点餐', emoji: '🍽️', items: [
+    { en: 'Hi, could we have a table for two, please?', cn: '你好，请问有两人桌吗？' },
+    { en: 'What do you recommend?', cn: '你推荐什么？' },
+    { en: 'I would like the grilled chicken, please.', cn: '我要烤鸡，谢谢。' },
+    { en: 'Could I have the bill, please?', cn: '请帮我结账。' },
+    { en: 'Can I pay by Alipay?', cn: '可以用支付宝吗？' }
+  ]},
+  { title: '🛒 购物砍价', emoji: '🛒', items: [
+    { en: 'Excuse me, do you have this in medium size?', cn: '请问这款有中码吗？' },
+    { en: 'Can I try this on?', cn: '我可以试一下吗？' },
+    { en: 'How much is this?', cn: '这个多少钱？' },
+    { en: 'Is there any discount?', cn: '有什么折扣吗？' },
+    { en: 'I will take it.', cn: '我要了。' }
+  ]},
+  { title: '🗺️ 问路指路', emoji: '🗺️', items: [
+    { en: 'Excuse me, how can I get to the subway station?', cn: '请问地铁站怎么走？' },
+    { en: 'Is it far from here?', cn: '离这里远吗？' },
+    { en: 'You can take Bus No. 23.', cn: '你可以坐23路公交。' },
+    { en: 'It is around the corner on your left.', cn: '就在你左边转角。' },
+    { en: 'Thank you so much!', cn: '非常感谢！' }
+  ]},
+  { title: '💼 面试对话', emoji: '💼', items: [
+    { en: 'Tell me about yourself.', cn: '请介绍一下你自己。' },
+    { en: 'I have three years of experience in data analysis.', cn: '我有3年数据分析经验。' },
+    { en: 'What are your strengths?', cn: '你的优势是什么？' },
+    { en: 'I am good at problem-solving and team collaboration.', cn: '我擅长解决问题和团队协作。' },
+    { en: 'Where do you see yourself in five years?', cn: '你五年后的规划是什么？' }
+  ]},
+  { title: '📞 商务电话', emoji: '📞', items: [
+    { en: 'This is Sun from XX company.', cn: '我是XX公司的Sun。' },
+    { en: 'I am calling to follow up on the proposal.', cn: '我打电话跟进一下方案。' },
+    { en: 'Could we schedule a meeting this Friday?', cn: '本周五可以安排会议吗？' },
+    { en: 'I will send you the email shortly.', cn: '我稍后发邮件给你。' },
+    { en: 'Thank you for your time. Have a great day!', cn: '感谢您的时间，祝您愉快！' }
+  ]},
+  { title: '🏨 酒店入住', emoji: '🏨', items: [
+    { en: 'I have a reservation under the name Sun.', cn: '我有一个预订，姓Sun。' },
+    { en: 'What time is breakfast served?', cn: '早餐几点开始？' },
+    { en: 'Is there Wi-Fi in the room?', cn: '房间有Wi-Fi吗？' },
+    { en: 'Could I have an extra towel, please?', cn: '请多给我一条毛巾。' },
+    { en: 'I would like to check out, please.', cn: '我要退房。' }
+  ]},
+  { title: '☕ 朋友聚会', emoji: '☕', items: [
+    { en: 'Are you free this weekend?', cn: '你这周末有空吗？' },
+    { en: 'What do you want to do?', cn: '你想做什么？' },
+    { en: 'How about going to a coffee shop?', cn: '去咖啡店怎么样？' },
+    { en: 'Sounds great! See you at 3 PM.', cn: '好主意！下午3点见。' },
+    { en: 'It is really nice to see you again.', cn: '很高兴再次见到你。' }
+  ]},
+  { title: '🚕 打车出行', emoji: '🚕', items: [
+    { en: 'Hi, I would like to book a ride.', cn: '你好，我想叫车。' },
+    { en: 'My destination is XX Hotel.', cn: '目的地是XX酒店。' },
+    { en: 'How long will it take to get there?', cn: '到那里要多久？' },
+    { en: 'Please drop me off at the front entrance.', cn: '请让我在正门下车。' },
+    { en: 'Keep the change, thank you.', cn: '不用找了，谢谢。' }
+  ]}
+];
+
+const nceArticles = [
+  { title: 'NCE1-Lesson 1: Excuse me!', word: 120, sentence: 'Excuse me! Yes? Is this your handbag? Pardon? Is this your handbag?' },
+  { title: 'NCE1-Lesson 2: Sorry, sir.', word: 130, sentence: 'Can I help you, sir? I want a large box, please.' },
+  { title: 'NCE1-Lesson 3: Thank you, doctor.', word: 140, sentence: 'How are you today? I am very well, thank you.' },
+  { title: 'NCE2-Lesson 1: A private conversation', word: 180, sentence: 'Last week I went to the theatre.' },
+  { title: 'NCE2-Lesson 2: Breakfast or lunch?', word: 200, sentence: 'It was Sunday. I never get up early on Sundays.' },
+  { title: 'NCE2-Lesson 3: Please send me a card', word: 210, sentence: 'Postcards always spoil my holidays.' }
+];
+
+const wordBooks = {
+  cet4: ['abandon','ability','abnormal','abolish','abound','abrupt','absence','absolute','absorb','abstract','absurd','abuse','academic','accelerate','accent','accept','access','accident','acclaim','accommodate'],
+  ielts: ['aesthetic','altruistic','ambivalent','anachronistic','antagonistic','arbitrary','archaic','articulate','audacious','austere','benevolent','boisterous','candid','capricious','clandestine'],
+  job: ['candidate','colleague','compensation','deadline','efficient','executive','feedback','interview','negotiation','opportunity','promotion','qualification','responsibility','salary','strategy']
+};
+
+const books = [
+  { title: '被讨厌的勇气', author: '岸见一郎 / 古贺史健', cover: '勇', desc: '阿德勒心理学经典。教会你如何获得真正的自由，不再寻求他人认可。', progress: 35,
+    content: {
+      summary: '这是一本以对话体形式展开的阿德勒心理学入门书。书中以一位哲人和一位青年的对话为主线，层层深入，探讨了人生的烦恼根源——自我认同与他人的看法。作者认为，一切烦恼都来自人际关系，而获得幸福的关键在于：拥有"被讨厌的勇气"，即不害怕他人的评价，敢于做真实的自己。',
+      points: ['你的人生你说了算，不需要活在别人的期待里','目的论优于原因论——决定现在的不是过去的经历，而是你选择如何解读经历','所有烦恼都来自人际关系，而解决之道是课题分离——分清什么是你的事，什么是别人的事','自由就是不再寻求他人认可','幸福不是获得别人的爱，而是"他者贡献"——为别人做些什么'],
+      quotes: ['重要的不是被给予了什么，而是如何利用被给予的东西。','你的人生取决于当下，而非过去。','自由就是不再寻求认可。','每个人都有获得幸福的能力。'],
+      notes: '读这本书时，最震撼的是"课题分离"这个概念。我们常常因为父母、朋友、同事的评价而焦虑，但真正重要的不是别人怎么看，而是自己是否在做正确的事。这本书教会了我：被讨厌不是罪过，委屈自己取悦他人才是最大的不幸。'
+    } },
+  { title: '自卑与超越', author: '阿尔弗雷德·阿德勒', cover: '自', desc: '理解自卑感，找到超越自我的力量。', progress: 0,
+    content: {
+      summary: '阿德勒是心理学三巨头之一，本书是他的代表作。书中深入剖析了自卑感的来源，指出每个人天生都有自卑感，但这并不可怕——真正的自卑情结才是问题所在。作者提出，超越自卑的最佳方式是找到"生活意义"，并为之努力。',
+      points: ['自卑感是普遍存在的，关键是如何面对它','优越情结往往是自卑感的补偿','人的生活风格在五岁前基本形成','社会兴趣是心理健康的重要标志','每个人都应该有三个联结：职业、社交、爱情'],
+      quotes: ['生活的意义在于对别人发生兴趣以及互助合作。','我们每个人都有不同程度的自卑感，因为我们都想让自己更优秀。','真正决定一个人行为的，是我们想要达到的那个目标。'],
+      notes: '阿德勒说"自卑不是缺陷，而是进步的动力"。这让我对自己的不自信有了全新的理解。原来很多伟大的成就，恰恰来自于最初那份不甘平庸的自卑感。关键不是消除自卑，而是把它转化为向上的力量。'
+    } },
+  { title: '非暴力沟通', author: '马歇尔·卢森堡', cover: '沟', desc: '学会倾听与表达，让爱流动。', progress: 60,
+    content: {
+      summary: '非暴力沟通（NVC）是马歇尔·卢森堡博士提出的一套沟通方法论，旨在帮助人们建立基于同理心的连接。全书围绕四个要素展开：观察、感受、需要、请求。当我们能清晰表达自己，也能理解他人时，很多冲突会自然化解。',
+      points: ['观察而非评判——描述事实，不贴标签','表达感受而非想法——"我觉得"不等于"我认为"','说出需要而非指责——每个人都渴望被理解','提出请求而非命令——让对方有选择的自由','倾听是最高级的沟通'],
+      quotes: ['语言是窗户，或者是墙。','你越是留意自己内心的声音，就越能够听到别人的声音。','当我们专注于澄清彼此的观察、感受、需要和请求，而不是分析和评判时，爱便自然地流淌。'],
+      notes: '读完最大的收获是学会了"不带评判地表达"。以前生气时会说"你总是这样"，现在会说"我注意到你最近三次都没有按时回消息，这让我感到担心和不安，因为我需要及时沟通的安全感"。后者明显更容易被接受。'
+    } },
+  { title: '少即是多', author: '本田直之', cover: '极', desc: '断舍离、极简主义的生活方式，让生活回归本质。', progress: 0,
+    content: {
+      summary: '本书是日本作家本田直之对"极简生活"的实践总结。作者认为，真正的富足不在于拥有多少，而在于舍弃了多少。当你不再被过多的物品和信息绑架时，内心反而会更加自由。书中提供了许多极简生活的具体方法。',
+      points: ['双城生活：工作和生活分开，减少通勤时间','信息断舍离：控制信息输入，专注真正重要的事','拥有的越少，越自由','把时间和金钱花在体验上，而非物品上','生活的品质不在于消费，而在于选择'],
+      quotes: ['拥有的东西越少，人生的选项反而越多。','信息泛滥的时代，筛选信息的能力比获取信息的能力更重要。','当你不再被物质束缚，才能看清自己真正想要什么。'],
+      notes: '极简主义不是苦行僧式的生活，而是有意识地选择什么对自己真正重要。我开始清理衣柜、取关不必要的公众号、减少无效社交后，发现生活轻松了很多，也更能集中注意力在真正重要的事情上。'
+    } },
+  { title: '原子习惯', author: '詹姆斯·克利尔', cover: '习', desc: '微小的改变，巨大的成就。每天进步1%。', progress: 80,
+    content: {
+      summary: '本书系统性地阐述了习惯养成的科学原理。作者詹姆斯·克利尔认为，改变不需要革命性的顿悟，而只需要每天1%的进步。书中提出了"习惯四定律"：提示、渴望、反应、奖励，并给出了让好习惯容易做、坏习惯难以做的具体策略。',
+      points: ['微小的改变日积月累会复利式增长','身份认同比目标更重要——不是"我想戒烟"，而是"我不吸烟"','让好习惯显而易见、有吸引力、简单易行、令人愉悦','让坏习惯隐形、无吸引力、困难、令人厌恶','不要追求完美，允许自己有退步'],
+      quotes: ['你不需要提升目标，你需要降低标准——让行动变得足够简单。','每天进步1%，一年后你将进步37倍。','成功是日常习惯的结果，而不是一次性的转变。'],
+      notes: '最有用的是"两分钟法则"——任何习惯都从两分钟开始。想健身？先穿上运动鞋出门两分钟。想阅读？先翻开书读两分钟。这个策略让我克服了很多拖延，因为最难的是开始，而不是坚持。'
+    } },
+  { title: '当下的力量', author: '埃克哈特·托利', cover: '当', desc: '摆脱焦虑，专注当下。', progress: 0,
+    content: {
+      summary: '埃克哈特·托利在30岁那年经历了人生的彻底转变——在极度的焦虑和痛苦中，他突然领悟到了"当下"的力量。本书将这一体悟转化为文字，教导读者如何从"小我"和"思维"的掌控中解脱出来，活在此时此刻。',
+      points: ['痛苦源于对过去的悔恨和对未来的焦虑','思维不是你自己，只是工具','觉醒就是意识到"思维在思维"','臣服不是软弱，而是接纳现实的力量','当下是你唯一真正能存在的地方'],
+      quotes: ['真正的拯救是成就满足，是完满，是对存在的彻底接纳。','当下时刻是你所能拥有的一切。','不是你在思考，而是思维在你之内发生。'],
+      notes: '第一次读这本书是在失眠的深夜，焦虑和思绪像洪水一样涌来。书中的"临在"概念让我明白：思考不是问题，但把思考当成自己，就会陷入痛苦。现在每当焦虑来袭，我会提醒自己回到呼吸，回到当下——仅此而已。'
+    } },
+  { title: '蛤蟆先生去看心理医生', author: '罗伯特·戴博德', cover: '蛤', desc: '用童话故事讲心理咨询，温柔治愈。', progress: 20,
+    content: {
+      summary: '本书借用《柳林风声》中的人物，讲述了富有的蛤蟆先生陷入抑郁后，在心理咨询师苍鹭的帮助下逐步走出阴霾的故事。通过十次心理咨询，蛤蟆先生探索了自己的内心世界，理解了童年经历如何塑造了他的人生脚本。',
+      points: ['三种自我状态：儿童、父母、成人，健康的人能在成人状态中生活','人生坐标决定命运——你对自己和他人的基本态度','愤怒可以以不同方式表达，关键是有没有压抑自己','没有人能让我们感受什么，是我们自己选择了感受','心理咨询的目标不是给出建议，而是引导你找到答案'],
+      quotes: ['没有一种批判比自我批判更强烈，也没有一个法官比我们自己更严苛。','父母也是人，会不可避免地把他们的观念和行为传递给后代。','能帮助你的人是你自己，也只有你自己。'],
+      notes: '书中最触动我的是苍鹭说："你觉得生活太艰难了，因为你一直在演一个剧本，而这个剧本是小时候写下的。"长大后第一次认真回望童年，才意识到很多自卑和不安全感都是早期埋下的种子。疗愈的第一步是看见。'
+    } },
+  { title: '认知觉醒', author: '周岭', cover: '觉', desc: '开启自我改变的原动力。', progress: 0,
+    content: {
+      summary: '周岭是一位中年觉醒的自媒体人，他在36岁时意识到自己浑浑噩噩地活了很多年，于是开始系统学习脑科学、心理学，并将所学内化为一本通俗易懂的个人成长指南。本书从"大脑"出发，帮助读者理解人类本能，从而更好地掌控自己。',
+      points: ['人类有三重大脑：本能脑、情绪脑、理智脑——理智脑最弱但决定高度','焦虑的根源是欲望与能力之间的差距太大，又缺乏耐心','元认知是人类最高级的能力——思考你的思考','深度学习才是获取知识的最佳方式，浅层阅读效率极低','早起、冥想、阅读、写作、运动——五件套改变人生'],
+      quotes: ['真正的觉醒是一种发自内心的渴望，立足长远，保持耐心。','成长就是克服天性的过程。','学习的目的是改变，而不是记住。','人与人之间的根本差异是认知能力。'],
+      notes: '"元认知"这个概念改变了我对学习的态度。以前读书是为了记住，现在是为了改变。每读一本书都要问自己：这个概念如何应用到我身上？读书不践行，等于没读。'
+    } }
+];
+
+const podcasts = [
+  { title: '纵横四海', author: '即刻 App', desc: '每一代人都值得被记录，访谈类节目，听听别人的人生故事', icon: '🎙️',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/6014be78a1b60f9f3c419fcd' },
+  { title: '商业就是这样', author: '商业财经类', desc: '用通俗语言讲商业故事，通勤路上听', icon: '💼',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/6066b407dd1122e4f6728774' },
+  { title: '日谈公园', author: '日谈公园', desc: '都市青年减压必备，聊天趣事', icon: '🎧',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a407418a84a04696b43f' },
+  { title: '文化有限', author: '文化有限', desc: '大冰讲故事，文学青年必备', icon: '📚',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c554f418a84a04696b83a' },
+  { title: '随机波动', author: '随机波动', desc: '女性视角看世界，温柔有力量', icon: '💫',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b44d' },
+  { title: '大内密谈', author: '大内密谈', desc: '城市夜晚的心灵庇护所', icon: '🌙',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b448' }
+];
+
+const quotes = [
+  { text: '生活不会因为你是谁就对你手下留情，但你可以选择温柔而坚定地面对一切。', author: '佚名' },
+  { text: '你不必仰望别人，自己亦是风景。', author: '佚名' },
+  { text: '世界上只有一种英雄主义，就是看清生活的真相之后依然热爱生活。', author: '罗曼·罗兰' },
+  { text: '每一个不曾起舞的日子，都是对生命的辜负。', author: '尼采' },
+  { text: '不管前方的路有多苦，只要走的方向正确，不管多么崎岖，都比站在原地更接近幸福。', author: '宫崎骏' },
+  { text: '你的孤独，虽败犹荣。愿你在迷茫中找到方向。', author: '刘同' },
+  { text: '不要因为走得太远，而忘记为什么出发。', author: '纪伯伦' },
+  { text: '所谓无底深渊，下去，也是前程万里。', author: '木心' }
+];
+
+const daChapters = [
+  { num: '01', title: '数据分析思维', desc: '理解5W2H、漏斗分析、AARRR模型等核心思维框架', duration: '30min', progress: 100,
+    content: `
+      <p><strong>核心概念：</strong>数据分析不是学工具，而是学思维。本章教你用数据驱动决策。</p>
+      <p><strong>5W2H分析法：</strong>What(什么)、Why(为什么)、Who(谁)、When(何时)、Where(何地)、How(如何)、How much(多少)。面对任何问题，先用这7个维度把问题定义清楚。</p>
+      <p><strong>漏斗分析：</strong>用户从"看到产品"到"付费购买"经历的每个步骤转化率。经典漏斗：曝光→点击→浏览→加购→下单→支付。每层流失率就是优化方向。</p>
+      <p><strong>AARRR模型：</strong>Acquisition(获取)、Activation(激活)、Retention(留存)、Revenue(收入)、Referral(传播)。海盗指标，互联网增长的核心框架。</p>
+      <p><strong>实践建议：</strong>看完本章后，选一个你常用的App，用AARRR模型分析它的增长策略。</p>
+    ` },
+  { num: '02', title: 'Excel高级应用', desc: '数据透视表、VLOOKUP、SQL查询模拟', duration: '45min', progress: 80,
+    content: `
+      <p><strong>数据透视表：</strong>Excel最强的分析工具。拖拽字段即可完成分组汇总。核心四区：行标签、列标签、值、筛选器。</p>
+      <p><strong>VLOOKUP/XLOOKUP：</strong>最常用的查找匹配函数。VLOOKUP(查找值, 查找范围, 返回列号, 精确/模糊)。建议现在改用XLOOKUP，语法更直观。</p>
+      <p><strong>常用快捷键：</strong>Ctrl+T(创建表)、Alt+=(自动求和)、Ctrl+Shift+L(筛选)、F4(绝对引用)。</p>
+      <p><strong>条件格式：</strong>用颜色和数据条让数据"可视化"。重点：数据条、色阶、图标集。</p>
+    ` },
+  { num: '03', title: 'SQL基础语法', desc: 'SELECT/WHERE/GROUP BY/ORDER BY/JOIN', duration: '60min', progress: 60,
+    content: `
+      <p><strong>SELECT + FROM：</strong>最基础的查询，决定"看什么"和"从哪里看"。SELECT name, age FROM users;</p>
+      <p><strong>WHERE：</strong>过滤条件。WHERE age > 18 AND city = '北京'。常用运算符：=, >, <, >=, <=, <>, IN, BETWEEN, LIKE。</p>
+      <p><strong>GROUP BY + 聚合函数：</strong>分组汇总。COUNT(计数)、SUM(求和)、AVG(平均)、MAX/MIN(最大/最小)。搭配HAVING过滤分组结果。</p>
+      <p><strong>ORDER BY：</strong>排序。ASC升序(默认)、DESC降序。可多字段排序。</p>
+      <p><strong>JOIN：</strong>连接多张表。INNER JOIN(交集)、LEFT JOIN(左表全保留)、RIGHT JOIN(右表全保留)。</p>
+    ` },
+  { num: '04', title: 'SQL进阶查询', desc: '窗口函数、子查询、CTE、性能优化', duration: '60min', progress: 30,
+    content: `
+      <p><strong>窗口函数：</strong>面试高频考点！ROW_NUMBER()、RANK()、DENSE_RANK()。配合PARTITION BY分组排序。经典题：每个部门工资前3名。</p>
+      <p><strong>子查询：</strong>SELECT中嵌套SELECT。可放在FROM后(派生表)、WHERE后(标量子查询)、SELECT后。</p>
+      <p><strong>CTE(公用表表达式)：</strong>WITH子句，比子查询更清晰。WITH temp AS (SELECT ...) SELECT * FROM temp;</p>
+      <p><strong>性能优化：</strong>建索引(但不要滥用)、避免SELECT *、用EXPLAIN看执行计划、LIMIT限制返回行数。</p>
+    ` },
+  { num: '05', title: 'Python基础', desc: '列表/字典/函数/Pandas数据处理', duration: '90min', progress: 0,
+    content: `
+      <p><strong>核心数据类型：</strong>list[ ]列表、dict{ }字典、tuple( )元组。list最常用，dict的key-value结构非常适合数据分析。</p>
+      <p><strong>控制流：</strong>if/elif/else条件判断、for循环遍历、while循环。列表推导式：[x for x in data if x > 0] 非常Pythonic。</p>
+      <p><strong>函数：</strong>def定义、参数(位置/关键字/默认值)、返回值。lambda匿名函数用于简单操作。</p>
+      <p><strong>文件读写：</strong>open('file.csv', 'r', encoding='utf-8')，with语句自动关闭文件。</p>
+      <p><strong>Pandas入门：</strong>import pandas as pd。pd.read_csv()读数据，df.head()看前5行，df.info()看结构。</p>
+    ` },
+  { num: '06', title: 'Pandas数据分析', desc: 'DataFrame操作/分组聚合/数据清洗', duration: '90min', progress: 0,
+    content: `
+      <p><strong>DataFrame基础：</strong>二维表格结构。df[列名]、df.loc[行标签]、df.iloc[行号]三种取数方式。</p>
+      <p><strong>数据清洗：</strong>dropna()去空值、fillna()填充、drop_duplicates()去重、astype()改类型、rename()改列名。</p>
+      <p><strong>分组聚合：</strong>df.groupby('城市')['销售额'].sum()。最常用的分析操作，类似Excel透视表。</p>
+      <p><strong>合并数据：</strong>pd.merge()(类似SQL JOIN)、pd.concat()(纵向/横向拼接)。</p>
+      <p><strong>实践：</strong>找一个CSV数据集(如淘宝用户行为数据)，完成完整的数据清洗+分析流程。</p>
+    ` },
+  { num: '07', title: '数据可视化', desc: 'Matplotlib/Seaborn/图表选择原则', duration: '60min', progress: 0,
+    content: `
+      <p><strong>图表选择原则：</strong>比较→柱状图；趋势→折线图；分布→直方图/箱线图；占比→饼图/环形图；关系→散点图。</p>
+      <p><strong>Matplotlib基础：</strong>plt.bar()柱状、plt.plot()折线、plt.scatter()散点。设置标题/坐标轴/图例。</p>
+      <p><strong>Seaborn：</strong>基于Matplotlib的统计可视化库。sns.barplot()、sns.heatmap()热力图(相关矩阵)、sns.boxplot()箱线图。</p>
+      <p><strong>配色原则：</strong>用公司品牌色/行业惯例。避免大红大绿。推荐colorbrewer配色方案。</p>
+      <p><strong>实践：</strong>用任意数据制作"对比+趋势+分布"三图组合报告。</p>
+    ` },
+  { num: '08', title: '统计学基础', desc: '描述统计/概率分布/假设检验', duration: '60min', progress: 0,
+    content: `
+      <p><strong>描述统计：</strong>均值(集中趋势)、中位数(抗异常值)、标准差(离散程度)、四分位数(分布形状)。</p>
+      <p><strong>概率分布：</strong>正态分布(钟形曲线，自然界最常见)、二项分布(成功/失败)、泊松分布(事件次数)。</p>
+      <p><strong>中心极限定理：</strong>样本量足够大时(通常>30)，样本均值的分布趋近正态分布。这是统计推断的根基。</p>
+      <p><strong>假设检验：</strong>提出原假设H₀和备择假设H₁ → 计算p值 → p<0.05则拒绝H₀。常见检验：t检验(均值差异)、卡方检验(分类变量关联)。</p>
+      <p><strong>面试重点：</strong>p值的含义是什么？p<0.05能不能说"有95%的概率原假设不成立"？（答案：不能！p值是"原假设为真时观察到当前结果的概率"，不是"原假设不成立的概率"）</p>
+    ` },
+  { num: '09', title: '业务分析实战', desc: '电商运营/用户增长/转化漏斗', duration: '90min', progress: 0,
+    content: `
+      <p><strong>电商核心指标：</strong>GMV(总成交额)=流量×转化率×客单价。ARPU(每用户收入)、复购率、LTV(用户生命周期价值)。</p>
+      <p><strong>用户增长模型：</strong>新用户获取成本(CAC) vs 用户生命周期价值(LTV)。LTV/CAC>3才可持续增长。</p>
+      <p><strong>转化漏斗实战：</strong>以淘宝为例：搜索曝光→点击商品→加购→下单→支付。每层优化1%，整体可提升10%+。</p>
+      <p><strong>归因分析：</strong>用户从哪个渠道来的？首次点击归因、末次点击归因、线性归因、时间衰减归因。</p>
+      <p><strong>实践：</strong>选一个你常用的电商App，估算它的GMV、转化率，思考如何提升。</p>
+    ` },
+  { num: '10', title: 'A/B测试', desc: '实验设计/显著性检验/效果评估', duration: '60min', progress: 0,
+    content: `
+      <p><strong>什么是A/B测试：</strong>随机将用户分成两组，一组看到原版(A)，一组看到新版(B)，对比指标差异。科学验证"这个改动有效吗"。</p>
+      <p><strong>实验设计要点：</strong>1)明确指标(单一主指标) 2)确定样本量(用计算器) 3)随机分流 4)只改一个变量 5)运行足够长时间(至少1-2周)。</p>
+      <p><strong>显著性判断：</strong>用t检验或z检验计算p值。p<0.05→统计显著，但还要看实际效果大小(效应量)。</p>
+      <p><strong>常见陷阱：</strong>①早期偷看数据导致假阳性 ②多重检验未校正 ③新奇效应(用户对新东西的好奇会随时间消退) ④辛普森悖论。</p>
+    ` },
+  { num: '11', title: '数据报告撰写', desc: '结论先行/Pyramid Principle/可视化呈现', duration: '60min', progress: 0,
+    content: `
+      <p><strong>金字塔原理：</strong>结论先行，以上统下，归类分组，逻辑递进。先告诉老板结论，再用数据支撑。</p>
+      <p><strong>报告结构：</strong>1)核心结论(1页) 2)关键发现(2-3页，每页一个观点) 3)详细数据(附录)。</p>
+      <p><strong>可视化原则：</strong>一张图一个观点；去除图表垃圾(chartjunk)；用颜色突出关键数据；标题就是结论。</p>
+      <p><strong>汇报技巧：</strong>用"所以呢？"(so what?)自检每页价值；用"下一步建议"收尾；准备常见质疑的回应。</p>
+    ` },
+  { num: '12', title: '面试高频题', desc: '业务题/SQL题/统计学题/案例分析', duration: '90min', progress: 0,
+    content: `
+      <p><strong>业务题示例：</strong>"抖音DAU下降了5%，你会怎么分析？"→按维度拆分(地区/版本/渠道/用户群)→对比同期→检查数据口径→形成假设→验证。</p>
+      <p><strong>SQL必考题：</strong>①窗口函数排名 ②连续登录天数 ③留存率计算 ④复购率。一定要手写，面试现场写不出就是挂。</p>
+      <p><strong>统计学题：</strong>p值含义、置信区间、A/B测试设计、辛普森悖论举例。</p>
+      <p><strong>案例分析框架：</strong>明确问题→拆分维度→提出假设→收集数据→验证→给出建议。结构化表达最重要！</p>
+      <p><strong>行为面试：</strong>"讲一个你用数据驱动决策的例子"——准备STAR模型(Situation/Task/Action/Result)。</p>
+    ` }
+];
+
+const recipes = [
+  { name: '葱烧鸡', emoji: '🍗', badge: '热门', time: '25min', ingredients: ['鸡腿肉 300g','大葱 1根','生姜 3片','生抽 2勺','老抽 1勺','料酒 1勺','冰糖 10g'], steps: '1. 鸡腿肉切块焯水\n2. 大葱切段，姜切片\n3. 热锅冷油，爆香姜葱\n4. 下鸡块翻炒，加料酒\n5. 加生抽老抽冰糖\n6. 加水没过食材\n7. 大火烧开转小火焖20分钟\n8. 大火收汁即可', tutorial: '抖音搜「葱烧鸡」' },
+  { name: '肉沫金针菇娃娃菜', emoji: '🥬', badge: '简单', time: '15min', ingredients: ['娃娃菜 1颗','金针菇 1把','肉沫 100g','蒜末 适量','生抽 2勺','蚝油 1勺'], steps: '1. 娃娃菜切段，金针菇撕开\n2. 摆盘：娃娃菜铺底，金针菇铺上\n3. 热锅冷油炒肉沫\n4. 加蒜末炒香\n5. 加生抽蚝油\n6. 浇在金针菇上\n7. 蒸10分钟即可', tutorial: '下厨房搜「金针菇娃娃菜」' },
+  { name: '酸辣土豆丝', emoji: '🥔', badge: '开胃', time: '10min', ingredients: ['土豆 2个','干辣椒 5个','花椒 10粒','蒜 3瓣','醋 2勺','生抽 1勺'], steps: '1. 土豆切细丝泡水\n2. 干辣椒切段，蒜切片\n3. 热锅冷油爆香花椒\n4. 加干辣椒蒜片\n5. 倒入土豆丝翻炒\n6. 加醋生抽快速翻炒\n7. 断生即可出锅', tutorial: '抖音搜「酸辣土豆丝」' },
+  { name: '肉沫炒腐竹', emoji: '🥢', badge: '下饭', time: '15min', ingredients: ['腐竹 200g','肉沫 100g','葱姜蒜 适量','豆瓣酱 1勺','生抽 2勺'], steps: '1. 腐竹温水泡发\n2. 切段备用\n3. 热锅冷油爆香葱姜蒜\n4. 加豆瓣酱炒出红油\n5. 加肉沫炒至变色\n6. 倒入腐竹翻炒\n7. 加生抽调味\n8. 炒匀出锅', tutorial: '抖音搜「肉沫腐竹」' },
+  { name: '蒜蓉生菜', emoji: '🥬', badge: '清爽', time: '5min', ingredients: ['生菜 1颗','蒜 5瓣','生抽 2勺','蚝油 1勺','白糖 少许'], steps: '1. 生菜洗净掰开\n2. 蒜切末\n3. 烧水加盐\n4. 生菜焯水10秒\n5. 捞出沥干摆盘\n6. 热锅冷油爆香蒜末\n7. 加生抽蚝油白糖\n8. 浇在生菜上', tutorial: '抖音搜「蒜蓉生菜」' },
+  { name: '什锦炒菜', emoji: '🥗', badge: '营养', time: '15min', ingredients: ['西兰花 半颗','胡萝卜 半根','木耳 10朵','荷兰豆 100g','蒜 3瓣'], steps: '1. 所有蔬菜洗净\n2. 西兰花掰小朵\n3. 胡萝卜切片\n4. 木耳泡发撕小\n5. 荷兰豆去筋\n6. 烧水加盐油\n7. 蔬菜依次焯水\n8. 热锅爆炒加盐', tutorial: '下厨房搜「什锦菜」' },
+  { name: '肉沫焖土豆丁', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','葱姜蒜 适量','生抽 2勺','老抽 1勺'], steps: '1. 土豆切小丁\n2. 泡水去淀粉\n3. 热锅冷油爆香葱姜蒜\n4. 加肉沫炒香\n5. 加土豆丁翻炒\n6. 加生抽老抽\n7. 加水焖10分钟\n8. 大火收汁', tutorial: '抖音搜「肉沫土豆丁」' }
+];
+
+const catColors = { '🍱':'#E89494','🛒':'#8AC79E','🚇':'#B8A4D9','🎬':'#F4B860','📚':'#8AC79E','💊':'#E89494','👕':'#F4B860','💰':'#8AC79E','🎁':'#E89494','📦':'#9A92A8' };
+
+const appUrls = {
+  douyin: 'snssdk1233://',
+  xiaohongshu: 'xhsdiscover://',
+  kuaishou: 'kwai://',
+  bilibili: 'bilibili://',
+  boss: 'bosszhipin://',
+  liepin: 'liepinhr://',
+  zhilian: 'zhilianhb://',
+  lagou: 'lagouhr://',
+  zlzp: '51job://',
+  weixin: 'weixin://'
+};
+
+// ==================== 状态管理 ====================
+function getData(key, def) {
+  try {
+    const v = localStorage.getItem('sun_' + key);
+    return v ? JSON.parse(v) : def;
+  } catch (e) { return def; }
+}
+function setData(key, val) {
+  localStorage.setItem('sun_' + key, JSON.stringify(val));
+}
+
+let tasks = getData('tasks_v3', null);
+if (!tasks || tasks.length === 0) tasks = JSON.parse(JSON.stringify(defaultTasks));
+const today = new Date().toDateString();
+const lastTaskDate = getData('taskDate', '');
+if (lastTaskDate !== today) {
+  tasks = JSON.parse(JSON.stringify(defaultTasks));
+  setData('taskDate', today);
+  setData('tasks_v3', tasks);
+}
+
+let water = getData('water', 0);
+let fitSeconds = getData('fitSeconds', 0);
+let fitStreak = getData('fitStreak', 0);
+let fitWeight = getData('fitWeight', '--');
+let timerRunning = false;
+let timerInterval = null;
+
+let moneyRecords = getData('money', []);
+let reminds = getData('reminds', []);
+let bookProgress = getData('bookProgress', {});
+
+let wordTotal = getData('wordTotal', 0);
+let wordStreak = getData('wordStreak', 0);
+let wordToday = getData('wordToday', 0);
+let wordLastDate = getData('wordLastDate', '');
+const todayStr = new Date().toDateString();
+if (wordLastDate !== todayStr) {
+  wordToday = 0;
+  setData('wordLastDate', todayStr);
+  setData('wordToday', 0);
+}
+let currentWordBook = getData('wordBook', 'cet4');
+let currentWordIdx = Math.floor(Math.random() * wordBooks[currentWordBook].length);
+
+let daProgress = getData('daProgress', {});
+
+let currentPage = 'home';
+let currentScriptCat = 'all';
+let currentFitPart = 'all';
+let currentReadTab = 'book';
+let currentStudyTab = 'word';
+
+// ==================== 初始化 ====================
+function updateGreeting() {
+  const h = new Date().getHours();
+  let g = '晚上好';
+  if (h < 6) g = '凌晨好';
+  else if (h < 11) g = '早上好';
+  else if (h < 13) g = '中午好';
+  else if (h < 18) g = '下午好';
+  else g = '晚上好';
+  const d = new Date();
+  const weeks = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const dateStr = `${d.getMonth()+1}月${d.getDate()}日 ${weeks[d.getDay()]}`;
+  document.getElementById('greeting').textContent = g + '，Sun 👋';
+  document.getElementById('greetingDate').textContent = dateStr;
+  document.getElementById('taskDate').textContent = dateStr;
+  document.getElementById('remindDate').textContent = dateStr;
+}
+
+function updateStats() {
+  const done = tasks.filter(t => t.completed).length;
+  const total = tasks.length;
+  document.getElementById('taskNum').textContent = `${done}/${total}`;
+  document.getElementById('waterNum').textContent = `${water}/5`;
+  const fitDay = getData('fitDay', false);
+  document.getElementById('fitNum').textContent = fitDay ? '1/6' : '0/6';
+  const todayExp = moneyRecords.filter(r => r.date === todayStr).reduce((s,r) => s + (r.type === 'expense' ? r.amount : 0), 0);
+  document.getElementById('moneyNum').textContent = `¥${todayExp}`;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('donePercent').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ==================== 任务 ====================
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  if (tasks.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有任务，添加一个吧</div>';
+    return;
+  }
+  list.innerHTML = tasks.map(t => `
+    <div class="task-item ${t.completed ? 'completed' : ''}">
+      <div class="task-check ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+      <div class="task-content">
+        <div class="task-text">${t.text}</div>
+        <div class="task-meta">
+          <span class="task-tag ${t.tag}">${t.tagText}</span>
+          <span>${t.meta}</span>
+        </div>
+      </div>
+      <button class="task-del" onclick="deleteTask(${t.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  t.completed = !t.completed;
+  setData('tasks_v3', tasks);
+  renderTasks();
+  updateStats();
+  showToast(t.completed ? '✓ 已完成' : '已取消');
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(x => x.id !== id);
+  setData('tasks_v3', tasks);
+  renderTasks();
+  updateStats();
+  showToast('已删除');
+}
+
+function addTask() {
+  const input = document.getElementById('newTaskInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
+  tasks.push({
+    id: maxId + 1,
+    text: text,
+    tag: 't5',
+    tagText: '自定义',
+    meta: '📝 今日新增',
+    completed: false
+  });
+  setData('tasks_v3', tasks);
+  input.value = '';
+  renderTasks();
+  updateStats();
+  showToast('✓ 已添加');
+}
+
+function addWater() {
+  if (water >= 5) {
+    showToast('今日喝水已达目标！');
+    return;
+  }
+  water++;
+  setData('water', water);
+  updateStats();
+  showToast(`💧 喝水进度 ${water}/5`);
+}
+
+// ==================== 侧边栏切换 ====================
+function goPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  const target = document.querySelector(`.sb-item[data-page="${page}"]`);
+  if (target) target.classList.add('active');
+  const titles = { home:'🏠 Sun的工作台', tasks:'✓ 每日任务', fitness:'💪 健身打卡', create:'🎬 视频创作', jobs:'💼 求职推荐', study:'🇬🇧 英语学习', read:'📖 阅读中心', data:'📊 数据分析', money:'💰 我的账本', remind:'⏰ 每日提醒', recipe:'🍳 今日菜谱' };
+  document.getElementById('topbarTitle').textContent = titles[page] || 'Sun的工作台';
+  document.getElementById('fab').style.display = page === 'home' ? 'none' : 'flex';
+  window.scrollTo(0, 0);
+  // 页面切换时刷新
+  if (page === 'home') refreshKnowledge();
+  if (page === 'recipe') renderRecipe();
+  if (page === 'data') renderDa();
+  if (page === 'money') renderMoney();
+  if (page === 'remind') renderReminds();
+  if (page === 'study') renderStudy();
+  if (page === 'read') renderRead();
+  if (page === 'jobs') renderJobs();
+}
+
+// ==================== 健身 ====================
+function renderFitVideos() {
+  const filtered = currentFitPart === 'all' ? fitVideos : fitVideos.filter(v => v.part === currentFitPart);
+  document.getElementById('fitVideoList').innerHTML = filtered.map((v,i) => `
+    <div class="video-card" onclick="window.open('${v.url}','_blank')">
+      <div class="video-thumb">${v.emoji}</div>
+      <div class="video-info">
+        <div class="video-title">${v.title}</div>
+        <div class="video-meta">
+          <span class="video-tag">${v.tag}</span>
+          <span>@${v.author} · ${v.views}播放</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('#fitParts .filter-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#fitParts .filter-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentFitPart = t.dataset.part;
+    renderFitVideos();
+  });
+});
+
+// ==================== 计时器 ====================
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerBtn').textContent = '继续';
+    setData('fitSeconds', fitSeconds);
+    if (fitSeconds >= 3600) {
+      setData('fitDay', true);
+      showToast('🎉 健身1小时目标达成！');
+    }
+  } else {
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '暂停';
+    timerInterval = setInterval(() => {
+      fitSeconds++;
+      updateTimerDisplay();
+      if (fitSeconds >= 3600) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timerBtn').textContent = '已达成';
+        setData('fitDay', true);
+        setData('fitStreak', fitStreak + 1);
+        fitStreak = getData('fitStreak', 0);
+        setData('fitSeconds', fitSeconds);
+        showToast('🎉 健身1小时目标达成！');
+        updateStats();
+        document.getElementById('fitStreak').textContent = fitStreak;
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  fitSeconds = 0;
+  setData('fitSeconds', 0);
+  updateTimerDisplay();
+  document.getElementById('timerBtn').textContent = '开始';
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(fitSeconds / 3600);
+  const m = Math.floor((fitSeconds % 3600) / 60);
+  const s = fitSeconds % 60;
+  document.getElementById('timerDisplay').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ==================== 视频脚本（每日噜噜/噜妹爬取+AI口令） ====================
+function renderScripts() {
+  const day = new Date().getDate();
+  const filtered = currentScriptCat === 'all' ? scripts : scripts.filter(s => s.cat === currentScriptCat);
+  // 每日随机排序模拟新鲜爬取
+  const shuffled = [...filtered].sort((a,b) => (a.title.length + day) % filtered.length - (b.title.length + day) % filtered.length);
+  document.getElementById('scriptList').innerHTML = shuffled.map((s,i) => `
+    <div class="script-card">
+      <div class="script-head">
+        <div class="script-type" style="background:${s.color};">${s.type}</div>
+        <span style="font-size:11px;color:var(--text-3);">${s.source}</span>
+      </div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px;">${s.title}</div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;font-size:12px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;margin-bottom:10px;">${s.body}</div>
+      <div style="font-size:12px;color:var(--primary);font-weight:700;margin-bottom:6px;">📋 AI制作口令（可直接复制到AI视频工具）</div>
+      <div class="script-prompt" style="max-height:240px;overflow-y:auto;">${s.prompt}</div>
+      <div style="display:flex;gap:6px;margin-top:10px;">
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyFullScript(${i},'${currentScriptCat}')">📋 复制AI制作口令</button>
+        <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 看原视频</button>
+      </div>
+    </div>
+  `).join('');
+  // 每日更新提示
+  if (document.getElementById('scriptUpdate')) {
+    const today = new Date();
+    document.getElementById('scriptUpdate').textContent = `${today.getMonth()+1}月${today.getDate()}日已更新 · 共${scripts.length}个素材`;
+  }
+}
+
+function copyFullScript(i, cat) {
+  const filtered = cat === 'all' ? scripts : scripts.filter(s => s.cat === cat);
+  const sorted = [...filtered].sort((a,b) => (a.title.length + new Date().getDate()) % filtered.length - (b.title.length + new Date().getDate()) % filtered.length);
+  const s = sorted[i];
+  navigator.clipboard.writeText(s.prompt).then(() => showToast('✓ AI制作口令已复制到剪贴板'));
+}
+
+document.querySelectorAll('#scriptFilter .filter-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#scriptFilter .filter-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentScriptCat = t.dataset.cat;
+    renderScripts();
+  });
+});
+
+// ==================== 学习 ====================
+function renderStudy() {
+  document.getElementById('studyWord').style.display = currentStudyTab === 'word' ? 'block' : 'none';
+  document.getElementById('studyScene').style.display = currentStudyTab === 'scene' ? 'block' : 'none';
+  document.getElementById('studyNce').style.display = currentStudyTab === 'nce' ? 'block' : 'none';
+  document.getElementById('studyMovie').style.display = currentStudyTab === 'movie' ? 'block' : 'none';
+  if (currentStudyTab === 'scene') renderScenes();
+  if (currentStudyTab === 'nce') renderNce();
+  document.getElementById('wordTotal').textContent = wordTotal;
+  document.getElementById('wordStreak').textContent = wordStreak;
+  document.getElementById('wordToday').textContent = wordToday;
+  document.getElementById('wordDay').textContent = wordStreak + 1;
+  renderWord();
+}
+
+document.querySelectorAll('#studyFilter .filter-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#studyFilter .filter-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentStudyTab = t.dataset.study;
+    renderStudy();
+  });
+});
+
+function renderWord() {
+  const word = wordBooks[currentWordBook][currentWordIdx];
+  document.getElementById('wordEn').textContent = word;
+  document.getElementById('wordPhonetic').textContent = getPhonetic(word);
+  document.getElementById('wordCn').textContent = getCn(word);
+}
+
+function getPhonetic(w) {
+  const map = {
+    abandon:'/əˈbændən/', ability:'/əˈbɪləti/', abnormal:'/æbˈnɔːrml/', abolish:'/əˈbɒlɪʃ/', abound:'/əˈbaʊnd/',
+    abrupt:'/əˈbrʌpt/', absence:'/ˈæbsəns/', absolute:'/ˈæbsəluːt/', absorb:'/əbˈsɔːrb/', abstract:'/ˈæbstrækt/',
+    absurd:'/əbˈsɜːrd/', abuse:'/əˈbjuːs/', academic:'/ˌækəˈdemɪk/', accelerate:'/əkˈseləreɪt/', accent:'/ˈæksent/',
+    accept:'/əkˈsept/', access:'/ˈækses/', accident:'/ˈæksɪdənt/', acclaim:'/əˈkleɪm/', accommodate:'/əˈkɒmədeɪt/',
+    aesthetic:'/iːsˈθetɪk/', altruistic:'/ˌæltruˈɪstɪk/', ambivalent:'/æmˈbɪvələnt/', anachronistic:'/əˌnækrəˈnɪstɪk/',
+    antagonistic:'/ænˌtæɡəˈnɪstɪk/', arbitrary:'/ˈɑːrbɪtreri/', archaic:'/ɑːrˈkeɪɪk/', articulate:'/ɑːrˈtɪkjuleɪt/',
+    audacious:'/ɔːˈdeɪʃəs/', austere:'/ɒˈstɪər/', benevolent:'/bəˈnevələnt/', boisterous:'/ˈbɔɪstərəs/',
+    candid:'/ˈkændɪd/', capricious:'/kəˈprɪʃəs/', clandestine:'/klænˈdestɪn/',
+    candidate:'/ˈkændɪdeɪt/', colleague:'/ˈkɒliːɡ/', compensation:'/ˌkɒmpenˈseɪʃən/', deadline:'/ˈdedlaɪn/',
+    efficient:'/ɪˈfɪʃənt/', executive:'/ɪɡˈzekjʊtɪv/', feedback:'/ˈfiːdbæk/', interview:'/ˈɪntərvjuː/',
+    negotiation:'/nɪˌɡəʊʃiˈeɪʃən/', opportunity:'/ˌɒpərˈtuːnəti/', promotion:'/prəˈməʊʃən/',
+    qualification:'/ˌkwɒlɪfɪˈkeɪʃən/', responsibility:'/rɪˌspɒnsəˈbɪləti/', salary:'/ˈsæləri/', strategy:'/ˈstrætədʒi/'
+  };
+  return map[w] || '/wɜːrd/';
+}
+
+function getCn(w) {
+  const map = {
+    abandon:'v. 放弃；抛弃', ability:'n. 能力；才能', abnormal:'adj. 反常的；异常的', abolish:'v. 废除；取消', abound:'v. 大量存在；充满',
+    abrupt:'adj. 突然的；唐突的', absence:'n. 缺席；不在', absolute:'adj. 绝对的；完全的', absorb:'v. 吸收；理解', abstract:'adj. 抽象的 n. 摘要',
+    absurd:'adj. 荒谬的；可笑的', abuse:'v./n. 滥用；虐待', academic:'adj. 学术的；学院的', accelerate:'v. 加速；促进', accent:'n. 口音；重音',
+    accept:'v. 接受；承认', access:'n. 进入；通道 v. 访问', accident:'n. 事故；意外', acclaim:'v./n. 称赞；喝彩', accommodate:'v. 容纳；提供住宿；适应',
+    aesthetic:'adj. 审美的；美学的', altruistic:'adj. 利他的；无私的', ambivalent:'adj. 矛盾的；纠结的', anachronistic:'adj. 不合时代的；过时的',
+    antagonistic:'adj. 敌对的；对抗的', arbitrary:'adj. 任意的；武断的', archaic:'adj. 古老的；过时的', articulate:'adj. 善于表达的 v. 清晰表达',
+    audacious:'adj. 大胆的；无畏的', austere:'adj. 简朴的；严肃的', benevolent:'adj. 仁慈的；慈善的', boisterous:'adj. 喧闹的；狂暴的',
+    candid:'adj. 坦率的；公正的', capricious:'adj. 反复无常的；任性的', clandestine:'adj. 秘密的；暗中的',
+    candidate:'n. 候选人；求职者', colleague:'n. 同事；同僚', compensation:'n. 补偿；薪酬', deadline:'n. 截止日期', efficient:'adj. 高效的',
+    executive:'n. 高管 adj. 行政的', feedback:'n. 反馈；意见', interview:'n./v. 面试；采访', negotiation:'n. 谈判；协商', opportunity:'n. 机会；机遇',
+    promotion:'n. 晋升；推广', qualification:'n. 资历；资格', responsibility:'n. 责任；职责', salary:'n. 薪水；工资', strategy:'n. 策略；战略'
+  };
+  return map[w] || 'n. 常用词';
+}
+
+function speakWord() {
+  const w = document.getElementById('wordEn').textContent;
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(w);
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+}
+
+function markWordKnown() {
+  wordTotal++;
+  wordToday++;
+  if (wordToday === 1) wordStreak++;
+  setData('wordTotal', wordTotal);
+  setData('wordToday', wordToday);
+  setData('wordStreak', wordStreak);
+  showToast('✓ 已记录');
+  nextWord();
+}
+
+function nextWord() {
+  currentWordIdx = (currentWordIdx + 1) % wordBooks[currentWordBook].length;
+  renderWord();
+  document.getElementById('wordTotal').textContent = wordTotal;
+  document.getElementById('wordStreak').textContent = wordStreak;
+  document.getElementById('wordToday').textContent = wordToday;
+  document.getElementById('wordDay').textContent = wordStreak + 1;
+}
+
+function changeWordBook(book) {
+  currentWordBook = book;
+  currentWordIdx = Math.floor(Math.random() * wordBooks[book].length);
+  setData('wordBook', book);
+  renderWord();
+  showToast('已切换词库');
+}
+
+function renderScenes() {
+  document.getElementById('sceneList').innerHTML = scenes.map((s,i) => `
+    <div class="scene-card">
+      <div class="scene-title">${s.emoji} ${s.title}</div>
+      ${s.items.map((it,j) => `
+        <div class="scene-sent" onclick="speakEn('${it.en.replace(/'/g, "\\'")}')">
+          <span class="scene-sent-icon">🔊</span>
+          <div class="scene-sent-en">${it.en}</div>
+          <div class="scene-sent-cn">${it.cn}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function speakEn(text) {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+}
+
+function renderNce() {
+  document.getElementById('nceList').innerHTML = nceArticles.map((a,i) => `
+    <div class="video-card" onclick="speakEn('${a.sentence.replace(/'/g, "\\'")}')">
+      <div class="video-thumb">📖</div>
+      <div class="video-info">
+        <div class="video-title">${a.title}</div>
+        <div class="video-meta">单词 ${a.word} · 点击朗读</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== 阅读 ====================
+function renderRead() {
+  document.getElementById('readBook').style.display = currentReadTab === 'book' ? 'block' : 'none';
+  document.getElementById('readPodcast').style.display = currentReadTab === 'podcast' ? 'block' : 'none';
+  document.getElementById('readQuote').style.display = currentReadTab === 'quote' ? 'block' : 'none';
+  if (currentReadTab === 'book') renderBooks();
+  if (currentReadTab === 'podcast') renderPodcasts();
+  if (currentReadTab === 'quote') renderQuotes();
+}
+
+document.querySelectorAll('#readFilter .filter-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#readFilter .filter-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentReadTab = t.dataset.read;
+    renderRead();
+  });
+});
+
+function renderBooks() {
+  document.getElementById('bookList').innerHTML = books.map((b,i) => `
+    <div class="book-card" onclick="openBookReader(${i})" style="cursor:pointer;">
+      <div class="book-cover">${b.cover}</div>
+      <div class="book-info">
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div class="book-desc">${b.desc}</div>
+        <div class="book-progress-text">阅读进度 ${bookProgress[i] || b.progress}%</div>
+        <div class="book-progress-bar"><div class="book-progress-fill" style="width:${bookProgress[i] || b.progress}%;"></div></div>
+        <div style="display:flex;gap:6px;margin-top:8px;" onclick="event.stopPropagation();">
+          <button class="btn btn-outline btn-sm" onclick="updateBookProgress(${i}, -10)">-10%</button>
+          <button class="btn btn-primary btn-sm" onclick="updateBookProgress(${i}, 10)">+10%</button>
+          <button class="btn btn-primary btn-sm" style="margin-left:auto;background:var(--primary);color:#fff;" onclick="openBookReader(${i})">阅读</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateBookProgress(idx, delta) {
+  const cur = bookProgress[idx] || books[idx].progress;
+  bookProgress[idx] = Math.max(0, Math.min(100, cur + delta));
+  setData('bookProgress', bookProgress);
+  renderBooks();
+  showToast(`📖 进度已更新`);
+}
+
+function renderPodcasts() {
+  document.getElementById('podcastList').innerHTML = podcasts.map(p => `
+    <div class="video-card" onclick="window.open('${p.url}', '_blank')">
+      <div class="video-thumb">${p.icon}</div>
+      <div class="video-info">
+        <div class="video-title">${p.title}</div>
+        <div class="video-meta">${p.author}</div>
+        <div style="font-size:11px;color:var(--text-2);margin-top:4px;">${p.desc}</div>
+        <div style="font-size:10px;color:var(--primary);margin-top:6px;font-weight:600;">▶ 点击播放 · 小宇宙FM</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderQuotes() {
+  document.getElementById('quoteList').innerHTML = quotes.map(q => `
+    <div class="quote-card">${q.text}<div class="quote-author">—— ${q.author}</div></div>
+  `).join('');
+}
+
+// ==================== 数据分析 ====================
+function renderDa() {
+  const total = daChapters.length;
+  const done = daChapters.filter(c => (bookProgress['da_'+c.num] || c.progress) >= 100).length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('daProgress').style.width = pct + '%';
+  document.getElementById('daProgressText').textContent = pct + '%';
+  document.getElementById('daList').innerHTML = daChapters.map(c => {
+    const p = bookProgress['da_'+c.num] || c.progress;
+    return `
+      <div class="chapter-item ${p >= 100 ? 'completed' : ''}" onclick="toggleChapter('${c.num}')">
+        <div class="chapter-num">第${c.num}章</div>
+        <div class="chapter-title">${c.title}</div>
+        <div style="font-size:11px;color:var(--text-2);">${c.desc} · ${c.duration}</div>
+        <div class="chapter-progress"><div class="chapter-progress-fill" style="width:${p}%;"></div></div>
+        <div class="chapter-toggle">👁 点击展开详情</div>
+        <div class="chapter-detail" id="chapterDetail_${c.num}">${c.content}</div>
+        <div style="display:flex;gap:6px;margin-top:8px;" onclick="event.stopPropagation();">
+          <button class="btn btn-outline btn-sm" onclick="updateDaProgress('${c.num}', -10)">-10%</button>
+          <button class="btn btn-primary btn-sm" onclick="updateDaProgress('${c.num}', 10)">+10%</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleChapter(num) {
+  const el = document.getElementById('chapterDetail_' + num);
+  const item = el.closest('.chapter-item');
+  const toggle = item.querySelector('.chapter-toggle');
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    toggle.textContent = '👁 点击展开详情';
+  } else {
+    el.classList.add('open');
+    toggle.textContent = '🔼 收起详情';
+  }
+}
+
+function updateDaProgress(num, delta) {
+  const cur = bookProgress['da_'+num] || daChapters.find(c => c.num === num).progress;
+  bookProgress['da_'+num] = Math.max(0, Math.min(100, cur + delta));
+  setData('bookProgress', bookProgress);
+  renderDa();
+  showToast('✓ 进度已更新');
+}
+
+function addDaCheck(tool) {
+  showToast(`✓ ${tool} 已加入学习计划`);
+}
+
+// ==================== 记账 ====================
+function renderMoney() {
+  const records = moneyRecords;
+  const todayExp = records.filter(r => r.date === todayStr && r.type === 'expense').reduce((s,r) => s + r.amount, 0);
+  const monthExp = records.filter(r => r.type === 'expense').reduce((s,r) => s + r.amount, 0);
+  document.getElementById('monthTotal').textContent = '¥' + monthExp.toFixed(2);
+  document.getElementById('todayTotal').textContent = '¥' + todayExp.toFixed(2);
+  document.getElementById('monthTotal2').textContent = '¥' + monthExp.toFixed(2);
+  document.getElementById('recordCount').textContent = records.length;
+
+  // 分类汇总
+  const catSum = {};
+  records.filter(r => r.type === 'expense').forEach(r => {
+    catSum[r.cat] = (catSum[r.cat] || 0) + r.amount;
+  });
+  const total = Object.values(catSum).reduce((s,v) => s + v, 0);
+  const legend = document.getElementById('moneyLegend');
+  const chart = document.getElementById('moneyChart');
+  if (total > 0) {
+    const entries = Object.entries(catSum).sort((a,b) => b[1] - a[1]);
+    // 饼图SVG
+    let startAngle = 0;
+    const svgParts = [];
+    entries.forEach(([cat, amount]) => {
+      const pct = amount / total;
+      const angle = pct * 360;
+      const endAngle = startAngle + angle;
+      const path = arcPath(70, 70, 60, startAngle, endAngle);
+      svgParts.push(`<path d="${path}" fill="${catColors[cat] || '#9A92A8'}" />`);
+      startAngle = endAngle;
+    });
+    chart.innerHTML = `<svg viewBox="0 0 140 140" style="width:100%;height:100%;"><circle cx="70" cy="70" r="60" fill="#F0EAF8" />${svgParts.join('')}<circle cx="70" cy="70" r="35" fill="white" /><text x="70" y="68" text-anchor="middle" font-size="11" fill="#9A92A8">本月</text><text x="70" y="84" text-anchor="middle" font-size="14" font-weight="700" fill="#3D3550">¥${total.toFixed(0)}</text></svg>`;
+    legend.innerHTML = entries.map(([cat, amount]) => `
+      <div class="pie-leg-item">
+        <div class="pie-leg-dot" style="background:${catColors[cat] || '#9A92A8'};"></div>
+        <span style="flex:1;">${cat}</span>
+        <span style="font-weight:700;">¥${amount.toFixed(2)} (${Math.round(amount/total*100)}%)</span>
+      </div>
+    `).join('');
+  } else {
+    chart.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:40px;">暂无数据</div>';
+    legend.innerHTML = '';
+  }
+
+  // 列表
+  const list = document.getElementById('moneyList');
+  if (records.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有记录</div>';
+  } else {
+    list.innerHTML = records.slice(0, 20).map((r,i) => `
+      <div class="list-item">
+        <div style="font-size:24px;width:36px;text-align:center;">${r.cat}</div>
+        <div class="list-item-info">
+          <div class="list-item-title">${r.note || r.cat}</div>
+          <div class="list-item-sub">${r.date === todayStr ? '今天' : r.date.slice(5)} · ${r.cat}</div>
+        </div>
+        <div class="list-item-amount ${r.type === 'income' ? 'income' : ''}">${r.type === 'income' ? '+' : '-'}¥${r.amount.toFixed(2)}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function arcPath(cx, cy, r, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const largeArc = endAngle - startAngle <= 180 ? '0' : '1';
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+}
+function polarToCartesian(cx, cy, r, angle) {
+  const rad = (angle - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function addMoney() {
+  const amount = parseFloat(document.getElementById('moneyAmount').value);
+  const type = document.getElementById('moneyType').value;
+  const cat = document.getElementById('moneyCat').value;
+  const note = document.getElementById('moneyNote').value.trim();
+  if (!amount || amount <= 0) { showToast('请输入金额'); return; }
+  moneyRecords.unshift({
+    id: Date.now(),
+    amount, type, cat, note,
+    date: todayStr
+  });
+  setData('money', moneyRecords);
+  document.getElementById('moneyAmount').value = '';
+  document.getElementById('moneyNote').value = '';
+  renderMoney();
+  updateStats();
+  showToast('✓ 已记录');
+}
+
+// ==================== 提醒 ====================
+function renderReminds() {
+  const groups = { morning: [], afternoon: [], evening: [] };
+  reminds.forEach(r => {
+    if (groups[r.period]) groups[r.period].push(r);
+  });
+  const titles = { morning: '🌅 上午', afternoon: '☀️ 下午', evening: '🌙 晚上' };
+  const html = ['morning','afternoon','evening'].map(p => {
+    if (groups[p].length === 0) return '';
+    return `
+      <div class="time-period">${titles[p]}</div>
+      ${groups[p].map(r => `
+        <div class="reminder-item">
+          <div class="reminder-check ${r.done ? 'checked' : ''}" onclick="toggleRemind(${r.id})"></div>
+          <div class="reminder-time">${r.time}</div>
+          <div class="reminder-content">
+            <div class="reminder-title">${r.content}</div>
+            <div class="reminder-sub">${r.sub || ''}</div>
+          </div>
+          <button class="task-del" onclick="deleteRemind(${r.id})">✕</button>
+        </div>
+      `).join('')}
+    `;
+  }).join('');
+  document.getElementById('remindList').innerHTML = html;
+  const total = reminds.length;
+  const done = reminds.filter(r => r.done).length;
+  document.getElementById('remindCount').textContent = total + ' 项待办';
+  document.getElementById('remindDone').textContent = done;
+}
+
+function addRemind() {
+  const time = document.getElementById('remindTime').value;
+  const period = document.getElementById('remindPeriod').value;
+  const content = document.getElementById('remindContent').value.trim();
+  const sub = document.getElementById('remindSub').value.trim();
+  if (!time || !content) { showToast('请填写时间和内容'); return; }
+  reminds.push({
+    id: Date.now(),
+    time, period, content, sub,
+    done: false
+  });
+  setData('reminds', reminds);
+  document.getElementById('remindContent').value = '';
+  document.getElementById('remindSub').value = '';
+  renderReminds();
+  showToast('✓ 已添加提醒');
+}
+
+function toggleRemind(id) {
+  const r = reminds.find(x => x.id === id);
+  r.done = !r.done;
+  setData('reminds', reminds);
+  renderReminds();
+  showToast(r.done ? '✓ 已完成' : '已取消');
+}
+
+function deleteRemind(id) {
+  reminds = reminds.filter(x => x.id !== id);
+  setData('reminds', reminds);
+  renderReminds();
+  showToast('已删除');
+}
+
+// ==================== 菜谱 ====================
+function renderRecipe() {
+  const dayIdx = new Date().getDate() % recipes.length;
+  const today = recipes[dayIdx];
+  const tomorrow = recipes[(dayIdx + 1) % recipes.length];
+  document.getElementById('recipeCard').innerHTML = recipeCardHTML(today);
+  document.getElementById('recipeTomorrow').innerHTML = recipeCardHTML(tomorrow, true);
+  document.getElementById('recipeList').innerHTML = recipes.map(r => recipeCardHTML(r)).join('');
+}
+
+function recipeCardHTML(r, compact) {
+  return `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="font-size:32px;">${r.emoji}</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;">${r.name}</div>
+        <div style="font-size:11px;color:var(--text-3);">⏱️ ${r.time} · ${r.badge}</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:8px;"><strong>食材：</strong>${r.ingredients.join('、')}</div>
+    <div style="font-size:12px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;background:var(--bg);padding:10px;border-radius:8px;margin-bottom:10px;">${r.steps}</div>
+    <div style="display:flex;gap:6px;">
+      <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 ${r.tutorial}</button>
+      <button class="btn btn-primary btn-sm" onclick="goApp('douyin')">▶ 看视频</button>
+    </div>
+  `;
+}
+
+// ==================== 知识速览（每日更新） ====================
+function refreshKnowledge() {
+  const tips = [
+    { icon: '📈', title: '抖音流量池机制：为什么你的视频卡在500播放', tag: '底层逻辑' },
+    { icon: '🎯', title: '抖音四大爆款内容公式（92.7%爆款验证）', tag: '选题技巧' },
+    { icon: '📕', title: '小红书爆款笔记标题模板：直接套用', tag: '实操干货' },
+    { icon: '💼', title: '数据分析师30天转型计划：从入门到面试', tag: '求职方向' },
+    { icon: '🎬', title: 'AI短剧制作全流程：剧本→角色→剪辑→变现', tag: 'AI赛道' },
+    { icon: '💰', title: '内容运营薪资指南：成都数据分析/运营岗位薪酬', tag: '职场' },
+    { icon: '📊', title: 'SQL面试必考的10道题（附答案）', tag: '数据' },
+    { icon: '✍️', title: '标书撰写避坑指南：5个常见错误', tag: '职场技能' }
+  ];
+  const day = new Date().getDate();
+  const shuffled = [...tips].sort((a,b) => (a.title.length + day) % 7 - (b.title.length + day) % 7);
+  const today = shuffled.slice(0, 4);
+  document.getElementById('knowledgeList').innerHTML = today.map(t => `
+    <div class="knowledge-card">
+      <div class="knowledge-icon">${t.icon}</div>
+      <div class="knowledge-content">
+        <div class="knowledge-title">${t.title}</div>
+        <span class="knowledge-tag">${t.tag}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== 求职 ====================
+function renderJobs() {
+  const jobs = allJobs;
+  const day = new Date().getDate();
+  const shuffled = [...jobs].sort((a,b) => (a.title.length + day) % jobs.length - (b.title.length + day) % jobs.length);
+  document.getElementById('jobList').innerHTML = shuffled.slice(0, 6).map(j => `
+    <div class="job-card-item" onclick="openJobApp('${j.source}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div style="font-size:14px;font-weight:700;color:var(--text);">${j.title}</div>
+        <div style="font-size:14px;font-weight:700;color:#E89494;background:#FFF0F0;padding:2px 10px;border-radius:12px;">${j.salary}</div>
+      </div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:6px;">🏢 ${j.company}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        ${j.tags.map(t => `<span style="padding:2px 8px;background:var(--primary-soft);color:var(--primary);border-radius:8px;font-size:10px;">${t}</span>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--text-3);">📌 来源：${j.source}</span>
+        <span style="font-size:11px;color:var(--primary);font-weight:700;padding:4px 12px;background:var(--primary-soft);border-radius:12px;cursor:pointer;" onclick="event.stopPropagation();openJobApp('${j.source}')">📱 跳转投递</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openJobApp(source) {
+  const apps = { 'BOSS直聘':'boss', '猎聘':'liepin', '智联':'zhilian', '拉勾':'lagou','前程无忧':'zlzp' };
+  goApp(apps[source] || 'boss');
+  showToast('正在跳转' + source + '...');
+}
+
+// 【核心】视频创作 - 每日噜噜/噜妹分析 + AI制作口令
+// ==================== 应用跳转 ====================
+function goApp(name) {
+  const url = appUrls[name];
+  let launched = false;
+  if (url) {
+    try {
+      window.location.href = url;
+      launched = true;
+    } catch(e) {}
+    setTimeout(() => {
+      if (launched) showToast('正在跳转...若未打开请手动搜索');
+    }, 1500);
+  }
+  const fallback = {
+    douyin: 'https://www.douyin.com',
+    xiaohongshu: 'https://www.xiaohongshu.com/explore',
+    bilibili: 'https://search.bilibili.com/all?keyword=数据分析',
+    kuaishou: 'https://www.kuaishou.com',
+    boss: 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
+    liepin: 'https://www.liepin.com/zhaopin/?key=数据分析',
+    zhilian: 'https://sou.zhaopin.com/?kw=数据分析',
+    lagou: 'https://www.lagou.com/jobs/list_数据分析',
+    zlzp: 'https://www.51job.com',
+    weixin: 'weixin://'
+  };
+  if (!launched && fallback[name]) {
+    window.open(fallback[name], '_blank');
+  }
+}
+
+// ==================== FAB ====================
+function fabAction() {
+  if (currentPage === 'tasks') {
+    document.getElementById('newTaskInput').focus();
+  } else if (currentPage === 'money') {
+    document.getElementById('moneyAmount').focus();
+  } else if (currentPage === 'remind') {
+    document.getElementById('remindContent').focus();
+  } else {
+    showToast('快速添加：回到任务页添加任务');
+  }
+}
+
+// ==================== Toast ====================
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ==================== 侧边栏绑定 ====================
+document.querySelectorAll('.sb-item').forEach(b => {
+  b.addEventListener('click', () => goPage(b.dataset.page));
+});
+
+// ==================== 输入回车 ====================
+document.getElementById('newTaskInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') addTask();
+});
+
+// ==================== 初始化 ====================
+updateGreeting();
+updateStats();
+renderTasks();
+renderFitVideos();
+renderScripts();
+renderRecipe();
+renderDa();
+renderMoney();
+renderReminds();
+renderStudy();
+renderRead();
+renderJobs();
+updateTimerDisplay();
+document.getElementById('fitStreak').textContent = fitStreak;
+document.getElementById('fitWeight').textContent = fitWeight + 'kg';
+refreshKnowledge();
+
+/* ===== 书籍阅读器 ===== */
+function openBookReader(idx) {
+  const b = books[idx];
+  const content = books[idx].content;
+  const progress = bookProgress[idx] || b.progress;
+  document.getElementById('readerContent').innerHTML = `
+    <div class="reader-cover">${b.cover}</div>
+    <div class="reader-text" style="text-align:center;margin-bottom:4px;"><strong>${b.title}</strong></div>
+    <div class="reader-text" style="text-align:center;color:var(--text-3);font-size:12px;margin-bottom:16px;">${b.author}</div>
+
+    <div class="reader-section-title">📌 书籍简介</div>
+    <div class="reader-text">${content.summary}</div>
+
+    <div class="reader-section-title">💡 核心观点</div>
+    ${content.points.map(p => `<div class="reader-point">${p}</div>`).join('')}
+
+    <div class="reader-section-title">✨ 书中金句</div>
+    ${content.quotes.map(q => `<div class="reader-quote">${q}</div>`).join('')}
+
+    <div class="reader-section-title">📝 阅读笔记</div>
+    <div class="reader-text">${content.notes}</div>
+  `;
+  document.getElementById('readerProgress').value = progress;
+  document.getElementById('readerProgressVal').textContent = progress + '%';
+  document.getElementById('readerOverlay').dataset.bookIdx = idx;
+  document.getElementById('readerOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeBookReader() {
+  document.getElementById('readerOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  stopBookReading();
+}
+function onReaderProgressChange(val) {
+  document.getElementById('readerProgressVal').textContent = val + '%';
+  const idx = parseInt(document.getElementById('readerOverlay').dataset.bookIdx);
+  bookProgress[idx] = parseInt(val);
+  setData('bookProgress', bookProgress);
+  renderBooks();
+}
+let bookReaderUtterance = null;
+function speakBookContent() {
+  const idx = parseInt(document.getElementById('readerOverlay').dataset.bookIdx);
+  const b = books[idx];
+  const c = b.content;
+  const text = `${b.title}。书籍简介：${c.summary}。核心观点：${c.points.join('；')}。书中金句：${c.quotes.join('；')}。阅读笔记：${c.notes}`;
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    bookReaderUtterance = new SpeechSynthesisUtterance(text);
+    bookReaderUtterance.lang = 'zh-CN';
+    bookReaderUtterance.rate = 0.9;
+    bookReaderUtterance.pitch = 1.05;
+    bookReaderUtterance.onstart = () => {
+      document.getElementById('readerSpeakBtn').innerHTML = '⏹ 停止';
+    };
+    bookReaderUtterance.onend = () => {
+      document.getElementById('readerSpeakBtn').innerHTML = '🔊 朗读';
+      bookReaderUtterance = null;
+    };
+    bookReaderUtterance.onerror = () => {
+      document.getElementById('readerSpeakBtn').innerHTML = '🔊 朗读';
+      bookReaderUtterance = null;
+    };
+    window.speechSynthesis.speak(bookReaderUtterance);
+  }
+}
+function stopBookReading() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  bookReaderUtterance = null;
+  const btn = document.getElementById('readerSpeakBtn');
+  if (btn) btn.innerHTML = '🔊 朗读';
+}
+</script>
+
+<!-- 书籍阅读器弹窗 -->
+<div class="reader-overlay" id="readerOverlay" onclick="if(event.target===this)closeBookReader()">
+  <div class="reader-modal">
+    <div class="reader-header">
+      <button class="reader-close" onclick="closeBookReader()">✕</button>
+      <div class="reader-title">📖 阅读中</div>
+      <button class="reader-close" id="readerSpeakBtn" onclick="if(bookReaderUtterance){stopBookReading()}else{speakBookContent()}" style="background:var(--primary);color:#fff;font-size:14px;width:auto;padding:0 12px;border-radius:16px;">🔊 朗读</button>
+    </div>
+    <div class="reader-body" id="readerContent"></div>
+    <div class="reader-footer">
+      <input type="range" class="reader-progress-slider" id="readerProgress" min="0" max="100" oninput="onReaderProgressChange(this.value)">
+      <div class="reader-progress-val" id="readerProgressVal">0%</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
