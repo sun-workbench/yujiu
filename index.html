@@ -983,7 +983,7 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     </div>
     <div class="form-row">
       <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/AI短剧制作教程','_blank')">📱 看抖音教程</button>
-      <button class="btn btn-outline btn-sm" onclick="window.open('https://search.bilibili.com/all?keyword=AI%E7%9F%AD%E5%89%A7%E5%88%B6%E4%BD%9C','_blank')">📺 看B站教程</button>
+      <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/AI漫剧制作全流程','_blank')">🤖 更多教程</button>
     </div>
   </div>
 
@@ -1112,30 +1112,11 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 
   <!-- 影视精听 -->
   <div id="studyMovie" style="display:none;">
-    <div class="card">
-      <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;">🎬 经典美剧片段练习，沉浸式学口语</div>
+    <div class="card" style="background:linear-gradient(135deg,#E89494,#F4A0A0);color:#fff;text-align:center;margin-bottom:12px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">🎬 影视精听</div>
+      <div style="font-size:12px;opacity:0.85;">经典台词 · 中英对照 · 跟读练习</div>
     </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">🎬</div>
-      <div class="video-info">
-        <div class="video-title">《老友记》1-10季精听资源</div>
-        <div class="video-meta">英语学习必备 · B站</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">📺</div>
-      <div class="video-info">
-        <div class="video-title">《破产姐妹》Max毒舌金句</div>
-        <div class="video-meta">地道美式口语 · B站</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">🎥</div>
-      <div class="video-info">
-        <div class="video-title">TED演讲精选100集</div>
-        <div class="video-meta">演讲技巧 · B站</div>
-      </div>
-    </div>
+    <div id="movieList"></div>
   </div>
 
 </div>
@@ -1340,18 +1321,18 @@ const allJobs = [
 ];
 
 const fitVideos = [
-  { part: 'leg', title: '20分钟瘦腿操', author: '周六野', views: '445万', tag: '腿部塑形', emoji: '🦵', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E7%98%A6%E8%85%BF' },
-  { part: 'leg', title: '大腿内侧燃脂训练', author: '帕梅拉', views: '298万', tag: '瘦大腿', emoji: '🦵', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E7%98%A6%E5%A4%A7%E8%85%BF' },
-  { part: 'leg', title: '小腿塑形，消除肌肉腿', author: '美丽芭蕾', views: '189万', tag: '瘦小腿', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E7%BE%8E%E4%B8%BD%E8%8B%9F%E8%90%8A%20%E5%B0%8F%E8%85%BF' },
-  { part: 'hip', title: '10分钟蜜桃臀训练', author: '帕梅拉', views: '362万', tag: '提臀', emoji: '🍑', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E6%8F%90%E8%87%80' },
-  { part: 'hip', title: '居家翘臀养成', author: '周六野', views: '198万', tag: '翘臀', emoji: '🍑', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E7%BF%98%E8%87%80' },
-  { part: 'back', title: '10分钟背部塑形', author: '帕梅拉', views: '276万', tag: '美背', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E8%83%8C%E9%83%A8' },
-  { part: 'back', title: '改善斜方肌·颈背拉伸', author: '周六野', views: '425万', tag: '斜方肌', emoji: '💆', url: 'https://search.bilibili.com/all?keyword=%E6%96%9C%E6%96%B9%E8%82%8C%20%E7%96%B2%E6%8B%89' },
-  { part: 'arm', title: '10分钟手臂紧致', author: '帕梅拉', views: '341万', tag: '拜拜肉', emoji: '💪', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E6%89%8B%E8%87%82' },
-  { part: 'arm', title: '天鹅臂·去除拜拜肉', author: '美丽芭蕾', views: '512万', tag: '手臂', emoji: '🦢', url: 'https://search.bilibili.com/all?keyword=%E5%A4%A9%E9%B9%85%E8%87%82' },
-  { part: 'abs', title: '10分钟马甲线训练', author: '帕梅拉', views: '478万', tag: '马甲线', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%B8%95%E6%A2%85%E6%8B%89%20%E9%A9%AC%E7%94%B2%E7%BA%BF' },
-  { part: 'stretch', title: '6分钟全身拉伸', author: '周六野', views: '289万', tag: '拉伸', emoji: '🧘', url: 'https://search.bilibili.com/all?keyword=%E5%91%A8%E5%85%AD%E9%87%8E%20%E6%8B%89%E4%BC%B8' },
-  { part: 'stretch', title: '睡前瑜伽·深度放松', author: '海洋瑜伽', views: '167万', tag: '睡前', emoji: '🌙', url: 'https://search.bilibili.com/all?keyword=%E4%BC%91%E5%89%8D%E7%91%9C%E4%BC%BD' }
+  { part: 'leg', title: '20分钟瘦腿操', author: '周六野', views: '445万', tag: '腿部塑形', emoji: '🦵', url: 'https://www.douyin.com/search/周六野瘦腿' },
+  { part: 'leg', title: '大腿内侧燃脂训练', author: '帕梅拉', views: '298万', tag: '瘦大腿', emoji: '🦵', url: 'https://www.douyin.com/search/帕梅拉瘦大腿' },
+  { part: 'leg', title: '小腿塑形，消除肌肉腿', author: '美丽芭蕾', views: '189万', tag: '瘦小腿', emoji: '🧘', url: 'https://www.douyin.com/search/瘦小腿训练' },
+  { part: 'hip', title: '10分钟蜜桃臀训练', author: '帕梅拉', views: '362万', tag: '提臀', emoji: '🍑', url: 'https://www.douyin.com/search/帕梅拉提臀' },
+  { part: 'hip', title: '居家翘臀养成', author: '周六野', views: '198万', tag: '翘臀', emoji: '🍑', url: 'https://www.douyin.com/search/周六野翘臀' },
+  { part: 'back', title: '10分钟背部塑形', author: '帕梅拉', views: '276万', tag: '美背', emoji: '🧘', url: 'https://www.douyin.com/search/帕梅拉背部训练' },
+  { part: 'back', title: '改善斜方肌·颈背拉伸', author: '周六野', views: '425万', tag: '斜方肌', emoji: '💆', url: 'https://www.douyin.com/search/斜方肌拉伸' },
+  { part: 'arm', title: '10分钟手臂紧致', author: '帕梅拉', views: '341万', tag: '拜拜肉', emoji: '💪', url: 'https://www.douyin.com/search/帕梅拉手臂训练' },
+  { part: 'arm', title: '天鹅臂·去除拜拜肉', author: '美丽芭蕾', views: '512万', tag: '手臂', emoji: '🦢', url: 'https://www.douyin.com/search/天鹅臂训练' },
+  { part: 'abs', title: '10分钟马甲线训练', author: '帕梅拉', views: '478万', tag: '马甲线', emoji: '🧘', url: 'https://www.douyin.com/search/帕梅拉马甲线' },
+  { part: 'stretch', title: '6分钟全身拉伸', author: '周六野', views: '289万', tag: '拉伸', emoji: '🧘', url: 'https://www.douyin.com/search/周六野拉伸' },
+  { part: 'stretch', title: '睡前瑜伽·深度放松', author: '海洋瑜伽', views: '167万', tag: '睡前', emoji: '🌙', url: 'https://www.douyin.com/search/睡前瑜伽放松' }
 ];
 
 const scripts = [
@@ -1561,7 +1542,79 @@ const scripts = [
 【制作要求】
 1. 人物动作：每次输的时候表情递进要明显——自信→惊讶→怀疑人生→崩溃
 2. 光影：餐厅暖光，对决时加些许战斗番特效光晕开玩笑
-3. 音效：出拳音效+胜负判定音+乌鸦叫是笑点关键` }
+3. 音效：出拳音效+胜负判定音+乌鸦叫是笑点关键` },
+  {
+    cat: 'heal', type: '治愈萌系3D动态漫', color: '#B8A4D9',
+    title: '📱 噜噜：帮噜妹扎头发',
+    source: '噜噜 · 18秒 · 15.6万赞',
+    body: '🔍 原视频分析：噜妹坐在镜子前梳头，噜噜笨手笨脚想帮忙扎头发。\n📊 爆款原因：暖男笨拙+萌系互动，女性用户超爱这个片段。\n🎯 可复刻点：日常温馨场景+可爱失败感=高点赞率。',
+    prompt: `【视频类型】治愈萌系3D动态漫\n【时长】18秒\n【人物】顽顽崽、顽顽妹\n【场景】温馨卧室梳妆台前\n【BGM】轻快可爱风\n【分镜1 0-6秒】顽顽崽看到顽顽妹在扎头发，自告奋勇帮忙\n【分镜2 6-12秒】笨手笨脚半天扎成一个歪歪扭扭的辫子\n【分镜3 12-18秒】顽顽妹看镜子笑了，顽顽崽一脸骄傲` },
+  {
+    cat: 'heal', type: '治愈萌系3D动态漫', color: '#B8A4D9',
+    title: '📱 噜噜噜妹：下雨天一起撑伞',
+    source: '顽顽崽 · 20秒 · 9.8万赞',
+    body: '🔍 原视频分析：下雨天噜噜和噜妹共撑一把小伞，雨水淋湿了噜噜半边肩膀。\n📊 爆款原因：下雨场景的暖心和男生默默付出的细节引发共鸣。\n🎯 可复刻点：天气+暖心互动，适合雨天发布蹭热度。',
+    prompt: `【视频类型】治愈萌系3D动态漫\n【时长】20秒\n【人物】顽顽崽、顽顽妹\n【场景】雨天的街道\n【BGM】轻雨声+温柔钢琴\n【分镜1 0-6秒】下雨了，两人只有一把小伞\n【分镜2 6-12秒】走路时顽顽崽把伞偏向顽顽妹那边，自己淋湿了\n【分镜3 12-20秒】顽顽妹发现后把伞推回去，两人对视微笑` },
+  {
+    cat: 'funny', type: '反差搞笑动态漫', color: '#E89494',
+    title: '📱 噜噜：教噜妹打游戏结果被暴打',
+    source: '顽顽崽 · 22秒 · 18.2万赞',
+    body: '🔍 原视频分析：噜噜信心满满要教噜妹打游戏，结果被噜妹连杀三局。\n📊 爆款原因：性别反转梗+游戏场景，男生极度共鸣女生极度舒适。\n🎯 可复刻点：游戏场景易制作，反差笑点传播力强。',
+    prompt: `【视频类型】搞笑萌系3D动态漫\n【时长】22秒\n【人物】顽顽崽、顽顽妹\n【场景】客厅沙发上，电视屏幕显示游戏画面\n【BGM】前半段轻松游戏音，后半段崩溃搞笑节奏\n【分镜1 0-6秒】顽顽崽自信地说"我教你打游戏"\n【分镜2 6-12秒】第一局顽顽妹赢了，顽顽崽说"让着你"\n【分镜3 12-18秒】连输三局，顽顽崽表情从自信到怀疑人生\n【分镜4 18-22秒】顽顽妹淡定吹指甲："还有谁想学？"` },
+  {
+    cat: 'funny', type: '反差搞笑动态漫', color: '#E89494',
+    title: '📱 噜妹：减肥第一天就开始偷吃',
+    source: '顽顽妹 · 15秒 · 21.3万赞',
+    body: '🔍 原视频分析：噜妹发朋友圈宣布减肥，两小时后就躲在厨房偷吃零食被噜噜抓到。\n📊 爆款原因：减肥flag+偷吃被抓=全民共鸣，评论区全是"是我本人"。\n🎯 可复刻点：节食话题自带流量，偷吃表情包可二次传播。',
+    prompt: `【视频类型】搞笑萌系3D动态漫\n【时长】15秒\n【人物】顽顽崽、顽顽妹\n【场景】厨房，深夜\n【BGM】前半段励志，后半段鬼鬼祟祟+被抓包的搞笑音效\n【分镜1 0-3秒】顽顽妹发朋友圈"从今天开始减肥！"\n【分镜2 3-8秒】深夜，顽顽妹偷偷打开冰箱\n【分镜3 8-12秒】嘴里塞满食物时被顽顽崽撞见\n【分镜4 12-15秒】顽顽妹："这不算，冰箱里的东西没有热量"` },
+  {
+    cat: 'emotion', type: '情感共鸣动态漫', color: '#F4B860',
+    title: '📱 噜噜：加班回家看到噜妹留的饭',
+    source: '顽顽崽 · 25秒 · 25.7万赞',
+    body: '🔍 原视频分析：噜噜加班到很晚回家，看到桌上噜妹留的饭菜和便条"记得热一下吃哦♡"。\n📊 爆款原因：都市打工人+家的温暖=情感暴击，触发打工人的柔软神经。\n🎯 可复刻点：深夜+温暖牌+便条，适合晚间发布。',
+    prompt: `【视频类型】情感共鸣3D动态漫\n【时长】25秒\n【人物】顽顽崽、顽顽妹（已睡）\n【场景】深夜的客厅，灯光昏暗\n【BGM】温暖治愈钢琴+轻微雨声\n【分镜1 0-6秒】顽顽崽疲惫地开门，客厅亮着台灯\n【分镜2 6-14秒】餐桌上摆着盖好的饭菜和便条\n【分镜3 14-20秒】蹑手蹑脚走到卧室门口，偷偷看一眼熟睡的顽顽妹\n【分镜4 20-25秒】坐在餐桌前吃饭，眼眶微红` },
+  {
+    cat: 'emotion', type: '情感共鸣动态漫', color: '#F4B860',
+    title: '📱 噜噜噜妹：异地恋的早安电话',
+    source: '顽顽崽 · 28秒 · 32.1万赞',
+    body: '🔍 原视频分析：噜噜出差在外，每天早晨准时打视频叫噜妹起床，隔着屏幕的早安吻。\n📊 爆款原因：异地恋+早晨的仪式感，评论区成了异地恋情侣的网抑云现场。\n🎯 可复刻点：双屏分镜+日常对话，异地恋话题永不过时。',
+    prompt: `【视频类型】情感共鸣3D动态漫\n【时长】28秒\n【人物】顽顽崽、顽顽妹\n【场景】两个房间——酒店房间和家中卧室\n【BGM】温柔吉他+阳光感钢琴\n【分镜1 0-6秒】分屏：顽顽崽在酒店，顽顽妹在家里，阳光照进房间\n【分镜2 6-14秒】噜噜打电话叫醒噜妹，噜妹迷糊接电话\n【分镜3 14-22秒】聊日常，互相撒娇说想对方\n【分镜4 22-28秒】挂电话前隔着屏幕亲一下，两人同步微笑` },
+  {
+    cat: 'tutorial', type: '干货教程', color: '#8AC79E',
+    title: '📱 AI短剧爆款结构：3秒钩子+15秒冲突+5秒反转',
+    source: '运营干货 · 35秒 · 8.5万赞',
+    body: '🔍 内容分析：拆解100个爆款AI短剧，总结出万能公式：开篇3秒抓眼球→15秒建立冲突→5秒意外反转。\n📊 数据：套用此公式的视频完播率提升200%，涨粉效率最高。\n🎯 照着做就能出爆款。',
+    prompt: `【视频类型】干货教程类\n【时长】35秒\n【场景】屏幕录播+数据卡片\n【BGM】节奏感强的背景音\n【内容结构】\n0-3秒：抛出痛点——"做AI短剧三个月还没火？"\n3-20秒：拆解3个爆款案例的截图和数据\n20-30秒：总结3-15-5公式，演示套用方法\n30-35秒：关注我，明天继续拆解` },
+  {
+    cat: 'tutorial', type: '干货教程', color: '#8AC79E',
+    title: '📱 抖音起号7天实操：从0到1000粉丝',
+    source: '运营干货 · 42秒 · 12.8万赞',
+    body: '🔍 内容分析：新手起号最大的误区是"先做好内容再推送"，正确姿势是"先找对标再模仿再创新"。\n📊 实操步骤：D1选赛道→D2找10个对标账号→D3分析爆款→D4-5模仿制作→D6发布→D7复盘。\n🎯 照着这个节奏，7天绝对出结果。',
+    prompt: `【视频类型】干货教程类\n【时长】42秒\n【场景】屏幕录制+真人出镜讲解\n【BGM】积极向上的节奏\n【内容】\n0-5秒：钩子——"我用了7天把新号做到1000粉"\n5-35秒：Day1-7每天的实操演示\n35-40秒：数据展示+关键提醒\n40-42秒：完整流程图总结` },
+  {
+    cat: 'tutorial', type: '干货教程', color: '#8AC79E',
+    title: '📱 AI漫剧角色设计：一招让角色有辨识度',
+    source: '运营干货 · 28秒 · 7.2万赞',
+    body: '🔍 内容分析：AI漫剧最容易犯的错是角色太平淡。高辨识度角色三要素：1个标志性配饰+1句口头禅+1个反差萌。\n📊 案例：顽顽崽=蓝色云朵短裤+"我就是这样"+表面憨憨内心暖。\n🎯 学会这个，你的角色就成功了一半。',
+    prompt: `【视频类型】干货教程类\n【时长】28秒\n【场景】案例对比展示\n【BGM】轻快教学节奏\n【内容】\n0-4秒：提问——"你的AI漫剧角色为什么记不住？"\n4-20秒：展示3个成功案例的角色设计拆解\n20-26秒：总结三要素公式\n26-28秒：下期预告——场景搭建技巧` },
+  {
+    cat: 'tutorial', type: '干货教程', color: '#8AC79E',
+    title: '📱 短视频BGM选取技巧：3秒定生死',
+    source: '运营干货 · 25秒 · 9.6万赞',
+    body: '🔍 内容分析：BGM选得好，视频成功一半。3个技巧：(1)前3秒用抖音热歌榜前10 (2)高潮用在反转点 (3)卡点剪辑让视觉和节奏同步。\n📊 用热歌的视频播放量平均高40%。\n🎯 下个视频用起来！',
+    prompt: `【视频类型】干货教程\n【时长】25秒\n【场景】视频对比+屏幕标注\n【BGM】先放错误示范BGM，再放正确BGM\n【结构】\n0-3秒：同一段画面用不同BGM的效果对比\n3-22秒：三个技巧逐一展示\n22-25秒："你的视频差的就是这个BGM"` },
+  {
+    cat: 'emotion', type: '情感共鸣动态漫', color: '#F4B860',
+    title: '📱 噜噜：第一次给噜妹过生日',
+    source: '顽顽崽 · 30秒 · 28.3万赞',
+    body: '🔍 原视频分析：噜噜笨拙地布置生日惊喜，吹了满地气球，蛋糕也歪了，但噜妹感动到哭。\n📊 爆款原因：笨拙的真情+生日场景=每年可复用题材，评论区全是"我男朋友什么时候能这样"。\n🎯 可复刻点：生日场景是情感类TOP3题材。',
+    prompt: `【视频类型】治愈萌系3D动态漫\n【时长】30秒\n【人物】顽顽崽、顽顽妹\n【场景】关着灯的客厅\n【BGM】先安静→开灯时响起的生日快乐歌→温馨BGM\n【分镜1 0-8秒】噜妹进门，屋里黑黑的，有点疑惑\n【分镜2 8-14秒】灯亮，噜噜举着歪歪的蛋糕走出来，满地气球\n【分镜3 14-22秒】噜妹惊讶→感动落泪，噜噜慌张地说"是不是搞砸了"\n【分镜4 22-30秒】噜妹摇头笑着说"这是我收到最好的生日礼物"` },
+  {
+    cat: 'tutorial', type: '干货教程', color: '#8AC79E',
+    title: '📱 小红书封面设计：3种爆款模板直接套',
+    source: '运营干货 · 32秒 · 13.4万赞',
+    body: '🔍 内容分析：小红书封面是流量的第一道门槛。3种万能模板：(1)对比图 (2)大字标题+多图拼贴 (3)痛点提问。\n📊 好封面的点击率能提升3-5倍。\n🎯 下篇笔记就用这个！',
+    prompt: `【视频类型】干货教程\n【时长】32秒\n【场景】小红书APP截图+手机录屏\n【BGM】轻快电子音\n【结构】\n0-4秒：展示一个烂封面和一个好封面的点击率对比\n4-28秒：3种模板分别演示制作过程\n28-32秒："收藏这个视频，下次直接套用"` }
 ];
 
 const scenes = [
@@ -1624,12 +1677,192 @@ const scenes = [
 ];
 
 const nceArticles = [
-  { title: 'NCE1-Lesson 1: Excuse me!', word: 120, sentence: 'Excuse me! Yes? Is this your handbag? Pardon? Is this your handbag?' },
-  { title: 'NCE1-Lesson 2: Sorry, sir.', word: 130, sentence: 'Can I help you, sir? I want a large box, please.' },
-  { title: 'NCE1-Lesson 3: Thank you, doctor.', word: 140, sentence: 'How are you today? I am very well, thank you.' },
-  { title: 'NCE2-Lesson 1: A private conversation', word: 180, sentence: 'Last week I went to the theatre.' },
-  { title: 'NCE2-Lesson 2: Breakfast or lunch?', word: 200, sentence: 'It was Sunday. I never get up early on Sundays.' },
-  { title: 'NCE2-Lesson 3: Please send me a card', word: 210, sentence: 'Postcards always spoil my holidays.' }
+  { title: 'NCE1-L1: Excuse me!', word: 120, sentence: 'Excuse me! Yes? Is this your handbag? Pardon? Is this your handbag? Thank you very much.',
+    en: 'Excuse me!\nYes?\nIs this your handbag?\nPardon?\nIs this your handbag?\nYes, it is.\nThank you very much.',
+    cn: '对不起！\n什么事？\n这是您的手提包吗？\n对不起，请再说一遍。\n这是您的手提包吗？\n是的，是我的。\n非常感谢。' },
+  { title: 'NCE1-L3: Sorry, sir.', word: 130, sentence: 'My coat and my umbrella please. Here is my ticket. Thank you, sir. Number five.',
+    en: 'My coat and my umbrella please.\nHere is my ticket.\nThank you, sir.\nNumber five.\nHere is your umbrella and your coat.\nThis is not my umbrella.\nSorry, sir. Is this your umbrella?\nNo, it isn\'t.\nIs this it?\nYes, it is. Thank you very much.',
+    cn: '请把我的大衣和伞拿给我。\n这是我的牌子。\n谢谢，先生。\n是5号。\n这是您的伞和大衣。\n这不是我的伞。\n对不起，先生。这把伞是您的吗？\n不，不是！\n这把是吗？\n是，是这把。非常感谢。' },
+  { title: 'NCE1-L5: Nice to meet you.', word: 140, sentence: 'Good morning, Mr. Blake. This is Miss Sophie Dupont. She is French.',
+    en: 'Good morning, Mr. Blake.\nGood morning.\nThis is Miss Sophie Dupont.\nSophie is a new student.\nShe is French.\nSophie, this is Hans.\nHe is German.\nNice to meet you.\nAnd this is Naoko.\nShe is Japanese.\nNice to meet you.\nAnd this is Chang-woo.\nHe is Korean.\nNice to meet you.',
+    cn: '早上好，布莱克先生。\n早上好。\n这位是索菲·杜邦小姐。\n索菲是个新学生。\n她是法国人。\n索菲，这位是汉斯。\n他是德国人。\n很高兴见到你。\n这位是直子。\n她是日本人。\n很高兴见到你。\n这位是昌宇。\n他是韩国人。\n很高兴见到你。' },
+  { title: 'NCE1-L7: Are you a teacher?', word: 145, sentence: 'I am a new student. My name is Robert. Nice to meet you. Are you a teacher?',
+    en: 'I am a new student.\nMy name is Robert.\nNice to meet you.\nMy name is Sophie.\nAre you French?\nYes, I am. Are you French too?\nNo, I am not.\nWhat nationality are you?\nI am Italian.\nAre you a teacher?\nNo, I am not.\nWhat is your job?\nI am a keyboard operator.',
+    cn: '我是个新学生。\n我的名字叫罗伯特。\n很高兴见到你。\n我的名字叫索菲。\n你是法国人吗？\n是的，我是。你也是法国人吗？\n不，我不是。\n你是哪国人？\n我是意大利人。\n你是教师吗？\n不，我不是。\n你是做什么工作的？\n我是电脑录入员。' },
+  { title: 'NCE1-L9: How are you today?', word: 150, sentence: 'Hello, Helen. Hi, Steven. How are you today? I am very well, thank you.',
+    en: 'Hello, Helen.\nHi, Steven.\nHow are you today?\nI am very well, thank you.\nAnd you?\nI am fine, thanks.\nHow is Tony?\nHe is fine, thanks.\nHow is Emma?\nShe is very well too, Helen.\nGoodbye, Helen. Nice to see you.\nNice to see you too, Steven. Goodbye.',
+    cn: '你好，海伦。\n你好，史蒂文。\n你今天好吗？\n很好，谢谢你。\n你好吗？\n很好，谢谢。\n托尼好吗？\n他很好，谢谢。\n埃玛好吗？\n她也很好，海伦。\n再见，海伦。很高兴见到你。\n我也很高兴见到你，史蒂文。再见。' },
+  { title: 'NCE1-L11: Is this your shirt?', word: 155, sentence: 'Whose shirt is that? Is this your shirt, Dave? No, sir. It is not my shirt.',
+    en: 'Whose shirt is that?\nIs this your shirt, Dave?\nNo, sir. It is not my shirt.\nThis is my shirt. My shirt is blue.\nIs this shirt Tim\'s?\nPerhaps it is, sir.\nTim\'s shirt is white.\nYes, sir?\nIs this your shirt?\nYes, sir.\nHere you are. Catch!\nThank you, sir.',
+    cn: '那是谁的衬衫？\n戴夫，这是你的衬衫吗？\n不，先生。这不是我的衬衫。\n这是我的衬衫。我的衬衫是蓝色的。\n这件衬衫是蒂姆的吗？\n也许是，先生。\n蒂姆的衬衫是白色的。\n什么事，先生？\n这是你的衬衫吗？\n是的，先生。\n给你。接着！\n谢谢您，先生。' },
+  { title: 'NCE2-L1: A private conversation', word: 180, sentence: 'Last week I went to the theatre. I had a very good seat. The play was very interesting.',
+    en: 'Last week I went to the theatre. I had a very good seat. The play was very interesting. I did not enjoy it. A young man and a young woman were sitting behind me. They were talking loudly. I got very angry. I could not hear the actors. I turned round. I looked at the man and the woman angrily. They did not pay any attention. In the end, I could not bear it. I turned round again. "I can\'t hear a word!" I said angrily. "It\'s none of your business," the young man said rudely. "This is a private conversation!"',
+    cn: '上星期我去看戏。我坐的位置很好。戏很有意思。但我无法欣赏。一个年轻男子和一个年轻女子坐在我后面，大声说着话。我非常生气。我听不见演员的台词。我转过身，生气地看着那一男一女。他们毫不理会。最后，我忍不住了，又转过头去。"我一个字也听不见了！"我生气地说。"不关你的事，"那年轻男子粗鲁地说，"这是私人谈话！"' },
+  { title: 'NCE2-L3: Please send me a card', word: 190, sentence: 'Postcards always spoil my holidays. Last summer, I went to Italy. I visited museums and sat in gardens.',
+    en: 'Postcards always spoil my holidays. Last summer, I went to Italy. I visited museums and sat in public gardens. A friendly waiter taught me a few words of Italian. Then he lent me a book. I read a few lines, but I did not understand a word. Every day I thought about postcards. My holidays passed quickly, but I did not send any cards to my friends. On the last day I made a big decision. I got up early and bought thirty-seven cards. I spent the whole day in my room, but I did not write a single card!',
+    cn: '明信片总是破坏我的假期。去年夏天，我去了意大利。我参观了博物馆，坐在公园里。一位好客的服务员教了我几句意大利语。然后他借给我一本书。我读了几行，但一个字也不懂。我每天都想着明信片的事。假期过得很快，但我一张明信片也没给朋友寄。最后一天我做出了重大决定。我早起买了37张明信片。我在房间里待了一整天，却连一张明信片也没写成！' },
+  { title: 'NCE2-L7: Too late', word: 200, sentence: 'The plane was late and detectives were waiting at the airport all morning.',
+    en: 'The plane was late and detectives were waiting at the airport all morning. They were expecting a valuable parcel of diamonds from South Africa. A few hours earlier, someone had told the police that thieves would try to steal the diamonds. When the plane arrived, some of the detectives were waiting inside the main building while others were waiting on the airfield. Two men took the parcel off the plane and carried it into the Customs House. While two detectives were keeping guard at the door, two others opened the parcel. To their surprise, the precious parcel was full of stones and sand!',
+    cn: '飞机晚点了，侦探们在机场等了整整一上午。他们正期待从南非运来的一个装着钻石的贵重包裹。数小时前，有人向警方报告说有人企图偷走这些钻石。当飞机到达时，一些侦探等候在主楼内，另一些等候在停机坪上。两个人把包裹拿下飞机，搬进了海关。两个侦探把守门口，另外两个打开了包裹。令他们吃惊的是，那珍贵的包裹里装的全是石头和沙子！' },
+  { title: 'NCE2-L8: The best and the worst', word: 210, sentence: 'Joe Sanders has the most beautiful garden in our town. Nearly everybody enters for "The Nicest Garden Competition" each year.',
+    en: 'Joe Sanders has the most beautiful garden in our town. Nearly everybody enters for "The Nicest Garden Competition" each year, but Joe wins every time. Bill Frith\'s garden is larger than Joe\'s. Bill works harder than Joe and grows more flowers and vegetables, but Joe\'s garden is more interesting. He has made neat paths and has built a wooden bridge over a pool. I like gardens too, but I do not like hard work. Every year I enter for the garden competition too, and I always win a little prize for the worst garden in the town!',
+    cn: '乔·桑德斯拥有我们镇上最漂亮的花园。几乎每个人都参加每年举办的"最佳花园竞赛"，但每次都是乔获胜。比尔·弗里斯的花园比乔的大。比尔比乔更勤奋，种的花和蔬菜也更多，但乔的花园更富情趣。他修筑了一条条整洁的小路，还在池塘上架了一座木桥。我也喜欢花园，但我不喜欢辛苦劳作。每年我也参加花园竞赛，但总是得全镇最差花园的小奖！' },
+  { title: 'NCE2-L10: Not for jazz', word: 215, sentence: 'We have an old musical instrument. It is called a clavichord. It was made in Germany in 1681.',
+    en: 'We have an old musical instrument. It is called a clavichord. It was made in Germany in 1681. Our clavichord is kept in the living room. It has belonged to our family for a long time. The instrument was bought by my grandfather many years ago. Recently it was damaged by a visitor. She tried to play jazz on it! She struck the keys too hard and two of the strings were broken. My father was shocked. Now we are not allowed to touch it. It is being repaired by a friend of my father\'s.',
+    cn: '我家有件古乐器，叫古钢琴，是1681年德国制造的。我家这架古钢琴放在客厅里。它属于我们家很久了。这件乐器是我祖父很多年前买的。最近它被一位客人弄坏了。她想用它弹爵士乐！她按键太猛，两根弦断了。我父亲大为震惊。现在他不让我们碰它。它正由我父亲的一位朋友在修理。' },
+  { title: 'NCE2-L14: Do you speak English?', word: 220, sentence: 'I had an amusing experience last year. I drove to France for a holiday.',
+    en: 'I had an amusing experience last year. After I had left a small village in the south of France, I drove on to the next town. On the way, a young man waved to me. I stopped and he asked me for a lift. As soon as he had got into the car, I said good morning to him in French and he replied in the same language. Apart from a few words, I do not know any French at all. Neither of us spoke during the journey. I had nearly reached the town, when the young man suddenly said, very slowly, "Do you speak English?" As I soon learnt, he was English himself!',
+    cn: '去年我有过一次有趣的经历。在离开法国南部的一个小村庄后，我驶往下一个城镇。途中，一个年轻人向我招手。我停了下来，他请求搭车。他一上车，我就用法语向他道早安，他也同样用法语回答。除了几个单词外，我根本不会法语。旅途中我们谁都没说话。就要到达城镇时，那年轻人突然慢慢地说："你会说英语吗？"我很快了解到，他自己就是英国人！' },
+  { title: 'NCE2-L16: A polite request', word: 225, sentence: 'If you park your car in the wrong place, a traffic policeman will soon find it.',
+    en: 'If you park your car in the wrong place, a traffic policeman will soon find it. You will be very lucky if he lets you go without a ticket. However, this does not always happen. Traffic police are sometimes very polite. During a holiday in Sweden, I found this note on my car: "Sir, we welcome you to our city. This is a No Parking area. You will enjoy your stay here if you pay attention to our street signs. This note is only a reminder." If you receive a request like this, you cannot fail to obey it!',
+    cn: '如果你把车停错了地方，交警很快就会发现。如果他没给你罚单就让你走，那你算很幸运了。然而情况并不都是这样。交警有时也很客气。在瑞典度假期间，我在车上发现了这张纸条："先生，欢迎您来到本市。此处是禁停区。如果您注意我们的街道标志，您会在此过得很愉快。这张纸条仅作提醒。"如果你收到这样的请求，你不可能不遵从！' },
+  { title: 'NCE2-L20: One man in a boat', word: 230, sentence: 'Fishing is my favorite sport. I often fish for hours without catching anything.',
+    en: 'Fishing is my favorite sport. I often fish for hours without catching anything. But this does not worry me. Some fishermen are unlucky. Instead of catching fish, they catch old boots and rubbish. I am even less lucky. I never catch anything — not even old boots. After having spent whole mornings on the river, I always go home with an empty bag. "You must give up fishing!" my friends say. "It\'s a waste of time." But they don\'t realize one important thing. I\'m not really interested in fishing. I am only interested in sitting in a boat and doing nothing at all!',
+    cn: '钓鱼是我最喜欢的运动。我经常一钓几个小时却一无所获。但这并不使我烦恼。有些渔夫运气不好，没钓到鱼却钓上来旧靴子和垃圾。我的运气更差，我什么也钓不着——连旧靴子也没有。在河上待了整整一上午后，我总是拎着空袋子回家。"你该放弃钓鱼了！"朋友们说。"这是浪费时间。"但他们没有意识到一件重要的事。我并不是真的对钓鱼感兴趣，我只喜欢坐在船里什么也不做！' }
+];
+
+const movieDialogues = [
+  {
+    title: '老友记 · 瑞秋逃婚',
+    source: 'Friends S1E1',
+    dialogues: [
+      { en: 'There\'s nothing to tell! I just... I didn\'t want to marry him.', cn: '没什么好说的！我只是...我不想嫁给他。' },
+      { en: 'I realized that I was more turned on by this gravy boat than by Barry.', cn: '我意识到，这个酱汁壶都比Barry让我更兴奋。' },
+      { en: 'And then I got freaked out. That\'s when I knew I had to get out of there.', cn: '然后我吓坏了。就在那时我知道我必须离开那里。' },
+      { en: 'I just grabbed my bag and ran.', cn: '我抓起包就跑了。' },
+      { en: 'Welcome to the real world! It sucks. You\'re gonna love it.', cn: '欢迎来到现实世界！它糟透了。但你会喜欢的。' }
+    ]
+  },
+  {
+    title: '老友记 · 他是她的龙虾',
+    source: 'Friends S2E14',
+    dialogues: [
+      { en: 'You know what? You should just go over there and say, "Hi, I\'m Ross."', cn: '你知道吗？你应该走过去说，"嗨，我是Ross。"' },
+      { en: 'See? He\'s her lobster! Lobsters fall in love and mate for life.', cn: '看到了吗？他是她的龙虾！龙虾会相爱并终身相伴。' },
+      { en: 'You can actually see old lobster couples walking around their tank, holding claws.', cn: '你真的可以看到老龙虾夫妇在水箱里牵着爪子散步。' },
+      { en: 'Come on, you guys. It\'s a known fact.', cn: '拜托，这可是公认的事实。' }
+    ]
+  },
+  {
+    title: '破产姐妹 · Max毒舌',
+    source: '2 Broke Girls S1E1',
+    dialogues: [
+      { en: 'I don\'t cry. I sold my tear ducts to an organ bank for cash two years ago.', cn: '我不哭的。两年前我把泪腺卖给了器官银行。' },
+      { en: 'You know, life is like a box of chocolates. Mostly disappointing.', cn: '人生就像一盒巧克力，大部分都让人失望。' },
+      { en: 'I\'m not good at anything except maybe being poor.', cn: '我什么都不擅长，除了可能当个穷人。' },
+      { en: 'We\'re gonna be successful. But until then, we\'re gonna be hungry.', cn: '我们会成功的。但在那之前，我们会一直饿着。' }
+    ]
+  },
+  {
+    title: '当幸福来敲门 · 面试',
+    source: 'The Pursuit of Happyness',
+    dialogues: [
+      { en: 'What would you say if a man walked in without a shirt and I hired him?', cn: '如果一个没穿衬衫的人来面试而我录用了他，你会说什么？' },
+      { en: 'He must have had on some really nice pants.', cn: '那他一定穿了条很棒的裤子。' },
+      { en: 'Don\'t let somebody tell you you can\'t do something. Not even me.', cn: '别让任何人告诉你做不到。我也不行。' },
+      { en: 'You got a dream, you gotta protect it.', cn: '你有梦想，你就得保护它。' }
+    ]
+  },
+  {
+    title: '阿甘正传 · 人生哲理',
+    source: 'Forrest Gump',
+    dialogues: [
+      { en: 'Life was like a box of chocolates. You never know what you\'re gonna get.', cn: '人生就像一盒巧克力，你永远不知道下一块是什么味道。' },
+      { en: 'Stupid is as stupid does.', cn: '傻人做傻事。' },
+      { en: 'I don\'t know if we each have a destiny, or if we\'re all just floating.', cn: '我不知道我们是否有命运，还是只是随风飘荡。' },
+      { en: 'I\'m not a smart man, but I know what love is.', cn: '我不是聪明人，但我知道什么是爱。' }
+    ]
+  },
+  {
+    title: '肖申克的救赎 · 希望',
+    source: 'The Shawshank Redemption',
+    dialogues: [
+      { en: 'Hope is a good thing, maybe the best of things. And no good thing ever dies.', cn: '希望是好事，也许是世间最好的事。好事永远不会消逝。' },
+      { en: 'Get busy living, or get busy dying.', cn: '忙着活，或者忙着死。' },
+      { en: 'Some birds aren\'t meant to be caged. Their feathers are just too bright.', cn: '有些鸟儿是关不住的。它们的羽毛太鲜亮了。' },
+      { en: 'I guess it comes down to a simple choice.', cn: '我想这归结为一个简单的选择。' }
+    ]
+  },
+  {
+    title: '绿皮书 · 尊严',
+    source: 'Green Book',
+    dialogues: [
+      { en: 'You\'ll never win with violence. You only win when you maintain your dignity.', cn: '靠暴力永远不会赢。只有保持尊严才能赢。' },
+      { en: 'The world\'s full of lonely people afraid to make the first move.', cn: '世界上有太多孤独的人，害怕迈出第一步。' },
+      { en: 'Whatever you do, do it a hundred percent.', cn: '不管做什么，都要全力以赴。' },
+      { en: 'When you work, work. When you laugh, laugh.', cn: '工作就认真工作，笑就尽情大笑。' }
+    ]
+  },
+  {
+    title: '穿普拉达的女王 · 职场',
+    source: 'The Devil Wears Prada',
+    dialogues: [
+      { en: 'You think this has nothing to do with you. You go to your closet and pick that lumpy blue sweater.', cn: '你以为这跟你没关系。你打开衣柜挑出那件松垮的蓝色毛衣。' },
+      { en: 'But what you don\'t know is that sweater is not just blue. It\'s cerulean.', cn: '但你不知道的是，那件毛衣不只是蓝色。它是天蓝色。' },
+      { en: 'Millions of dollars and countless jobs went into creating that blue.', cn: '数百万美元和无数工作创造了那种蓝。' },
+      { en: 'Everybody wants this. Everybody wants to be us.', cn: '每个人都想要这个。每个人都想成为我们。' }
+    ]
+  },
+  {
+    title: '星际穿越 · 爱与时间',
+    source: 'Interstellar',
+    dialogues: [
+      { en: 'We used to look up at the sky and wonder at our place in the stars.', cn: '我们曾经仰望星空，思考我们在星辰中的位置。' },
+      { en: 'Now we just look down and worry about our place in the dirt.', cn: '现在我们只是低头，担心我们在泥土中的位置。' },
+      { en: 'Love is the one thing that transcends time and space.', cn: '爱是唯一能超越时间和空间的东西。' },
+      { en: 'Do not go gentle into that good night. Rage against the dying of the light.', cn: '不要温和地走进那个良夜。怒斥光明的消逝。' }
+    ]
+  },
+  {
+    title: '楚门的世界 · 真相',
+    source: 'The Truman Show',
+    dialogues: [
+      { en: 'Good morning! And in case I don\'t see you, good afternoon, good evening, and good night!', cn: '早上好！万一见不到你，那就下午好、晚上好、晚安！' },
+      { en: 'We accept the reality of the world with which we\'re presented.', cn: '我们接受呈现给我们的世界现实。' },
+      { en: 'You never had a camera in my head!', cn: '你从没在我脑子里装过摄像头！' },
+      { en: 'Was nothing real? You were real. That\'s what made you so good to watch.', cn: '没有什么是真的吗？你是真的。这就是你那么好看的原因。' }
+    ]
+  },
+  {
+    title: '泰坦尼克号 · 经典',
+    source: 'Titanic',
+    dialogues: [
+      { en: 'I\'m the king of the world!', cn: '我是世界之王！' },
+      { en: 'I figure life\'s a gift and I don\'t intend on wasting it.', cn: '我觉得人生是一份礼物，我不想浪费它。' },
+      { en: 'You never know what hand you\'re gonna get dealt next.', cn: '你永远不知道下一手牌是什么。' },
+      { en: 'Winning that ticket was the best thing that ever happened to me.', cn: '赢得那张船票是我一生中最幸运的事。' }
+    ]
+  },
+  {
+    title: '盗梦空间 · 现实',
+    source: 'Inception',
+    dialogues: [
+      { en: 'What is the most resilient parasite? An idea.', cn: '最有韧性的寄生虫是什么？一个想法。' },
+      { en: 'Once an idea has taken hold of the brain, it\'s almost impossible to eradicate.', cn: '一旦一个想法占据了大脑，几乎不可能根除。' },
+      { en: 'You mustn\'t be afraid to dream a little bigger, darling.', cn: '亲爱的，你必须敢于梦想更大一点。' },
+      { en: 'Dreams feel real while we\'re in them. It\'s only when we wake up that we realize something was strange.', cn: '在梦里时感觉真实。只有醒来后我们才意识到有些奇怪。' }
+    ]
+  },
+  {
+    title: '疯狂动物城 · 坚持',
+    source: 'Zootopia',
+    dialogues: [
+      { en: 'Life\'s a little bit messy. We all make mistakes.', cn: '人生有点混乱。我们都会犯错。' },
+      { en: 'No matter what type of animal you are, change starts with you.', cn: '不管你是什么动物，改变从你开始。' },
+      { en: 'Anyone can be anything.', cn: '任何人都可以成为任何样子。' },
+      { en: 'Try everything! I won\'t give up, no I won\'t give in till I reach the end.', cn: '尝试一切！我不会放弃，不会屈服，直到我到达终点。' }
+    ]
+  },
+  {
+    title: '狮子王 · 责任',
+    source: 'The Lion King',
+    dialogues: [
+      { en: 'The past can hurt. But the way I see it, you can either run from it or learn from it.', cn: '过去可能很伤人。但在我看来，你要么逃避，要么从中学习。' },
+      { en: 'Oh yes, the past can hurt. But you can either run from it, or learn from it.', cn: '是的，过去可能伤人。但你可以逃避，也可以从中学习。' },
+      { en: 'Remember who you are.', cn: '记住你是谁。' },
+      { en: 'Hakuna Matata! It means no worries for the rest of your days.', cn: '哈库纳玛塔塔！意思是余生无忧无虑。' }
+    ]
+  }
 ];
 
 const wordBooks = {
@@ -1724,7 +1957,7 @@ const quotes = [
 ];
 
 const daChapters = [
-  { num: '01', title: '数据分析思维', desc: '理解5W2H、漏斗分析、AARRR模型等核心思维框架', duration: '30min', progress: 100, video: '数据分析思维 AARRR模型', videoTitle: '数据分析思维入门（B站）', videoMeta: '5W2H · 漏斗分析 · AARRR海盗模型',
+  { num: '01', title: '数据分析思维', desc: '理解5W2H、漏斗分析、AARRR模型等核心思维框架', duration: '30min', progress: 100, video: '数据分析思维 AARRR模型', videoTitle: '数据分析思维入门（抖音）', videoMeta: '5W2H · 漏斗分析 · AARRR海盗模型',
     content: `
       <p><strong>核心概念：</strong>数据分析不是学工具，而是学思维。本章教你用数据驱动决策。</p>
       <p><strong>5W2H分析法：</strong>What(什么)、Why(为什么)、Who(谁)、When(何时)、Where(何地)、How(如何)、How much(多少)。面对任何问题，先用这7个维度把问题定义清楚。</p>
@@ -1732,14 +1965,14 @@ const daChapters = [
       <p><strong>AARRR模型：</strong>Acquisition(获取)、Activation(激活)、Retention(留存)、Revenue(收入)、Referral(传播)。海盗指标，互联网增长的核心框架。</p>
       <p><strong>实践建议：</strong>看完本章后，选一个你常用的App，用AARRR模型分析它的增长策略。</p>
     ` },
-  { num: '02', title: 'Excel高级应用', desc: '数据透视表、VLOOKUP、SQL查询模拟', duration: '45min', progress: 80, video: 'Excel 数据透视表 VLOOKUP教程', videoTitle: 'Excel数据分析（B站）', videoMeta: '数据透视表 · VLOOKUP · 条件格式',
+  { num: '02', title: 'Excel高级应用', desc: '数据透视表、VLOOKUP、SQL查询模拟', duration: '45min', progress: 80, video: 'Excel 数据透视表 VLOOKUP教程', videoTitle: 'Excel数据分析（抖音）', videoMeta: '数据透视表 · VLOOKUP · 条件格式',
     content: `
       <p><strong>数据透视表：</strong>Excel最强的分析工具。拖拽字段即可完成分组汇总。核心四区：行标签、列标签、值、筛选器。</p>
       <p><strong>VLOOKUP/XLOOKUP：</strong>最常用的查找匹配函数。VLOOKUP(查找值, 查找范围, 返回列号, 精确/模糊)。建议现在改用XLOOKUP，语法更直观。</p>
       <p><strong>常用快捷键：</strong>Ctrl+T(创建表)、Alt+=(自动求和)、Ctrl+Shift+L(筛选)、F4(绝对引用)。</p>
       <p><strong>条件格式：</strong>用颜色和数据条让数据"可视化"。重点：数据条、色阶、图标集。</p>
     ` },
-  { num: '03', title: 'SQL基础语法', desc: 'SELECT/WHERE/GROUP BY/ORDER BY/JOIN', duration: '60min', progress: 60, video: 'SQL 基础教程 SELECT JOIN', videoTitle: 'SQL基础语法教程（B站）', videoMeta: 'SELECT · JOIN · GROUP BY · 入门',
+  { num: '03', title: 'SQL基础语法', desc: 'SELECT/WHERE/GROUP BY/ORDER BY/JOIN', duration: '60min', progress: 60, video: 'SQL 基础教程 SELECT JOIN', videoTitle: 'SQL基础语法教程（抖音）', videoMeta: 'SELECT · JOIN · GROUP BY · 入门',
     content: `
       <p><strong>SELECT + FROM：</strong>最基础的查询，决定"看什么"和"从哪里看"。SELECT name, age FROM users;</p>
       <p><strong>WHERE：</strong>过滤条件。WHERE age > 18 AND city = '北京'。常用运算符：=, >, <, >=, <=, <>, IN, BETWEEN, LIKE。</p>
@@ -1747,14 +1980,14 @@ const daChapters = [
       <p><strong>ORDER BY：</strong>排序。ASC升序(默认)、DESC降序。可多字段排序。</p>
       <p><strong>JOIN：</strong>连接多张表。INNER JOIN(交集)、LEFT JOIN(左表全保留)、RIGHT JOIN(右表全保留)。</p>
     ` },
-  { num: '04', title: 'SQL进阶查询', desc: '窗口函数、子查询、CTE、性能优化', duration: '60min', progress: 30, video: 'SQL 窗口函数 子查询 CTE', videoTitle: 'SQL进阶查询（B站）', videoMeta: '窗口函数 · 子查询 · CTE · 优化',
+  { num: '04', title: 'SQL进阶查询', desc: '窗口函数、子查询、CTE、性能优化', duration: '60min', progress: 30, video: 'SQL 窗口函数 子查询 CTE', videoTitle: 'SQL进阶查询（抖音）', videoMeta: '窗口函数 · 子查询 · CTE · 优化',
     content: `
       <p><strong>窗口函数：</strong>面试高频考点！ROW_NUMBER()、RANK()、DENSE_RANK()。配合PARTITION BY分组排序。经典题：每个部门工资前3名。</p>
       <p><strong>子查询：</strong>SELECT中嵌套SELECT。可放在FROM后(派生表)、WHERE后(标量子查询)、SELECT后。</p>
       <p><strong>CTE(公用表表达式)：</strong>WITH子句，比子查询更清晰。WITH temp AS (SELECT ...) SELECT * FROM temp;</p>
       <p><strong>性能优化：</strong>建索引(但不要滥用)、避免SELECT *、用EXPLAIN看执行计划、LIMIT限制返回行数。</p>
     ` },
-  { num: '05', title: 'Python基础', desc: '列表/字典/函数/Pandas数据处理', duration: '90min', progress: 0, video: 'Python 零基础入门 Pandas', videoTitle: 'Python零基础入门（B站）', videoMeta: '列表 · 字典 · 函数 · Pandas',
+  { num: '05', title: 'Python基础', desc: '列表/字典/函数/Pandas数据处理', duration: '90min', progress: 0, video: 'Python 零基础入门 Pandas', videoTitle: 'Python零基础入门（抖音）', videoMeta: '列表 · 字典 · 函数 · Pandas',
     content: `
       <p><strong>核心数据类型：</strong>list[ ]列表、dict{ }字典、tuple( )元组。list最常用，dict的key-value结构非常适合数据分析。</p>
       <p><strong>控制流：</strong>if/elif/else条件判断、for循环遍历、while循环。列表推导式：[x for x in data if x > 0] 非常Pythonic。</p>
@@ -1762,7 +1995,7 @@ const daChapters = [
       <p><strong>文件读写：</strong>open('file.csv', 'r', encoding='utf-8')，with语句自动关闭文件。</p>
       <p><strong>Pandas入门：</strong>import pandas as pd。pd.read_csv()读数据，df.head()看前5行，df.info()看结构。</p>
     ` },
-  { num: '06', title: 'Pandas数据分析', desc: 'DataFrame操作/分组聚合/数据清洗', duration: '90min', progress: 0, video: 'Pandas DataFrame 数据清洗 分组', videoTitle: 'Pandas数据处理实战（B站）', videoMeta: 'DataFrame · groupby · 数据清洗',
+  { num: '06', title: 'Pandas数据分析', desc: 'DataFrame操作/分组聚合/数据清洗', duration: '90min', progress: 0, video: 'Pandas DataFrame 数据清洗 分组', videoTitle: 'Pandas数据处理实战（抖音）', videoMeta: 'DataFrame · groupby · 数据清洗',
     content: `
       <p><strong>DataFrame基础：</strong>二维表格结构。df[列名]、df.loc[行标签]、df.iloc[行号]三种取数方式。</p>
       <p><strong>数据清洗：</strong>dropna()去空值、fillna()填充、drop_duplicates()去重、astype()改类型、rename()改列名。</p>
@@ -1770,7 +2003,7 @@ const daChapters = [
       <p><strong>合并数据：</strong>pd.merge()(类似SQL JOIN)、pd.concat()(纵向/横向拼接)。</p>
       <p><strong>实践：</strong>找一个CSV数据集(如淘宝用户行为数据)，完成完整的数据清洗+分析流程。</p>
     ` },
-  { num: '07', title: '数据可视化', desc: 'Matplotlib/Seaborn/图表选择原则', duration: '60min', progress: 0, video: 'Matplotlib Seaborn 数据可视化', videoTitle: '数据可视化教程（B站）', videoMeta: 'Matplotlib · Seaborn · 图表选择',
+  { num: '07', title: '数据可视化', desc: 'Matplotlib/Seaborn/图表选择原则', duration: '60min', progress: 0, video: 'Matplotlib Seaborn 数据可视化', videoTitle: '数据可视化教程（抖音）', videoMeta: 'Matplotlib · Seaborn · 图表选择',
     content: `
       <p><strong>图表选择原则：</strong>比较→柱状图；趋势→折线图；分布→直方图/箱线图；占比→饼图/环形图；关系→散点图。</p>
       <p><strong>Matplotlib基础：</strong>plt.bar()柱状、plt.plot()折线、plt.scatter()散点。设置标题/坐标轴/图例。</p>
@@ -1778,7 +2011,7 @@ const daChapters = [
       <p><strong>配色原则：</strong>用公司品牌色/行业惯例。避免大红大绿。推荐colorbrewer配色方案。</p>
       <p><strong>实践：</strong>用任意数据制作"对比+趋势+分布"三图组合报告。</p>
     ` },
-  { num: '08', title: '统计学基础', desc: '描述统计/概率分布/假设检验', duration: '60min', progress: 0, video: '统计学 假设检验 正态分布', videoTitle: '统计学基础教程（B站）', videoMeta: '描述统计 · 正态分布 · 假设检验',
+  { num: '08', title: '统计学基础', desc: '描述统计/概率分布/假设检验', duration: '60min', progress: 0, video: '统计学 假设检验 正态分布', videoTitle: '统计学基础教程（抖音）', videoMeta: '描述统计 · 正态分布 · 假设检验',
     content: `
       <p><strong>描述统计：</strong>均值(集中趋势)、中位数(抗异常值)、标准差(离散程度)、四分位数(分布形状)。</p>
       <p><strong>概率分布：</strong>正态分布(钟形曲线，自然界最常见)、二项分布(成功/失败)、泊松分布(事件次数)。</p>
@@ -1786,7 +2019,7 @@ const daChapters = [
       <p><strong>假设检验：</strong>提出原假设H₀和备择假设H₁ → 计算p值 → p<0.05则拒绝H₀。常见检验：t检验(均值差异)、卡方检验(分类变量关联)。</p>
       <p><strong>面试重点：</strong>p值的含义是什么？p<0.05能不能说"有95%的概率原假设不成立"？（答案：不能！p值是"原假设为真时观察到当前结果的概率"，不是"原假设不成立的概率"）</p>
     ` },
-  { num: '09', title: '业务分析实战', desc: '电商运营/用户增长/转化漏斗', duration: '90min', progress: 0, video: '电商数据分析 用户增长 转化漏斗', videoTitle: '电商数据分析实战（B站）', videoMeta: 'GMV · CAC · 转化率 · 归因分析',
+  { num: '09', title: '业务分析实战', desc: '电商运营/用户增长/转化漏斗', duration: '90min', progress: 0, video: '电商数据分析 用户增长 转化漏斗', videoTitle: '电商数据分析实战（抖音）', videoMeta: 'GMV · CAC · 转化率 · 归因分析',
     content: `
       <p><strong>电商核心指标：</strong>GMV(总成交额)=流量×转化率×客单价。ARPU(每用户收入)、复购率、LTV(用户生命周期价值)。</p>
       <p><strong>用户增长模型：</strong>新用户获取成本(CAC) vs 用户生命周期价值(LTV)。LTV/CAC>3才可持续增长。</p>
@@ -1794,21 +2027,21 @@ const daChapters = [
       <p><strong>归因分析：</strong>用户从哪个渠道来的？首次点击归因、末次点击归因、线性归因、时间衰减归因。</p>
       <p><strong>实践：</strong>选一个你常用的电商App，估算它的GMV、转化率，思考如何提升。</p>
     ` },
-  { num: '10', title: 'A/B测试', desc: '实验设计/显著性检验/效果评估', duration: '60min', progress: 0, video: 'AB测试 实验设计 显著性检验', videoTitle: 'A/B测试入门到精通（B站）', videoMeta: '实验设计 · p值 · 辛普森悖论',
+  { num: '10', title: 'A/B测试', desc: '实验设计/显著性检验/效果评估', duration: '60min', progress: 0, video: 'AB测试 实验设计 显著性检验', videoTitle: 'A/B测试入门到精通（抖音）', videoMeta: '实验设计 · p值 · 辛普森悖论',
     content: `
       <p><strong>什么是A/B测试：</strong>随机将用户分成两组，一组看到原版(A)，一组看到新版(B)，对比指标差异。科学验证"这个改动有效吗"。</p>
       <p><strong>实验设计要点：</strong>1)明确指标(单一主指标) 2)确定样本量(用计算器) 3)随机分流 4)只改一个变量 5)运行足够长时间(至少1-2周)。</p>
       <p><strong>显著性判断：</strong>用t检验或z检验计算p值。p<0.05→统计显著，但还要看实际效果大小(效应量)。</p>
       <p><strong>常见陷阱：</strong>①早期偷看数据导致假阳性 ②多重检验未校正 ③新奇效应(用户对新东西的好奇会随时间消退) ④辛普森悖论。</p>
     ` },
-  { num: '11', title: '数据报告撰写', desc: '结论先行/Pyramid Principle/可视化呈现', duration: '60min', progress: 0, video: '数据报告 金字塔原理 可视化', videoTitle: '数据报告撰写技巧（B站）', videoMeta: '金字塔原理 · chartjunk · 汇报',
+  { num: '11', title: '数据报告撰写', desc: '结论先行/Pyramid Principle/可视化呈现', duration: '60min', progress: 0, video: '数据报告 金字塔原理 可视化', videoTitle: '数据报告撰写技巧（抖音）', videoMeta: '金字塔原理 · chartjunk · 汇报',
     content: `
       <p><strong>金字塔原理：</strong>结论先行，以上统下，归类分组，逻辑递进。先告诉老板结论，再用数据支撑。</p>
       <p><strong>报告结构：</strong>1)核心结论(1页) 2)关键发现(2-3页，每页一个观点) 3)详细数据(附录)。</p>
       <p><strong>可视化原则：</strong>一张图一个观点；去除图表垃圾(chartjunk)；用颜色突出关键数据；标题就是结论。</p>
       <p><strong>汇报技巧：</strong>用"所以呢？"(so what?)自检每页价值；用"下一步建议"收尾；准备常见质疑的回应。</p>
     ` },
-  { num: '12', title: '面试高频题', desc: '业务题/SQL题/统计学题/案例分析', duration: '90min', progress: 0, video: '数据分析师 面试题 SQL 业务', videoTitle: '数据分析面试真题（B站）', videoMeta: 'SQL面试 · 业务分析 · 统计学',
+  { num: '12', title: '面试高频题', desc: '业务题/SQL题/统计学题/案例分析', duration: '90min', progress: 0, video: '数据分析师 面试题 SQL 业务', videoTitle: '数据分析面试真题（抖音）', videoMeta: 'SQL面试 · 业务分析 · 统计学',
     content: `
       <p><strong>业务题示例：</strong>"抖音DAU下降了5%，你会怎么分析？"→按维度拆分(地区/版本/渠道/用户群)→对比同期→检查数据口径→形成假设→验证。</p>
       <p><strong>SQL必考题：</strong>①窗口函数排名 ②连续登录天数 ③留存率计算 ④复购率。一定要手写，面试现场写不出就是挂。</p>
@@ -1825,21 +2058,27 @@ const recipes = [
   { name: '肉沫炒腐竹', emoji: '🥢', badge: '下饭', time: '15min', ingredients: ['腐竹 200g','肉沫 100g','葱姜蒜 适量','豆瓣酱 1勺','生抽 2勺'], steps: '1. 腐竹温水泡发\n2. 切段备用\n3. 热锅冷油爆香葱姜蒜\n4. 加豆瓣酱炒出红油\n5. 加肉沫炒至变色\n6. 倒入腐竹翻炒\n7. 加生抽调味\n8. 炒匀出锅', tutorial: '抖音搜「肉沫腐竹」' },
   { name: '蒜蓉生菜', emoji: '🥬', badge: '清爽', time: '5min', ingredients: ['生菜 1颗','蒜 5瓣','生抽 2勺','蚝油 1勺','白糖 少许'], steps: '1. 生菜洗净掰开\n2. 蒜切末\n3. 烧水加盐\n4. 生菜焯水10秒\n5. 捞出沥干摆盘\n6. 热锅冷油爆香蒜末\n7. 加生抽蚝油白糖\n8. 浇在生菜上', tutorial: '抖音搜「蒜蓉生菜」' },
   { name: '什锦炒菜', emoji: '🥗', badge: '营养', time: '15min', ingredients: ['西兰花 半颗','胡萝卜 半根','木耳 10朵','荷兰豆 100g','蒜 3瓣'], steps: '1. 所有蔬菜洗净\n2. 西兰花掰小朵\n3. 胡萝卜切片\n4. 木耳泡发撕小\n5. 荷兰豆去筋\n6. 烧水加盐油\n7. 蔬菜依次焯水\n8. 热锅爆炒加盐', tutorial: '下厨房搜「什锦菜」' },
-  { name: '肉沫焖土豆丁', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','葱姜蒜 适量','生抽 2勺','老抽 1勺'], steps: '1. 土豆切小丁\n2. 泡水去淀粉\n3. 热锅冷油爆香葱姜蒜\n4. 加肉沫炒香\n5. 加土豆丁翻炒\n6. 加生抽老抽\n7. 加水焖10分钟\n8. 大火收汁', tutorial: '抖音搜「肉沫土豆丁」' }
+  { name: '肉沫焖土豆丁', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','葱姜蒜 适量','生抽 2勺','老抽 1勺'], steps: '1. 土豆切小丁\n2. 泡水去淀粉\n3. 热锅冷油爆香葱姜蒜\n4. 加肉沫炒香\n5. 加土豆丁翻炒\n6. 加生抽老抽\n7. 加水焖10分钟\n8. 大火收汁', tutorial: '抖音搜「肉沫土豆丁」' },
+  { name: '西红柿炒鸡蛋', emoji: '🍅', badge: '经典', time: '10min', ingredients: ['鸡蛋 3个','西红柿 2个','葱 适量','盐 少许','糖 半勺'], steps: '1. 鸡蛋打散加盐\n2. 西红柿切块\n3. 热锅多油炒鸡蛋盛出\n4. 爆香葱，下西红柿炒出汁\n5. 倒回鸡蛋翻炒\n6. 加盐糖调味出锅', tutorial: '抖音搜「西红柿炒鸡蛋」' },
+  { name: '可乐鸡翅', emoji: '🍗', badge: '下饭', time: '30min', ingredients: ['鸡翅 8个','可乐 1罐','姜 3片','料酒 1勺','生抽 2勺','老抽 1勺'], steps: '1. 鸡翅洗净两面划刀\n2. 冷水下锅加姜料酒焯水\n3. 热锅煎鸡翅至两面金黄\n4. 倒入可乐没过鸡翅\n5. 加生抽老抽\n6. 大火烧开转中小火\n7. 收汁至浓稠出锅', tutorial: '抖音搜「可乐鸡翅」' },
+  { name: '麻婆豆腐', emoji: '🌶️', badge: '麻辣', time: '15min', ingredients: ['嫩豆腐 1盒','猪肉沫 100g','豆瓣酱 1勺','花椒粉 适量','蒜末 适量','葱花 适量'], steps: '1. 豆腐切小块焯水\n2. 热锅冷油炒肉沫\n3. 加豆瓣酱炒出红油\n4. 加蒜末炒香\n5. 加适量水煮开\n6. 轻轻放入豆腐\n7. 煮3分钟勾芡\n8. 撒花椒粉葱花', tutorial: '抖音搜「麻婆豆腐」' },
+  { name: '清炒时蔬', emoji: '🥬', badge: '清爽', time: '8min', ingredients: ['青菜 300g','蒜 3瓣','盐 适量','蚝油 半勺'], steps: '1. 青菜洗净沥干\n2. 蒜切片\n3. 热锅冷油爆蒜\n4. 大火下青菜快炒\n5. 菜变软加盐蚝油\n6. 再炒30秒出锅', tutorial: '抖音搜「清炒时蔬」' },
+  { name: '蛋炒饭', emoji: '🍚', badge: '快手', time: '10min', ingredients: ['米饭 1碗','鸡蛋 2个','火腿肠 1根','葱花 适量','盐 适量','生抽 1勺'], steps: '1. 鸡蛋打散\n2. 火腿肠切丁\n3. 热锅炒鸡蛋盛出\n4. 炒火腿肠丁\n5. 倒入米饭炒散\n6. 加鸡蛋炒匀\n7. 加盐生抽调味\n8. 撒葱花出锅', tutorial: '抖音搜「蛋炒饭」' },
+  { name: '糖醋里脊', emoji: '🥩', badge: '经典', time: '30min', ingredients: ['猪里脊 300g','鸡蛋 1个','面粉 适量','番茄酱 2勺','白醋 1勺','白糖 2勺'], steps: '1. 里脊切条加盐料酒腌制\n2. 鸡蛋+面粉调糊\n3. 里脊裹糊\n4. 油温六成炸至金黄\n5. 调糖醋汁：番茄酱+醋+糖+水\n6. 锅中煮糖醋汁至浓稠\n7. 倒入炸好的里脊\n8. 快速翻炒均匀装盘', tutorial: '抖音搜「糖醋里脊」' }
 ];
 
 const catColors = { '🍱':'#E89494','🛒':'#8AC79E','🚇':'#B8A4D9','🎬':'#F4B860','📚':'#8AC79E','💊':'#E89494','👕':'#F4B860','💰':'#8AC79E','🎁':'#E89494','📦':'#9A92A8' };
 
 const appUrls = {
-  douyin: 'snssdk1233://',
-  xiaohongshu: 'xhsdiscover://',
-  kuaishou: 'kwai://',
-  bilibili: 'bilibili://',
-  boss: 'bosszhipin://',
-  liepin: 'liepin://',
-  zhilian: 'zhilianzhaopin://',
-  zlzp: '51jobapp://',
-  yupao: 'yupaozhipin://',
+  douyin: 'https://www.douyin.com/',
+  xiaohongshu: 'https://www.xiaohongshu.com/explore',
+  kuaishou: 'https://www.kuaishou.com/',
+  bilibili: 'https://www.bilibili.com/',
+  boss: 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
+  liepin: 'https://www.liepin.com/zhaopin/?key=数据分析',
+  zhilian: 'https://sou.zhaopin.com/?kw=数据分析',
+  zlzp: 'https://we.51job.com/pc/search?keyword=数据分析',
+  yupao: 'https://www.yupaozhipin.com',
   weixin: 'weixin://'
 };
 
@@ -2152,6 +2391,7 @@ function renderStudy() {
   document.getElementById('studyMovie').style.display = currentStudyTab === 'movie' ? 'block' : 'none';
   if (currentStudyTab === 'scene') renderScenes();
   if (currentStudyTab === 'nce') renderNce();
+  if (currentStudyTab === 'movie') renderMovie();
   document.getElementById('wordTotal').textContent = wordTotal;
   document.getElementById('wordStreak').textContent = wordStreak;
   document.getElementById('wordToday').textContent = wordToday;
@@ -2274,16 +2514,98 @@ function speakEn(text) {
   }
 }
 
+function speakMovieDialogues(i) {
+  if (!('speechSynthesis' in window)) return;
+  const day = new Date().getDate();
+  const shuffled = [...movieDialogues].sort((a,b) => (a.title.length + day) % movieDialogues.length - (b.title.length + day) % movieDialogues.length);
+  const m = shuffled[i];
+  if (!m) return;
+  speechSynthesis.cancel();
+  const allText = m.dialogues.map(d => d.en).join('. ');
+  const u = new SpeechSynthesisUtterance(allText);
+  u.lang = 'en-US';
+  u.rate = 0.85;
+  speechSynthesis.speak(u);
+  showToast('🔊 正在朗读 ' + m.title);
+}
+
 function renderNce() {
-  document.getElementById('nceList').innerHTML = nceArticles.map((a,i) => `
-    <div class="video-card" onclick="speakEn('${a.sentence.replace(/'/g, "\\'")}')">
-      <div class="video-thumb">📖</div>
-      <div class="video-info">
-        <div class="video-title">${a.title}</div>
-        <div class="video-meta">单词 ${a.word} · 点击朗读</div>
+  const day = new Date().getDate();
+  const shuffled = [...nceArticles].sort((a,b) => (a.title.length + day) % nceArticles.length - (b.title.length + day) % nceArticles.length);
+  document.getElementById('nceList').innerHTML = shuffled.map((a,i) => `
+    <div class="scene-card" style="cursor:pointer;">
+      <div class="scene-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>📖 ${a.title}</span>
+        <span style="font-size:11px;color:var(--text-3);font-weight:400;">单词量 ${a.word}</span>
       </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();speakEn(\`${a.en.replace(/`/g,'\\`').replace(/'/g,"\\'")}\`)">🔊 朗读课文</button>
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();this.closest('.scene-card').querySelector('.nce-detail').classList.toggle('open');this.closest('.scene-card').querySelector('.nce-toggle').textContent=this.closest('.scene-card').querySelector('.nce-detail').classList.contains('open')?'🔼 收起':'👁 查看中英对照';" style="margin-left:auto;">👁 查看中英对照</button>
+      </div>
+      <div class="nce-detail chapter-detail" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;line-height:1.8;">
+          <div style="color:var(--text);font-weight:500;">${a.en.split('\n').map(l => `<div style="padding:4px 0;border-bottom:1px dashed var(--border);">${l}</div>`).join('')}</div>
+          <div style="color:var(--text-2);">${a.cn.split('\n').map(l => `<div style="padding:4px 0;border-bottom:1px dashed var(--border);">${l}</div>`).join('')}</div>
+        </div>
+        <div style="margin-top:10px;text-align:center;">
+          <a href="javascript:void(0)" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(a.title.replace('NCE','新概念'))}','_blank')" style="color:var(--primary);font-size:12px;font-weight:600;">🎬 抖音搜课程视频</a>
+        </div>
+      </div>
+      <div class="nce-toggle" style="font-size:11px;color:var(--primary);font-weight:600;text-align:center;margin-top:4px;">👁 查看中英对照</div>
     </div>
   `).join('');
+  // Add click toggle behavior
+  document.querySelectorAll('#nceList .scene-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a')) return;
+      const detail = this.querySelector('.nce-detail');
+      const toggle = this.querySelector('.nce-toggle');
+      detail.classList.toggle('open');
+      detail.style.display = detail.classList.contains('open') ? 'block' : 'none';
+      toggle.textContent = detail.classList.contains('open') ? '🔼 收起' : '👁 查看中英对照';
+    });
+  });
+}
+
+function renderMovie() {
+  const day = new Date().getDate();
+  const shuffled = [...movieDialogues].sort((a,b) => (a.title.length + day) % movieDialogues.length - (b.title.length + day) % movieDialogues.length);
+  document.getElementById('movieList').innerHTML = shuffled.map((m,i) => `
+    <div class="scene-card" style="cursor:pointer;">
+      <div class="scene-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🎬 ${m.title}</span>
+        <span style="font-size:11px;color:var(--text-3);font-weight:400;">${m.source}</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();speakMovieDialogues(${i})">🔊 朗读全部</button>
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();this.closest('.scene-card').querySelector('.movie-detail').classList.toggle('open');this.closest('.scene-card').querySelector('.movie-toggle').textContent=this.closest('.scene-card').querySelector('.movie-detail').classList.contains('open')?'🔼 收起':'👁 查看中英对照';" style="margin-left:auto;">👁 查看中英对照</button>
+      </div>
+      <div class="movie-detail chapter-detail" style="display:none;">
+        ${m.dialogues.map((d,j) => `
+          <div class="scene-sent" onclick="event.stopPropagation();speakEn(\`${d.en.replace(/`/g,'\\`').replace(/'/g,"\\'")}\`)" style="cursor:pointer;">
+            <span class="scene-sent-icon">🔊</span>
+            <div class="scene-sent-en" style="font-weight:600;">${d.en}</div>
+            <div class="scene-sent-cn">${d.cn}</div>
+          </div>
+        `).join('')}
+        <div style="margin-top:10px;text-align:center;">
+          <a href="javascript:void(0)" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(m.title.replace(/[·]/g,' '))}','_blank')" style="color:var(--primary);font-size:12px;font-weight:600;">🎬 抖音搜相关片段</a>
+        </div>
+      </div>
+      <div class="movie-toggle" style="font-size:11px;color:var(--primary);font-weight:600;text-align:center;">👁 查看中英对照</div>
+    </div>
+  `).join('');
+  // Add click toggle behavior
+  document.querySelectorAll('#movieList .scene-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.scene-sent')) return;
+      const detail = this.querySelector('.movie-detail');
+      const toggle = this.querySelector('.movie-toggle');
+      detail.classList.toggle('open');
+      detail.style.display = detail.classList.contains('open') ? 'block' : 'none';
+      toggle.textContent = detail.classList.contains('open') ? '🔼 收起' : '👁 查看中英对照';
+    });
+  });
 }
 
 // ==================== 阅读 ====================
@@ -2373,7 +2695,7 @@ function renderDa() {
         <div style="display:flex;gap:6px;margin-top:8px;align-items:center;" onclick="event.stopPropagation();">
           <button class="btn btn-outline btn-sm" onclick="updateDaProgress('${c.num}', -10)">-10%</button>
           <button class="btn btn-primary btn-sm" onclick="updateDaProgress('${c.num}', 10)">+10%</button>
-          <button class="btn btn-primary btn-sm" style="background:#FB7299;color:#fff;margin-left:auto;" onclick="window.open('https://search.bilibili.com/all?keyword=${encodeURIComponent(c.video)}','_blank')">🎬 ${c.videoTitle}</button>
+          <button class="btn btn-primary btn-sm" style="background:#FF6B6B;color:#fff;margin-left:auto;" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(c.video)}','_blank')">🎬 ${c.videoTitle.replace('（抖音）','（抖音）')}</button>
         </div>
       </div>
     `;
@@ -2640,43 +2962,27 @@ function renderJobs() {
 }
 
 function openJobApp(source) {
-  const apps = { 'BOSS直聘':'boss', '猎聘':'liepin', '智联':'zhilian', '智联招聘':'zhilian', '前程无忧':'zlzp', '前程无忧51Job':'zlzp', '鱼泡直聘':'yupao' };
-  goApp(apps[source] || 'boss');
-  showToast('正在跳转' + source + '...');
+  const urls = {
+    'BOSS直聘': 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
+    '猎聘': 'https://www.liepin.com/zhaopin/?key=数据分析',
+    '智联': 'https://sou.zhaopin.com/?kw=数据分析',
+    '智联招聘': 'https://sou.zhaopin.com/?kw=数据分析',
+    '前程无忧': 'https://we.51job.com/pc/search?keyword=数据分析',
+    '前程无忧51Job': 'https://we.51job.com/pc/search?keyword=数据分析',
+    '鱼泡直聘': 'https://www.yupaozhipin.com'
+  };
+  window.open(urls[source] || urls['BOSS直聘'], '_blank');
+  showToast('正在打开' + source + '...');
 }
 
 // 【核心】视频创作 - 每日噜噜/噜妹分析 + AI制作口令
 // ==================== 应用跳转 ====================
 function goApp(name) {
-  const scheme = appUrls[name];
-  // 先尝试用 URL scheme 唤起 App
-  if (scheme) {
-    const a = document.createElement('a');
-    a.href = scheme;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const url = appUrls[name];
+  if (url) {
+    window.open(url, '_blank');
+    showToast('正在打开' + (name === 'boss' ? 'BOSS直聘' : name === 'zlzp' ? '前程无忧' : name === 'yupao' ? '鱼泡直聘' : name === 'douyin' ? '抖音' : name === 'kuaishou' ? '快手' : name === 'bilibili' ? 'B站' : name) + '...');
   }
-  // 1.5秒后如果App没唤起，自动跳转网页版
-  setTimeout(() => {
-    const fallback = {
-      douyin: 'https://www.douyin.com/search/运营技巧',
-      xiaohongshu: 'https://www.xiaohongshu.com/explore',
-      bilibili: 'https://search.bilibili.com/all?keyword=数据分析',
-      kuaishou: 'https://www.kuaishou.com/search/video?searchKey=运营',
-      boss: 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
-      liepin: 'https://www.liepin.com/zhaopin/?key=数据分析',
-      zhilian: 'https://sou.zhaopin.com/?kw=数据分析',
-      zlzp: 'https://we.51job.com/pc/search?keyword=数据分析',
-      yupao: 'https://www.yupaozhipin.com',
-      weixin: 'weixin://'
-    };
-    if (fallback[name]) {
-      window.open(fallback[name], '_blank');
-    }
-  }, 1500);
-  showToast('正在跳转...未打开请检查App是否安装');
 }
 
 // ==================== FAB ====================
