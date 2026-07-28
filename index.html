@@ -166,7 +166,10 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   border: 1px solid var(--border);
   display: flex; gap: 12px;
   align-items: flex-start;
+  cursor: pointer;
+  transition: all 0.2s;
 }
+.knowledge-card:active { background: var(--primary-soft); transform: scale(0.98); }
 .knowledge-icon {
   width: 36px; height: 36px; border-radius: 10px;
   background: var(--primary-soft);
@@ -859,7 +862,7 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   </div>
 
   <!-- 运营知识速览 -->
-  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📚 运营知识速览 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">每日更新</span></div>
+  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📚 运营知识速览 <span style="font-size:11px;color:var(--primary);font-weight:400;margin-left:auto;" id="knowledgeUpdate">每日更新</span></div>
 
   <div id="knowledgeList">
     <div class="knowledge-card">
@@ -979,8 +982,8 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
       从剧本创作到AI工具使用，系统学习AI短剧制作全流程，每天看一段快速入门。
     </div>
     <div class="form-row">
-      <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 看抖音教程</button>
-      <button class="btn btn-outline btn-sm" onclick="goApp('bilibili')">📺 看B站教程</button>
+      <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/AI短剧制作教程','_blank')">📱 看抖音教程</button>
+      <button class="btn btn-outline btn-sm" onclick="window.open('https://search.bilibili.com/all?keyword=AI%E7%9F%AD%E5%89%A7%E5%88%B6%E4%BD%9C','_blank')">📺 看B站教程</button>
     </div>
   </div>
 
@@ -1018,8 +1021,9 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   <div class="tool-grid">
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">👔</div><div class="tool-tile-name">BOSS直聘</div></a>
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin');"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">猎聘</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian');"><div class="tool-tile-icon">📋</div><div class="tool-tile-name">智联</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('lagou');"><div class="tool-tile-icon">🚀</div><div class="tool-tile-name">拉勾</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zlzp');"><div class="tool-tile-icon">📋</div><div class="tool-tile-name">前程无忧</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('yupao');"><div class="tool-tile-icon">🔨</div><div class="tool-tile-name">鱼泡直聘</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">智联招聘</div></a>
   </div>
 
   <div class="card-title"><div class="card-title-bar"></div>🔥 今日匹配岗位 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">每日更新</span></div>
@@ -1030,11 +1034,11 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">数据分析</div></a>
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📱</div><div class="tool-tile-name">内容运营</div></a>
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🎬</div><div class="tool-tile-name">视频剪辑</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📕</div><div class="tool-tile-name">小红书运营</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🤖</div><div class="tool-tile-name">AI/大数据</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">✍️</div><div class="tool-tile-name">标书/招投标</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">新媒体运营</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss');"><div class="tool-tile-icon">🎥</div><div class="tool-tile-name">短视频编导</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zlzp');"><div class="tool-tile-icon">📕</div><div class="tool-tile-name">小红书运营</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin');"><div class="tool-tile-icon">🤖</div><div class="tool-tile-name">AI/大数据</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zlzp');"><div class="tool-tile-icon">✍️</div><div class="tool-tile-name">标书/招投标</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian');"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">新媒体运营</div></a>
+    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin');"><div class="tool-tile-icon">🎥</div><div class="tool-tile-name">短视频编导</div></a>
   </div>
 
   <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📌 薪资参考（成都）</div>
@@ -1186,62 +1190,8 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <div style="font-size:11px;opacity:0.85;margin-top:4px;">进度：<span id="daProgressText">0%</span> · 共12章节</div>
   </div>
 
-  <div class="card-title"><div class="card-title-bar"></div>📚 学习路径</div>
+  <div class="card-title"><div class="card-title-bar"></div>📚 学习路径 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">点击章节展开详情+观看视频</span></div>
   <div id="daList"></div>
-
-  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>🎬 B站学习视频推荐</div>
-  <div class="data-video-row">
-    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">🐍 Python入门</a>
-    <a class="data-video-chip dv2" href="javascript:void(0)" onclick="goApp('bilibili')">🗄️ SQL教程</a>
-    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">📊 Excel进阶</a>
-    <a class="data-video-chip dv2" href="javascript:void(0)" onclick="goApp('bilibili')">📈 数据可视化</a>
-    <a class="data-video-chip" href="javascript:void(0)" onclick="goApp('bilibili')">📉 统计学</a>
-  </div>
-  <div class="card">
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">🐍</div>
-      <div class="video-info">
-        <div class="video-title">Python数据分析入门（黑马程序员）</div>
-        <div class="video-meta">零基础友好 · 240集 · B站千万播放</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">🗄️</div>
-      <div class="video-info">
-        <div class="video-title">SQL必知必会（尚硅谷）</div>
-        <div class="video-meta">面试必备 · 50集 · 求职必刷</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">📊</div>
-      <div class="video-info">
-        <div class="video-title">Excel数据分析高级技巧</div>
-        <div class="video-meta">数据透视表+VLOOKUP+PQ · 30集</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">📈</div>
-      <div class="video-info">
-        <div class="video-title">数据分析师面试真题100讲</div>
-        <div class="video-meta">业务题+SQL+统计学 · 面试冲刺</div>
-      </div>
-    </div>
-    <div class="video-card" onclick="goApp('bilibili')">
-      <div class="video-thumb">🤖</div>
-      <div class="video-info">
-        <div class="video-title">数据分析+AI：用ChatGPT做分析</div>
-        <div class="video-meta">AI赋能数据分析 · 2026新趋势</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>🎯 工具推荐</div>
-  <div class="tool-grid">
-    <a class="tool-tile" onclick="addDaCheck('Excel')"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">Excel</div></a>
-    <a class="tool-tile" onclick="addDaCheck('Python')"><div class="tool-tile-icon">🐍</div><div class="tool-tile-name">Python</div></a>
-    <a class="tool-tile" onclick="addDaCheck('SQL')"><div class="tool-tile-icon">🗄️</div><div class="tool-tile-name">SQL</div></a>
-    <a class="tool-tile" onclick="addDaCheck('Tableau')"><div class="tool-tile-icon">📈</div><div class="tool-tile-name">Tableau</div></a>
-  </div>
 
 </div>
 
@@ -1379,10 +1329,14 @@ const defaultTasks = [
 const allJobs = [
   { title: '数据分析师', company: '乐狗科技', salary: '8-12K', tags: ['数据分析', '电商', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B8%88' },
   { title: '短视频内容运营', company: '微光聚梦', salary: '13-20K', tags: ['短视频', '内容运营', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%86%85%E5%AE%B9%E8%BF%90%E8%90%A5' },
-  { title: '小红书运营', company: '某MCN', salary: '6-10K', tags: ['小红书', '运营', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E8%BF%90%E8%90%A5' },
-  { title: '视频剪辑师', company: '某传媒', salary: '8-15K', tags: ['剪辑', '后期', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E8%A7%86%E9%A2%91%E5%89%AA%E8%BE%91' },
-  { title: '新媒体运营', company: '某互联网', salary: '7-12K', tags: ['新媒体', '抖音', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E6%96%B0%E5%AA%92%E4%BD%93%E8%BF%90%E8%90%A5' },
-  { title: '内容运营专员', company: '某电商', salary: '6-9K', tags: ['内容', '电商', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%86%85%E5%AE%B9%E8%BF%90%E8%90%A5' }
+  { title: '小红书运营', company: '某MCN', salary: '6-10K', tags: ['小红书', '运营', '成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E8%BF%90%E8%90%A5' },
+  { title: '视频剪辑师', company: '某传媒', salary: '8-15K', tags: ['剪辑', '后期', '成都'], source: '前程无忧', url: 'https://we.51job.com/pc/search?keyword=%E8%A7%86%E9%A2%91%E5%89%AA%E8%BE%91' },
+  { title: '新媒体运营', company: '某互联网', salary: '7-12K', tags: ['新媒体', '抖音', '成都'], source: '智联招聘', url: 'https://sou.zhaopin.com/?kw=%E6%96%B0%E5%AA%92%E4%BD%93%E8%BF%90%E8%90%A5' },
+  { title: '内容运营专员', company: '某电商', salary: '6-9K', tags: ['内容', '电商', '成都'], source: '鱼泡直聘', url: 'https://www.yupaozhipin.com' },
+  { title: '运营助理', company: '某科技', salary: '5-7K', tags: ['运营', '助理', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E8%BF%90%E8%90%A5%E5%8A%A9%E7%90%86' },
+  { title: '标书专员', company: '某建筑', salary: '7-10K', tags: ['标书', '招投标', '成都'], source: '前程无忧', url: 'https://we.51job.com/pc/search?keyword=%E6%A0%87%E4%B9%A6' },
+  { title: '电商运营', company: '某电商', salary: '10-15K', tags: ['电商', '淘宝', '成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=%E7%94%B5%E5%95%86%E8%BF%90%E8%90%A5' },
+  { title: '数据专员', company: '某金融', salary: '6-9K', tags: ['数据', 'Excel', '成都'], source: '智联招聘', url: 'https://sou.zhaopin.com/?kw=%E6%95%B0%E6%8D%AE%E4%B8%93%E5%91%98' }
 ];
 
 const fitVideos = [
@@ -1770,7 +1724,7 @@ const quotes = [
 ];
 
 const daChapters = [
-  { num: '01', title: '数据分析思维', desc: '理解5W2H、漏斗分析、AARRR模型等核心思维框架', duration: '30min', progress: 100,
+  { num: '01', title: '数据分析思维', desc: '理解5W2H、漏斗分析、AARRR模型等核心思维框架', duration: '30min', progress: 100, video: '数据分析思维 AARRR模型', videoTitle: '数据分析思维入门（B站）', videoMeta: '5W2H · 漏斗分析 · AARRR海盗模型',
     content: `
       <p><strong>核心概念：</strong>数据分析不是学工具，而是学思维。本章教你用数据驱动决策。</p>
       <p><strong>5W2H分析法：</strong>What(什么)、Why(为什么)、Who(谁)、When(何时)、Where(何地)、How(如何)、How much(多少)。面对任何问题，先用这7个维度把问题定义清楚。</p>
@@ -1778,14 +1732,14 @@ const daChapters = [
       <p><strong>AARRR模型：</strong>Acquisition(获取)、Activation(激活)、Retention(留存)、Revenue(收入)、Referral(传播)。海盗指标，互联网增长的核心框架。</p>
       <p><strong>实践建议：</strong>看完本章后，选一个你常用的App，用AARRR模型分析它的增长策略。</p>
     ` },
-  { num: '02', title: 'Excel高级应用', desc: '数据透视表、VLOOKUP、SQL查询模拟', duration: '45min', progress: 80,
+  { num: '02', title: 'Excel高级应用', desc: '数据透视表、VLOOKUP、SQL查询模拟', duration: '45min', progress: 80, video: 'Excel 数据透视表 VLOOKUP教程', videoTitle: 'Excel数据分析（B站）', videoMeta: '数据透视表 · VLOOKUP · 条件格式',
     content: `
       <p><strong>数据透视表：</strong>Excel最强的分析工具。拖拽字段即可完成分组汇总。核心四区：行标签、列标签、值、筛选器。</p>
       <p><strong>VLOOKUP/XLOOKUP：</strong>最常用的查找匹配函数。VLOOKUP(查找值, 查找范围, 返回列号, 精确/模糊)。建议现在改用XLOOKUP，语法更直观。</p>
       <p><strong>常用快捷键：</strong>Ctrl+T(创建表)、Alt+=(自动求和)、Ctrl+Shift+L(筛选)、F4(绝对引用)。</p>
       <p><strong>条件格式：</strong>用颜色和数据条让数据"可视化"。重点：数据条、色阶、图标集。</p>
     ` },
-  { num: '03', title: 'SQL基础语法', desc: 'SELECT/WHERE/GROUP BY/ORDER BY/JOIN', duration: '60min', progress: 60,
+  { num: '03', title: 'SQL基础语法', desc: 'SELECT/WHERE/GROUP BY/ORDER BY/JOIN', duration: '60min', progress: 60, video: 'SQL 基础教程 SELECT JOIN', videoTitle: 'SQL基础语法教程（B站）', videoMeta: 'SELECT · JOIN · GROUP BY · 入门',
     content: `
       <p><strong>SELECT + FROM：</strong>最基础的查询，决定"看什么"和"从哪里看"。SELECT name, age FROM users;</p>
       <p><strong>WHERE：</strong>过滤条件。WHERE age > 18 AND city = '北京'。常用运算符：=, >, <, >=, <=, <>, IN, BETWEEN, LIKE。</p>
@@ -1793,14 +1747,14 @@ const daChapters = [
       <p><strong>ORDER BY：</strong>排序。ASC升序(默认)、DESC降序。可多字段排序。</p>
       <p><strong>JOIN：</strong>连接多张表。INNER JOIN(交集)、LEFT JOIN(左表全保留)、RIGHT JOIN(右表全保留)。</p>
     ` },
-  { num: '04', title: 'SQL进阶查询', desc: '窗口函数、子查询、CTE、性能优化', duration: '60min', progress: 30,
+  { num: '04', title: 'SQL进阶查询', desc: '窗口函数、子查询、CTE、性能优化', duration: '60min', progress: 30, video: 'SQL 窗口函数 子查询 CTE', videoTitle: 'SQL进阶查询（B站）', videoMeta: '窗口函数 · 子查询 · CTE · 优化',
     content: `
       <p><strong>窗口函数：</strong>面试高频考点！ROW_NUMBER()、RANK()、DENSE_RANK()。配合PARTITION BY分组排序。经典题：每个部门工资前3名。</p>
       <p><strong>子查询：</strong>SELECT中嵌套SELECT。可放在FROM后(派生表)、WHERE后(标量子查询)、SELECT后。</p>
       <p><strong>CTE(公用表表达式)：</strong>WITH子句，比子查询更清晰。WITH temp AS (SELECT ...) SELECT * FROM temp;</p>
       <p><strong>性能优化：</strong>建索引(但不要滥用)、避免SELECT *、用EXPLAIN看执行计划、LIMIT限制返回行数。</p>
     ` },
-  { num: '05', title: 'Python基础', desc: '列表/字典/函数/Pandas数据处理', duration: '90min', progress: 0,
+  { num: '05', title: 'Python基础', desc: '列表/字典/函数/Pandas数据处理', duration: '90min', progress: 0, video: 'Python 零基础入门 Pandas', videoTitle: 'Python零基础入门（B站）', videoMeta: '列表 · 字典 · 函数 · Pandas',
     content: `
       <p><strong>核心数据类型：</strong>list[ ]列表、dict{ }字典、tuple( )元组。list最常用，dict的key-value结构非常适合数据分析。</p>
       <p><strong>控制流：</strong>if/elif/else条件判断、for循环遍历、while循环。列表推导式：[x for x in data if x > 0] 非常Pythonic。</p>
@@ -1808,7 +1762,7 @@ const daChapters = [
       <p><strong>文件读写：</strong>open('file.csv', 'r', encoding='utf-8')，with语句自动关闭文件。</p>
       <p><strong>Pandas入门：</strong>import pandas as pd。pd.read_csv()读数据，df.head()看前5行，df.info()看结构。</p>
     ` },
-  { num: '06', title: 'Pandas数据分析', desc: 'DataFrame操作/分组聚合/数据清洗', duration: '90min', progress: 0,
+  { num: '06', title: 'Pandas数据分析', desc: 'DataFrame操作/分组聚合/数据清洗', duration: '90min', progress: 0, video: 'Pandas DataFrame 数据清洗 分组', videoTitle: 'Pandas数据处理实战（B站）', videoMeta: 'DataFrame · groupby · 数据清洗',
     content: `
       <p><strong>DataFrame基础：</strong>二维表格结构。df[列名]、df.loc[行标签]、df.iloc[行号]三种取数方式。</p>
       <p><strong>数据清洗：</strong>dropna()去空值、fillna()填充、drop_duplicates()去重、astype()改类型、rename()改列名。</p>
@@ -1816,7 +1770,7 @@ const daChapters = [
       <p><strong>合并数据：</strong>pd.merge()(类似SQL JOIN)、pd.concat()(纵向/横向拼接)。</p>
       <p><strong>实践：</strong>找一个CSV数据集(如淘宝用户行为数据)，完成完整的数据清洗+分析流程。</p>
     ` },
-  { num: '07', title: '数据可视化', desc: 'Matplotlib/Seaborn/图表选择原则', duration: '60min', progress: 0,
+  { num: '07', title: '数据可视化', desc: 'Matplotlib/Seaborn/图表选择原则', duration: '60min', progress: 0, video: 'Matplotlib Seaborn 数据可视化', videoTitle: '数据可视化教程（B站）', videoMeta: 'Matplotlib · Seaborn · 图表选择',
     content: `
       <p><strong>图表选择原则：</strong>比较→柱状图；趋势→折线图；分布→直方图/箱线图；占比→饼图/环形图；关系→散点图。</p>
       <p><strong>Matplotlib基础：</strong>plt.bar()柱状、plt.plot()折线、plt.scatter()散点。设置标题/坐标轴/图例。</p>
@@ -1824,7 +1778,7 @@ const daChapters = [
       <p><strong>配色原则：</strong>用公司品牌色/行业惯例。避免大红大绿。推荐colorbrewer配色方案。</p>
       <p><strong>实践：</strong>用任意数据制作"对比+趋势+分布"三图组合报告。</p>
     ` },
-  { num: '08', title: '统计学基础', desc: '描述统计/概率分布/假设检验', duration: '60min', progress: 0,
+  { num: '08', title: '统计学基础', desc: '描述统计/概率分布/假设检验', duration: '60min', progress: 0, video: '统计学 假设检验 正态分布', videoTitle: '统计学基础教程（B站）', videoMeta: '描述统计 · 正态分布 · 假设检验',
     content: `
       <p><strong>描述统计：</strong>均值(集中趋势)、中位数(抗异常值)、标准差(离散程度)、四分位数(分布形状)。</p>
       <p><strong>概率分布：</strong>正态分布(钟形曲线，自然界最常见)、二项分布(成功/失败)、泊松分布(事件次数)。</p>
@@ -1832,7 +1786,7 @@ const daChapters = [
       <p><strong>假设检验：</strong>提出原假设H₀和备择假设H₁ → 计算p值 → p<0.05则拒绝H₀。常见检验：t检验(均值差异)、卡方检验(分类变量关联)。</p>
       <p><strong>面试重点：</strong>p值的含义是什么？p<0.05能不能说"有95%的概率原假设不成立"？（答案：不能！p值是"原假设为真时观察到当前结果的概率"，不是"原假设不成立的概率"）</p>
     ` },
-  { num: '09', title: '业务分析实战', desc: '电商运营/用户增长/转化漏斗', duration: '90min', progress: 0,
+  { num: '09', title: '业务分析实战', desc: '电商运营/用户增长/转化漏斗', duration: '90min', progress: 0, video: '电商数据分析 用户增长 转化漏斗', videoTitle: '电商数据分析实战（B站）', videoMeta: 'GMV · CAC · 转化率 · 归因分析',
     content: `
       <p><strong>电商核心指标：</strong>GMV(总成交额)=流量×转化率×客单价。ARPU(每用户收入)、复购率、LTV(用户生命周期价值)。</p>
       <p><strong>用户增长模型：</strong>新用户获取成本(CAC) vs 用户生命周期价值(LTV)。LTV/CAC>3才可持续增长。</p>
@@ -1840,21 +1794,21 @@ const daChapters = [
       <p><strong>归因分析：</strong>用户从哪个渠道来的？首次点击归因、末次点击归因、线性归因、时间衰减归因。</p>
       <p><strong>实践：</strong>选一个你常用的电商App，估算它的GMV、转化率，思考如何提升。</p>
     ` },
-  { num: '10', title: 'A/B测试', desc: '实验设计/显著性检验/效果评估', duration: '60min', progress: 0,
+  { num: '10', title: 'A/B测试', desc: '实验设计/显著性检验/效果评估', duration: '60min', progress: 0, video: 'AB测试 实验设计 显著性检验', videoTitle: 'A/B测试入门到精通（B站）', videoMeta: '实验设计 · p值 · 辛普森悖论',
     content: `
       <p><strong>什么是A/B测试：</strong>随机将用户分成两组，一组看到原版(A)，一组看到新版(B)，对比指标差异。科学验证"这个改动有效吗"。</p>
       <p><strong>实验设计要点：</strong>1)明确指标(单一主指标) 2)确定样本量(用计算器) 3)随机分流 4)只改一个变量 5)运行足够长时间(至少1-2周)。</p>
       <p><strong>显著性判断：</strong>用t检验或z检验计算p值。p<0.05→统计显著，但还要看实际效果大小(效应量)。</p>
       <p><strong>常见陷阱：</strong>①早期偷看数据导致假阳性 ②多重检验未校正 ③新奇效应(用户对新东西的好奇会随时间消退) ④辛普森悖论。</p>
     ` },
-  { num: '11', title: '数据报告撰写', desc: '结论先行/Pyramid Principle/可视化呈现', duration: '60min', progress: 0,
+  { num: '11', title: '数据报告撰写', desc: '结论先行/Pyramid Principle/可视化呈现', duration: '60min', progress: 0, video: '数据报告 金字塔原理 可视化', videoTitle: '数据报告撰写技巧（B站）', videoMeta: '金字塔原理 · chartjunk · 汇报',
     content: `
       <p><strong>金字塔原理：</strong>结论先行，以上统下，归类分组，逻辑递进。先告诉老板结论，再用数据支撑。</p>
       <p><strong>报告结构：</strong>1)核心结论(1页) 2)关键发现(2-3页，每页一个观点) 3)详细数据(附录)。</p>
       <p><strong>可视化原则：</strong>一张图一个观点；去除图表垃圾(chartjunk)；用颜色突出关键数据；标题就是结论。</p>
       <p><strong>汇报技巧：</strong>用"所以呢？"(so what?)自检每页价值；用"下一步建议"收尾；准备常见质疑的回应。</p>
     ` },
-  { num: '12', title: '面试高频题', desc: '业务题/SQL题/统计学题/案例分析', duration: '90min', progress: 0,
+  { num: '12', title: '面试高频题', desc: '业务题/SQL题/统计学题/案例分析', duration: '90min', progress: 0, video: '数据分析师 面试题 SQL 业务', videoTitle: '数据分析面试真题（B站）', videoMeta: 'SQL面试 · 业务分析 · 统计学',
     content: `
       <p><strong>业务题示例：</strong>"抖音DAU下降了5%，你会怎么分析？"→按维度拆分(地区/版本/渠道/用户群)→对比同期→检查数据口径→形成假设→验证。</p>
       <p><strong>SQL必考题：</strong>①窗口函数排名 ②连续登录天数 ③留存率计算 ④复购率。一定要手写，面试现场写不出就是挂。</p>
@@ -1882,10 +1836,10 @@ const appUrls = {
   kuaishou: 'kwai://',
   bilibili: 'bilibili://',
   boss: 'bosszhipin://',
-  liepin: 'liepinhr://',
-  zhilian: 'zhilianhb://',
-  lagou: 'lagouhr://',
-  zlzp: '51job://',
+  liepin: 'liepin://',
+  zhilian: 'zhilianzhaopin://',
+  zlzp: '51jobapp://',
+  yupao: 'yupaozhipin://',
   weixin: 'weixin://'
 };
 
@@ -2163,7 +2117,7 @@ function renderScripts() {
       <div class="script-prompt" style="max-height:240px;overflow-y:auto;">${s.prompt}</div>
       <div style="display:flex;gap:6px;margin-top:10px;">
         <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyFullScript(${i},'${currentScriptCat}')">📋 复制AI制作口令</button>
-        <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 看原视频</button>
+        <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(s.title.replace('📱 来自',''))}','_blank')">📱 看原视频</button>
       </div>
     </div>
   `).join('');
@@ -2415,10 +2369,11 @@ function renderDa() {
         <div style="font-size:11px;color:var(--text-2);">${c.desc} · ${c.duration}</div>
         <div class="chapter-progress"><div class="chapter-progress-fill" style="width:${p}%;"></div></div>
         <div class="chapter-toggle">👁 点击展开详情</div>
-        <div class="chapter-detail" id="chapterDetail_${c.num}">${c.content}</div>
-        <div style="display:flex;gap:6px;margin-top:8px;" onclick="event.stopPropagation();">
+        <div class="chapter-detail" id="chapterDetail_${c.num}">${c.content || ''}</div>
+        <div style="display:flex;gap:6px;margin-top:8px;align-items:center;" onclick="event.stopPropagation();">
           <button class="btn btn-outline btn-sm" onclick="updateDaProgress('${c.num}', -10)">-10%</button>
           <button class="btn btn-primary btn-sm" onclick="updateDaProgress('${c.num}', 10)">+10%</button>
+          <button class="btn btn-primary btn-sm" style="background:#FB7299;color:#fff;margin-left:auto;" onclick="window.open('https://search.bilibili.com/all?keyword=${encodeURIComponent(c.video)}','_blank')">🎬 ${c.videoTitle}</button>
         </div>
       </div>
     `;
@@ -2445,11 +2400,6 @@ function updateDaProgress(num, delta) {
   renderDa();
   showToast('✓ 进度已更新');
 }
-
-function addDaCheck(tool) {
-  showToast(`✓ ${tool} 已加入学习计划`);
-}
-
 // ==================== 记账 ====================
 function renderMoney() {
   const records = moneyRecords;
@@ -2628,36 +2578,42 @@ function recipeCardHTML(r, compact) {
     <div style="font-size:12px;color:var(--text-2);margin-bottom:8px;"><strong>食材：</strong>${r.ingredients.join('、')}</div>
     <div style="font-size:12px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;background:var(--bg);padding:10px;border-radius:8px;margin-bottom:10px;">${r.steps}</div>
     <div style="display:flex;gap:6px;">
-      <button class="btn btn-outline btn-sm" onclick="goApp('douyin')">📱 ${r.tutorial}</button>
-      <button class="btn btn-primary btn-sm" onclick="goApp('douyin')">▶ 看视频</button>
+      <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(r.name)}','_blank')">📱 ${r.tutorial}</button>
+      <button class="btn btn-primary btn-sm" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(r.name+'教程')}','_blank')">▶ 看视频</button>
     </div>
   `;
 }
 
-// ==================== 知识速览（每日更新） ====================
+// ==================== 知识速览（每日更新 - 抖音运营视频） ====================
 function refreshKnowledge() {
   const tips = [
-    { icon: '📈', title: '抖音流量池机制：为什么你的视频卡在500播放', tag: '底层逻辑' },
-    { icon: '🎯', title: '抖音四大爆款内容公式（92.7%爆款验证）', tag: '选题技巧' },
-    { icon: '📕', title: '小红书爆款笔记标题模板：直接套用', tag: '实操干货' },
-    { icon: '💼', title: '数据分析师30天转型计划：从入门到面试', tag: '求职方向' },
-    { icon: '🎬', title: 'AI短剧制作全流程：剧本→角色→剪辑→变现', tag: 'AI赛道' },
-    { icon: '💰', title: '内容运营薪资指南：成都数据分析/运营岗位薪酬', tag: '职场' },
-    { icon: '📊', title: 'SQL面试必考的10道题（附答案）', tag: '数据' },
-    { icon: '✍️', title: '标书撰写避坑指南：5个常见错误', tag: '职场技能' }
+    { icon: '📈', title: '抖音流量池机制：为什么你的视频卡在500播放', tag: '底层逻辑', url: 'https://www.douyin.com/search/抖音流量池机制' },
+    { icon: '🎯', title: '抖音四大爆款内容公式（92.7%爆款验证）', tag: '选题技巧', url: 'https://www.douyin.com/search/抖音爆款内容公式' },
+    { icon: '📕', title: '小红书爆款笔记标题模板：直接套用', tag: '实操干货', url: 'https://www.douyin.com/search/小红书爆款标题' },
+    { icon: '💼', title: '数据分析师30天转型计划：从入门到面试', tag: '求职方向', url: 'https://www.douyin.com/search/数据分析师面试' },
+    { icon: '🎬', title: 'AI短剧制作全流程：剧本→角色→剪辑→变现', tag: 'AI赛道', url: 'https://www.douyin.com/search/AI短剧制作教程' },
+    { icon: '💰', title: '内容运营薪资指南：成都数据分析/运营岗位薪酬', tag: '职场', url: 'https://www.douyin.com/search/成都运营薪资' },
+    { icon: '📊', title: 'SQL面试必考的10道题（附答案）', tag: '数据', url: 'https://www.douyin.com/search/SQL面试题' },
+    { icon: '✍️', title: '标书撰写避坑指南：5个常见错误', tag: '职场技能', url: 'https://www.douyin.com/search/标书撰写技巧' },
+    { icon: '🔥', title: '短视频新手7天起号攻略', tag: '起号方法', url: 'https://www.douyin.com/search/短视频起号教程' },
+    { icon: '🎵', title: '抖音热门BGM推荐：2026年7月爆款配乐', tag: '素材', url: 'https://www.douyin.com/search/抖音热门BGM' },
+    { icon: '📝', title: '5秒完播率提升300%的开头模板', tag: '核心技能', url: 'https://www.douyin.com/search/抖音完播率技巧' },
+    { icon: '🤖', title: '用AI工具批量生成短视频脚本', tag: '效率工具', url: 'https://www.douyin.com/search/AI生成短视频' }
   ];
   const day = new Date().getDate();
-  const shuffled = [...tips].sort((a,b) => (a.title.length + day) % 7 - (b.title.length + day) % 7);
+  const shuffled = [...tips].sort((a,b) => (a.title.length + day) % tips.length - (b.title.length + day) % tips.length);
   const today = shuffled.slice(0, 4);
   document.getElementById('knowledgeList').innerHTML = today.map(t => `
-    <div class="knowledge-card">
+    <div class="knowledge-card" onclick="window.open('${t.url}','_blank')">
       <div class="knowledge-icon">${t.icon}</div>
       <div class="knowledge-content">
         <div class="knowledge-title">${t.title}</div>
         <span class="knowledge-tag">${t.tag}</span>
       </div>
+      <div style="font-size:18px;color:var(--primary);">▶</div>
     </div>
   `).join('');
+  document.getElementById('knowledgeUpdate').textContent = new Date().toLocaleDateString('zh-CN') + ' 已更新';
 }
 
 // ==================== 求职 ====================
@@ -2684,7 +2640,7 @@ function renderJobs() {
 }
 
 function openJobApp(source) {
-  const apps = { 'BOSS直聘':'boss', '猎聘':'liepin', '智联':'zhilian', '拉勾':'lagou','前程无忧':'zlzp' };
+  const apps = { 'BOSS直聘':'boss', '猎聘':'liepin', '智联':'zhilian', '智联招聘':'zhilian', '前程无忧':'zlzp', '前程无忧51Job':'zlzp', '鱼泡直聘':'yupao' };
   goApp(apps[source] || 'boss');
   showToast('正在跳转' + source + '...');
 }
@@ -2692,32 +2648,35 @@ function openJobApp(source) {
 // 【核心】视频创作 - 每日噜噜/噜妹分析 + AI制作口令
 // ==================== 应用跳转 ====================
 function goApp(name) {
-  const url = appUrls[name];
-  let launched = false;
-  if (url) {
-    try {
-      window.location.href = url;
-      launched = true;
-    } catch(e) {}
-    setTimeout(() => {
-      if (launched) showToast('正在跳转...若未打开请手动搜索');
-    }, 1500);
+  const scheme = appUrls[name];
+  // 先尝试用 URL scheme 唤起 App
+  if (scheme) {
+    const a = document.createElement('a');
+    a.href = scheme;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
-  const fallback = {
-    douyin: 'https://www.douyin.com',
-    xiaohongshu: 'https://www.xiaohongshu.com/explore',
-    bilibili: 'https://search.bilibili.com/all?keyword=数据分析',
-    kuaishou: 'https://www.kuaishou.com',
-    boss: 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
-    liepin: 'https://www.liepin.com/zhaopin/?key=数据分析',
-    zhilian: 'https://sou.zhaopin.com/?kw=数据分析',
-    lagou: 'https://www.lagou.com/jobs/list_数据分析',
-    zlzp: 'https://www.51job.com',
-    weixin: 'weixin://'
-  };
-  if (!launched && fallback[name]) {
-    window.open(fallback[name], '_blank');
-  }
+  // 1.5秒后如果App没唤起，自动跳转网页版
+  setTimeout(() => {
+    const fallback = {
+      douyin: 'https://www.douyin.com/search/运营技巧',
+      xiaohongshu: 'https://www.xiaohongshu.com/explore',
+      bilibili: 'https://search.bilibili.com/all?keyword=数据分析',
+      kuaishou: 'https://www.kuaishou.com/search/video?searchKey=运营',
+      boss: 'https://www.zhipin.com/web/geek/job?query=数据分析&city=100010000',
+      liepin: 'https://www.liepin.com/zhaopin/?key=数据分析',
+      zhilian: 'https://sou.zhaopin.com/?kw=数据分析',
+      zlzp: 'https://we.51job.com/pc/search?keyword=数据分析',
+      yupao: 'https://www.yupaozhipin.com',
+      weixin: 'weixin://'
+    };
+    if (fallback[name]) {
+      window.open(fallback[name], '_blank');
+    }
+  }, 1500);
+  showToast('正在跳转...未打开请检查App是否安装');
 }
 
 // ==================== FAB ====================
