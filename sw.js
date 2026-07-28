@@ -1,11 +1,11 @@
 /* ===== 孙韩林 · 每日小窝 - Service Worker ===== */
-const CACHE_NAME = 'sunhanlin-v2';
+const CACHE_NAME = 'sunhanlin-v3';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/yujiu/',
+  '/yujiu/index.html',
+  '/yujiu/manifest.json',
+  '/yujiu/icon-192.png',
+  '/yujiu/icon-512.png'
 ];
 
 // Install: cache all assets for offline use
