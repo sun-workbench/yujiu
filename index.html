@@ -2166,22 +2166,21 @@ function dailyPick(arr, n) {
 }
 
 // ==================== 视频脚本（每日噜噜/噜妹爬取+AI口令） ====================
+const scriptColorMap = { '治愈':'#10B981', '搞笑':'#F59E0B', '情感':'#EC4899', '干货':'#8B5CF6' };
 function renderScripts() {
   const filtered = currentScriptCat === 'all' ? scripts : scripts.filter(s => s.cat === currentScriptCat);
   const shuffled = dailyShuffle(filtered);
   document.getElementById('scriptList').innerHTML = shuffled.map((s,i) => `
     <div class="script-card">
       <div class="script-head">
-        <div class="script-type" style="background:${s.color};">${s.type}</div>
+        <div class="script-type" style="background:${scriptColorMap[s.cat] || '#8B5CF6'};">${s.cat}</div>
         <span style="font-size:11px;color:var(--text-3);">${s.source}</span>
       </div>
       <div style="font-size:14px;font-weight:700;margin-bottom:6px;">${s.title}</div>
-      <div style="background:var(--bg);border-radius:10px;padding:10px;font-size:12px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;margin-bottom:10px;">${s.body}</div>
-      <div style="font-size:12px;color:var(--primary);font-weight:700;margin-bottom:6px;">📋 AI制作口令（可直接复制到AI视频工具）</div>
-      <div class="script-prompt" style="max-height:240px;overflow-y:auto;">${s.prompt}</div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;font-size:12px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;margin-bottom:10px;">${s.prompt}</div>
       <div style="display:flex;gap:6px;margin-top:10px;">
         <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyFullScript(${i},'${currentScriptCat}')">📋 复制AI制作口令</button>
-        <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(s.title.replace('📱 来自',''))}','_blank')">📱 看原视频</button>
+        <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(s.title.replace(/[·\s]/g,' ').trim())}','_blank')">📱 看原视频</button>
       </div>
     </div>
   `).join('');
@@ -2194,8 +2193,8 @@ function renderScripts() {
 
 function copyFullScript(i, cat) {
   const filtered = cat === 'all' ? scripts : scripts.filter(s => s.cat === cat);
-  const sorted = [...filtered].sort((a,b) => (a.title.length + new Date().getDate()) % filtered.length - (b.title.length + new Date().getDate()) % filtered.length);
-  const s = sorted[i];
+  const shuffled = dailyShuffle(filtered);
+  const s = shuffled[i];
   navigator.clipboard.writeText(s.prompt).then(() => showToast('✓ AI制作口令已复制到剪贴板'));
 }
 
