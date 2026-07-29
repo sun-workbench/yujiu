@@ -916,19 +916,6 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 <!-- ===== 健身页 ===== -->
 <div class="page" id="page-fitness">
 
-  <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-size:24px;font-weight:700;" id="fitStreak">0</div>
-        <div style="font-size:11px;opacity:0.85;">连续打卡(天)</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:18px;font-weight:700;" id="fitWeight">--kg</div>
-        <div style="font-size:11px;opacity:0.85;">体重记录</div>
-      </div>
-    </div>
-  </div>
-
   <div class="card-title"><div class="card-title-bar"></div>🎯 选择训练部位</div>
   <div class="filter-tabs" id="fitParts">
     <button class="filter-tab active" data-part="all">全部</button>
@@ -942,14 +929,6 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 
   <div class="card-title"><div class="card-title-bar"></div>🎬 博主视频推荐</div>
   <div id="fitVideoList"></div>
-
-  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>📅 本周计划</div>
-  <div class="card">
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周一·三·五</div><div class="list-item-sub">核心训练</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">腹部 15min</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周二·四</div><div class="list-item-sub">下半身塑形</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">腿部 20min</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周六</div><div class="list-item-sub">全身综合</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">全身 30min</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">周日</div><div class="list-item-sub">拉伸放松</div></div><div style="font-size:12px;color:var(--primary);font-weight:700;">拉伸 10min</div></div>
-  </div>
 
   <!-- 健身计时器 -->
   <div class="card" style="margin-top:14px;">
@@ -976,36 +955,21 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('bilibili')"><div class="tool-tile-icon">📺</div><div class="tool-tile-name">B站</div></a>
   </div>
 
-  <div class="card-title"><div class="card-title-bar"></div>🤖 AI漫剧学习</div>
-  <div class="card">
-    <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:10px;">
-      从剧本创作到AI工具使用，系统学习AI短剧制作全流程，每天看一段快速入门。
-    </div>
-    <div class="form-row">
-      <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/AI短剧制作教程','_blank')">📱 看抖音教程</button>
-      <button class="btn btn-outline btn-sm" onclick="window.open('https://www.douyin.com/search/AI漫剧制作全流程','_blank')">🤖 更多教程</button>
-    </div>
-  </div>
+  <div class="card-title"><div class="card-title-bar"></div>🤖 AI漫剧学习 <span style="font-size:11px;color:var(--primary);font-weight:400;margin-left:auto;" id="aiUpdate">每日从抖音爬取更新</span></div>
+  <div id="aiVideoList"></div>
 
   <div class="card-title" style="margin-top:10px;"><div class="card-title-bar"></div>📝 今日爆款脚本 <span style="font-size:11px;color:var(--primary);font-weight:400;margin-left:auto;" id="scriptUpdate">每日从抖音爬取更新</span></div>
 
   <div class="filter-tabs" id="scriptFilter">
     <button class="filter-tab active" data-cat="all">全部</button>
-    <button class="filter-tab" data-cat="heal">治愈陪伴</button>
-    <button class="filter-tab" data-cat="funny">反差搞笑</button>
-    <button class="filter-tab" data-cat="emotion">情感共鸣</button>
+    <button class="filter-tab" data-cat="治愈">治愈陪伴</button>
+    <button class="filter-tab" data-cat="搞笑">反差搞笑</button>
+    <button class="filter-tab" data-cat="情感">情感共鸣</button>
+    <button class="filter-tab" data-cat="干货">干货教程</button>
     <button class="filter-tab" data-cat="tutorial">干货教程</button>
   </div>
 
   <div id="scriptList"></div>
-
-  <div class="card-title" style="margin-top:14px;"><div class="card-title-bar"></div>💼 快速跳转</div>
-  <div class="tool-grid">
-    <a class="tool-tile" href="javascript:void(0)" onclick="goPage('jobs')"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">求职推荐</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('boss')"><div class="tool-tile-icon">👔</div><div class="tool-tile-name">BOSS直聘</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin')"><div class="tool-tile-icon">💼</div><div class="tool-tile-name">猎聘</div></a>
-    <a class="tool-tile" href="javascript:void(0)" onclick="goApp('zhilian')"><div class="tool-tile-icon">📋</div><div class="tool-tile-name">智联</div></a>
-  </div>
 
 </div>
 
@@ -1308,106 +1272,144 @@ const defaultTasks = [
 ];
 
 const allJobs = [
-  { title: '产品运营', company: '字节跳动', salary: '9-15K', tags: ['产品', '用户增长', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E4%BA%A7%E5%93%81%E8%BF%90%E8%90%A5' },
-  { title: 'AI训练师', company: '腾讯科技', salary: '12-25K', tags: ['AI', '数据标注', '成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=AI%E8%AE%AD%E7%BB%83%E5%B8%88' },
-  { title: '社群运营', company: '某互联网大厂', salary: '6-10K', tags: ['社群', '微信', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E7%A4%BE%E7%BE%A4%E8%BF%90%E8%90%A5' },
-  { title: '直播运营', company: '某MCN机构', salary: '10-20K', tags: ['直播', '带货', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E7%9B%B4%E6%92%AD%E8%BF%90%E8%90%A5' },
-  { title: '数据专员', company: '乐狗科技', salary: '6-10K', tags: ['数据', 'Excel', '成都'], source: '智联招聘', url: 'https://sou.zhaopin.com/?kw=%E6%95%B0%E6%8D%AE%E4%B8%93%E5%91%98' },
-  { title: '运营助理', company: '某传媒公司', salary: '5-7K', tags: ['运营', '助理', '成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E8%BF%90%E8%90%A5%E5%8A%A9%E7%90%86' },
-  { title: '内容运营专员', company: '微光聚梦', salary: '6-9K', tags: ['内容', '电商', '成都'], source: '鱼泡直聘', url: 'https://www.yupaozhipin.com' },
-  { title: '标书专员', company: '某电商平台', salary: '7-10K', tags: ['标书', '招投标', '成都'], source: '前程无忧', url: 'https://we.51job.com/pc/search?keyword=%E6%A0%87%E4%B9%A6' },
-  { title: '电商运营', company: '某金融科技', salary: '10-20K', tags: ['电商', '淘宝', '成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=%E7%94%B5%E5%95%86%E8%BF%90%E8%90%A5' },
-  { title: '小红书运营', company: '某AI公司', salary: '6-10K', tags: ['小红书', '运营', '成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E8%BF%90%E8%90%A5' }
+  { title: '数据分析师', company: '某传媒公司', salary: '8-15K', tags: ['数据分析','SQL','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B8%88' },
+  { title: '产品运营', company: '字节跳动', salary: '9-15K', tags: ['产品','增长','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E4%BA%A7%E5%93%81%E8%BF%90%E8%90%A5' },
+  { title: '运营助理', company: '某互联网大厂', salary: '5-7K', tags: ['运营','助理','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E8%BF%90%E8%90%A5%E5%8A%A9%E7%90%86' },
+  { title: '视频剪辑师', company: '某MCN机构', salary: '8-15K', tags: ['剪辑','后期','成都'], source: '前程无忧', url: 'https://we.51job.com/pc/search?keyword=%E8%A7%86%E9%A2%91%E5%89%AA%E8%BE%91' },
+  { title: '直播运营', company: '某AI公司', salary: '10-20K', tags: ['直播','带货','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E7%9B%B4%E6%92%AD%E8%BF%90%E8%90%A5' },
+  { title: '小红书运营', company: '某教育科技', salary: '6-10K', tags: ['小红书','运营','成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E8%BF%90%E8%90%A5' },
+  { title: 'AI训练师', company: '极米科技', salary: '12-25K', tags: ['AI','标注','成都'], source: '猎聘', url: 'https://www.liepin.com/zhaopin/?key=AI%E8%AE%AD%E7%BB%83%E5%B8%88' },
+  { title: '短视频内容运营', company: '某游戏公司', salary: '10-18K', tags: ['短视频','内容','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E5%86%85%E5%AE%B9%E8%BF%90%E8%90%A5' },
+  { title: '新媒体运营', company: '乐狗科技', salary: '7-12K', tags: ['新媒体','抖音','成都'], source: '智联招聘', url: 'https://sou.zhaopin.com/?kw=%E6%96%B0%E5%AA%92%E4%BD%93%E8%BF%90%E8%90%A5' },
+  { title: '社群运营', company: '某电商平台', salary: '6-10K', tags: ['社群','微信','成都'], source: 'BOSS直聘', url: 'https://www.zhipin.com/web/geek/job?query=%E7%A4%BE%E7%BE%A4%E8%BF%90%E8%90%A5' }
 
 ];
 
 const fitVideos = [
-  { part: 'leg', title: '热门·30分钟瘦腿翘臀跟练', author: '攀攀Best', views: '310万粉', tag: '瘦腿翘臀', emoji: '🦵', url: 'https://www.douyin.com/search/%E7%98%A6%E8%85%BF%E7%BF%98%E8%87%80%20%E8%B7%9F%E7%BB%83' },
-  { part: 'leg', title: '精选·瘦腿训练 不伤膝盖', author: '每日推荐', views: '50万赞', tag: 'leg', emoji: '🦵', url: 'https://www.douyin.com/search/%E7%98%A6%E8%85%BF%E8%AE%AD%E7%BB%83%20%E4%B8%8D%E4%BC%A4%E8%86%9D%E7%9B%96' },
-  { part: 'hip', title: '热门·臀部塑形弹力带训练', author: '帕梅拉Pamela', views: '千万粉', tag: '臀部塑形', emoji: '🍑', url: 'https://www.douyin.com/search/%E8%87%80%E9%83%A8%E5%A1%91%E5%BD%A2%20%E5%BC%B9%E5%8A%9B%E5%B8%A6' },
-  { part: 'hip', title: '精选·蜜桃臀训练 居家', author: '米亚Mia', views: '百万粉', tag: 'hip', emoji: '🍑', url: 'https://www.douyin.com/search/%E8%9C%9C%E6%A1%83%E8%87%80%E8%AE%AD%E7%BB%83%20%E5%B1%85%E5%AE%B6' },
-  { part: 'back', title: '热门·推墙瘦背训练100下', author: '抖音热门', views: '爆款', tag: '瘦背训练', emoji: '🧘', url: 'https://www.douyin.com/search/%E6%8E%A8%E5%A2%99%E7%98%A6%E8%83%8C%20%E8%AE%AD%E7%BB%83' },
-  { part: 'back', title: '精选·背部塑形 哑铃跟练', author: '米亚Mia', views: '百万粉', tag: 'back', emoji: '🧘', url: 'https://www.douyin.com/search/%E8%83%8C%E9%83%A8%E5%A1%91%E5%BD%A2%20%E5%93%91%E9%93%83' },
-  { part: 'arm', title: '热门·手臂紧致 消除拜拜肉', author: '抖音热门', views: '50万赞', tag: '手臂紧致', emoji: '💪', url: 'https://www.douyin.com/search/%E6%89%8B%E8%87%82%E7%B4%A7%E8%87%B4%20%E6%8B%9C%E6%8B%9C%E8%82%89' },
-  { part: 'arm', title: '精选·哑铃手臂 快速紧致', author: '帕梅拉Pamela', views: '千万粉', tag: 'arm', emoji: '💪', url: 'https://www.douyin.com/search/%E5%93%91%E9%93%83%E6%89%8B%E8%87%82%20%E7%B4%A7%E8%87%B4' },
-  { part: 'abs', title: '热门·马甲线训练 核心燃脂', author: '帕梅拉Pamela', views: '千万粉', tag: '马甲线训练', emoji: '🧘', url: 'https://www.douyin.com/search/%E9%A9%AC%E7%94%B2%E7%BA%BF%E8%AE%AD%E7%BB%83%20%E6%A0%B8%E5%BF%83' },
-  { part: 'abs', title: '精选·腹肌燃脂 500次卷腹', author: '每日推荐', views: '百万赞', tag: 'abs', emoji: '🧘', url: 'https://www.douyin.com/search/%E8%85%B9%E8%82%8C%E7%87%83%E8%84%82%20%E5%8D%B7%E8%85%B9' },
-  { part: 'stretch', title: '热门·全身拉伸 睡前瑜伽', author: '帕梅拉Pamela', views: '千万粉', tag: '全身拉伸', emoji: '🌙', url: 'https://www.douyin.com/search/%E5%85%A8%E8%BA%AB%E6%8B%89%E4%BC%B8%20%E7%9D%A1%E5%89%8D%E7%91%9C%E4%BC%BD' },
-  { part: 'stretch', title: '精选·普拉提拉伸 放松全身', author: '每日推荐', views: '50万赞', tag: 'stretch', emoji: '🌙', url: 'https://www.douyin.com/search/%E6%99%AE%E6%8B%89%E6%8F%90%E6%8B%89%E4%BC%B8%20%E6%94%BE%E6%9D%BE' }
+  { part: 'leg', title: '跟练·瘦腿训练', author: '抖音热门博主', views: '48万', tag: '瘦腿训练', emoji: '🦵', url: 'https://www.douyin.com/search/%E7%98%A6%E8%85%BF%E8%AE%AD%E7%BB%83%20%E8%B7%9F%E7%BB%83' },
+  { part: 'leg', title: '打卡·瘦腿训练 跟练', author: '每日健身推荐', views: '32万', tag: 'leg', emoji: '🦵', url: 'https://www.douyin.com/search/%E7%98%A6%E8%85%BF%E8%AE%AD%E7%BB%83%20%E8%B7%9F%E7%BB%83' },
+  { part: 'hip', title: '跟练·蜜桃臀训练', author: '抖音热门博主', views: '48万', tag: '蜜桃臀训练', emoji: '🍑', url: 'https://www.douyin.com/search/%E8%9C%9C%E6%A1%83%E8%87%80%E8%AE%AD%E7%BB%83%20%E5%B1%85%E5%AE%B6' },
+  { part: 'hip', title: '打卡·蜜桃臀训练 居家', author: '每日健身推荐', views: '32万', tag: 'hip', emoji: '🍑', url: 'https://www.douyin.com/search/%E8%9C%9C%E6%A1%83%E8%87%80%E8%AE%AD%E7%BB%83%20%E5%B1%85%E5%AE%B6' },
+  { part: 'back', title: '跟练·背部塑形', author: '抖音热门博主', views: '48万', tag: '背部塑形', emoji: '🧘', url: 'https://www.douyin.com/search/%E8%83%8C%E9%83%A8%E5%A1%91%E5%BD%A2%20%E6%94%B9%E5%96%84%E4%BD%93%E6%80%81' },
+  { part: 'back', title: '打卡·背部塑形 改善体态', author: '每日健身推荐', views: '32万', tag: 'back', emoji: '🧘', url: 'https://www.douyin.com/search/%E8%83%8C%E9%83%A8%E5%A1%91%E5%BD%A2%20%E6%94%B9%E5%96%84%E4%BD%93%E6%80%81' },
+  { part: 'arm', title: '跟练·手臂紧致', author: '抖音热门博主', views: '48万', tag: '手臂紧致', emoji: '💪', url: 'https://www.douyin.com/search/%E6%89%8B%E8%87%82%E7%B4%A7%E8%87%B4%20%E6%8B%9C%E6%8B%9C%E8%82%89' },
+  { part: 'arm', title: '打卡·手臂紧致 拜拜肉', author: '每日健身推荐', views: '32万', tag: 'arm', emoji: '💪', url: 'https://www.douyin.com/search/%E6%89%8B%E8%87%82%E7%B4%A7%E8%87%B4%20%E6%8B%9C%E6%8B%9C%E8%82%89' },
+  { part: 'abs', title: '跟练·马甲线训练', author: '抖音热门博主', views: '48万', tag: '马甲线训练', emoji: '🧘', url: 'https://www.douyin.com/search/%E9%A9%AC%E7%94%B2%E7%BA%BF%E8%AE%AD%E7%BB%83%20%E6%A0%B8%E5%BF%83' },
+  { part: 'abs', title: '打卡·马甲线训练 核心', author: '每日健身推荐', views: '32万', tag: 'abs', emoji: '🧘', url: 'https://www.douyin.com/search/%E9%A9%AC%E7%94%B2%E7%BA%BF%E8%AE%AD%E7%BB%83%20%E6%A0%B8%E5%BF%83' },
+  { part: 'stretch', title: '跟练·全身拉伸', author: '抖音热门博主', views: '48万', tag: '全身拉伸', emoji: '🌙', url: 'https://www.douyin.com/search/%E5%85%A8%E8%BA%AB%E6%8B%89%E4%BC%B8%20%E7%9D%A1%E5%89%8D%E7%91%9C%E4%BC%BD' },
+  { part: 'stretch', title: '打卡·全身拉伸 睡前瑜伽', author: '每日健身推荐', views: '32万', tag: 'stretch', emoji: '🌙', url: 'https://www.douyin.com/search/%E5%85%A8%E8%BA%AB%E6%8B%89%E4%BC%B8%20%E7%9D%A1%E5%89%8D%E7%91%9C%E4%BC%BD' }
 
 ];
 
 const scripts = [
   {
-    title: '网飞是否造成韩剧寒冬 · 搞笑风',
+    title: '噜噜版 · 网飞是否造成韩剧寒冬',
+    cat: '治愈',
+    source: '噜噜',
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽妹在弹一把小吉他，顽顽崽好奇看着 台词：顽顽崽：你在弹什么？教我！字幕同步显示台词【分镜2 2-5秒 教学】镜头：近景，顽顽妹手把手教顽顽崽 台词：顽顽妹：食指放这里，中指这里…字幕同步显示台词【分镜3 5-8秒 弹奏】镜头：特写，顽顽崽努力弹出一个音节 台词：顽顽崽：好难！怎么你弹那么好听我弹像锯木头…字幕同步显示台词【分镜4 8-12秒 鼓励】镜头：近景，顽顽妹拍拍顽顽崽肩膀 台词：顽顽妹：我第一次也是这样的，多练就好！字幕同步显示台词【分镜5 12-15秒 合奏】镜头：全景，顽顽妹带着顽顽崽一起拨弦【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"网飞是否造成韩剧寒冬"融入剧情自然衔接'
+  },
+  {
+    title: '噜妹版 · 航天 中国人能飞',
     cat: '搞笑',
-    source: '噜噜',
-    tag: '温暖日常',
-    prompt: '场景：以为在网飞是否造成韩剧寒冬，结果在如何评价蜘蛛侠4首映\n画面：快速切换+夸张表情+鸭子音效\n文案：当你以为一切都在网飞是否造成韩剧寒冬的时候...\n音效：卡点转场音+笑声'
-  },
-  {
-    title: '维尼修斯是否适配阿森纳 · 情感风',
-    cat: '情感',
     source: '噜妹',
-    tag: '萌宠时刻',
-    prompt: '场景：关于维尼修斯是否适配阿森纳的独白\n画面：特写+暗调+雨天背景\n文案：维尼修斯是否适配阿森纳这件事，每个人都逃不过\n音效：雨声+低沉旁白'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：顽顽妹拿着玩具针筒说要打疫苗，顽顽崽脸都白了 台词：顽顽妹：该打针了哦~来手臂伸出来~字幕同步显示台词【分镜2 2-5秒 逃跑】镜头：中景，顽顽崽疯狂躲避 台词：顽顽崽：不要不要！我不要打针！字幕同步显示台词【分镜3 5-8秒 抓回】镜头：中景，顽顽妹一把抓住顽顽崽 台词：顽顽妹：别跑！又不是真的针！字幕同步显示台词【分镜4 8-12秒 假装】镜头：近景，顽顽妹用玩具针筒轻轻碰了一下 台词：顽顽妹：好了打完了。顽顽崽：啊！！字幕同步显示台词【分镜5 12-15秒 发现】镜头：特写，顽顽崽睁开眼睛发现完全不疼，憨笑起来【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"航天 中国人能飞"融入剧情自然衔接'
   },
   {
-    title: '航天 中国人能飞 · 干货风',
-    cat: '干货',
+    title: '噜噜版 · 深扒大S遗产争夺完整始末',
+    cat: '情感',
     source: '噜噜',
-    tag: '美食治愈',
-    prompt: '场景：航天 中国人能飞的3个冷知识\n画面：图表+快节奏剪辑+文字卡片\n文案：90%的人都不知道的航天 中国人能飞秘密\n音效：信息提示音'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽和顽顽妹背对背坐着谁也不理谁 台词：旁白：第N次冷战…字幕同步显示台词【分镜2 2-5秒 试探】镜头：近景，顽顽崽偷偷回头看一眼 台词：顽顽崽（内心）：她是不是也在偷看我…字幕同步显示台词【分镜3 5-8秒 同步】镜头：分屏，两人同时回头偷看对方，四目相对 台词：两人：啊！字幕同步显示台词【分镜4 8-12秒 嘴硬】镜头：中景，两人转过头嘴硬 台词：顽顽崽：我可不是在看你！顽顽妹：我也不是！字幕同步显示台词【分镜5 12-15秒 和好】镜头：特写，两人表情绷不住笑起来【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"深扒大S遗产争夺完整始末"融入剧情自然衔接'
   },
   {
-    title: '如何评价蜘蛛侠4首映 · 治愈风',
+    title: '噜妹版 · 如何评价蜘蛛侠4首映',
     cat: '治愈',
     source: '噜妹',
-    tag: '日常翻车',
-    prompt: '场景：如何评价蜘蛛侠4首映的温暖瞬间\n画面：慢镜头+暖色调+钢琴BGM\n文案：如何评价蜘蛛侠4首映的那一刻，我明白了什么是真正的幸福\n音效：轻柔钢琴+环境音'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽偷偷在床头放了一个小蛋糕和气球 台词：顽顽崽（悄悄）：今天是她生日…字幕同步显示台词【分镜2 2-5秒 醒来】镜头：近景，顽顽妹醒来看到蛋糕和气球 台词：顽顽妹：哇！这是…给我的？字幕同步显示台词【分镜3 5-8秒 出现】镜头：中景，顽顽崽跳出来举着自制卡片 台词：顽顽崽：生日快乐！！我准备了好久！字幕同步显示台词【分镜4 8-12秒 感动】镜头：特写，卡片上歪歪扭扭写着"最好的妹妹" 台词：顽顽妹（眼眶红红）：好丑的字…但好开心。字幕同步显示台词【分镜5 12-15秒 温馨】镜头：全景，两人一起吹蜡烛【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"如何评价蜘蛛侠4首映"融入剧情自然衔接'
   },
   {
-    title: '追梦谈詹姆斯加盟76人 · 搞笑风',
+    title: '噜噜版 · 澳洲文班距离NBA有多远',
     cat: '搞笑',
     source: '噜噜',
-    tag: 'AI整活',
-    prompt: '场景：以为在追梦谈詹姆斯加盟76人，结果在宜家多店停业背后的困局\n画面：快速切换+夸张表情+鸭子音效\n文案：当你以为一切都在追梦谈詹姆斯加盟76人的时候...\n音效：卡点转场音+笑声'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽妹躺在床上盖着被子，顽顽崽站在床边开心地看着 台词：顽顽崽：刚洗完澡好舒服。字幕同步显示台词【分镜2 2-5秒 互动特写】镜头：近景，顽顽崽爬上床钻进被子里抱着顽顽妹撒娇 台词：顽顽崽：被子，我冷，把被子给我抱抱。顽顽妹（嫌弃）：你能不能别学我。字幕同步显示台词【分镜3 5-8秒 表情特写】镜头：特写顽顽崽露出委屈又倔强的表情 台词：顽顽崽：我就是这样。顽顽妹（生气）：啊，你压我头发了！字幕同步显示台词【分镜4 8-12秒 情绪爆发】镜头：中景，顽顽妹皱起眉头一把把顽顽崽从床上推下去 台词：顽顽妹：啊【分镜5 12-15秒 搞笑收尾】镜头：特写坐在地上的顽顽崽一脸委屈【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"澳洲文班距离NBA有多远"融入剧情自然衔接'
   },
   {
-    title: '蜘蛛侠4零点场影评 · 情感风',
+    title: '噜妹版 · 蜘蛛侠4零点场影评',
     cat: '情感',
     source: '噜妹',
-    tag: '模仿秀',
-    prompt: '场景：关于蜘蛛侠4零点场影评的独白\n画面：特写+暗调+雨天背景\n文案：蜘蛛侠4零点场影评这件事，每个人都逃不过\n音效：雨声+低沉旁白'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽趴在小桌子上认真写日记 台词：顽顽崽：今天和顽顽妹一起…字幕同步显示台词【分镜2 2-5秒 偷看】镜头：近景，顽顽妹悄悄从后面探过头 台词：顽顽妹：在写什么呢？让我看看！字幕同步显示台词【分镜3 5-8秒 抢夺】镜头：中景，顽顽崽赶紧把日记本藏到身后 台词：顽顽崽：不许看！这是秘密！字幕同步显示台词【分镜4 8-12秒 追闹】镜头：中景，两人在卧室追来追去 台词：顽顽妹：就看一眼！字幕同步显示台词【分镜5 12-15秒 温馨】镜头：特写，日记本翻开：今天顽顽妹笑了，我也开心【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"蜘蛛侠4零点场影评"融入剧情自然衔接'
   },
   {
-    title: '澳洲文班距离NBA有多远 · 干货风',
-    cat: '干货',
+    title: '噜噜版 · 追梦谈詹姆斯加盟76人',
+    cat: '治愈',
     source: '噜噜',
-    tag: '人生感悟',
-    prompt: '场景：澳洲文班距离NBA有多远的3个冷知识\n画面：图表+快节奏剪辑+文字卡片\n文案：90%的人都不知道的澳洲文班距离NBA有多远秘密\n音效：信息提示音'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽坐在书桌前认真写信 台词：顽顽崽：我要给十年后的自己写一封信。字幕同步显示台词【分镜2 2-5秒 建议】镜头：近景，顽顽妹凑过来 台词：顽顽妹：顺便给十年后的我也写一封吧！字幕同步显示台词【分镜3 5-8秒 内容】镜头：特写，信纸上的字：十年后的你，还记得我偷吃零食被抓吗… 台词：顽顽崽：写完啦，不许偷看！字幕同步显示台词【分镜4 8-12秒 藏信】镜头：中景，两人把信封藏在柜子最深处 台词：顽顽妹：十年后一起拆哦。字幕同步显示台词【分镜5 12-15秒 温馨】镜头：全景，两人拉钩约定【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"追梦谈詹姆斯加盟76人"融入剧情自然衔接'
   },
   {
-    title: '宜家多店停业背后的困局 · 治愈风',
+    title: '噜妹版 · LKs挑战BW最高画质',
+    cat: '搞笑',
+    source: '噜妹',
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽在镜子前捏肚子叹气 台词：顽顽崽：我是不是胖了…字幕同步显示台词【分镜2 2-5秒 宣布】镜头：近景，顽顽崽举拳宣布 台词：顽顽崽：从今天开始！我要减肥！！字幕同步显示台词【分镜3 5-8秒 行动】镜头：中景，顽顽崽做俯卧撑、深蹲，很快气喘吁吁 台词：顽顽崽：好累…1、2…够了吧…字幕同步显示台词【分镜4 8-12秒 引诱】镜头：近景，顽顽妹拿着一块蛋糕走进来 台词：顽顽妹：我刚做的蛋糕要不要尝尝？字幕同步显示台词【分镜5 12-15秒 破功】镜头：特写，顽顽崽眼睛放光冲过去，减肥失败【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"LKs挑战BW最高画质"融入剧情自然衔接'
+  },
+  {
+    title: '噜噜版 · 蜘蛛侠4符合预期吗',
+    cat: '情感',
+    source: '噜噜',
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：深夜柔光，两人并排躺在床上 台词：顽顽妹：你说…未来会是什么样子？字幕同步显示台词【分镜2 2-5秒 想象】镜头：近景，顽顽崽眼睛里闪着星星 台词：顽顽崽：未来啊…肯定有吃不完的零食！字幕同步显示台词【分镜3 5-8秒 吐槽】镜头：近景，顽顽妹无语 台词：顽顽妹：我说正经的！字幕同步显示台词【分镜4 8-12秒 认真】镜头：中景，顽顽崽坐起来认真说 台词：顽顽崽：不管未来什么样子，我都在你身边。字幕同步显示台词【分镜5 12-15秒 感动】镜头：特写，顽顽妹眼眶湿润，伸手握住顽顽崽的手【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"蜘蛛侠4符合预期吗"融入剧情自然衔接'
+  },
+  {
+    title: '噜妹版 · 马喽单挑全沙滩的垃圾',
     cat: '治愈',
     source: '噜妹',
-    tag: '成长故事',
-    prompt: '场景：宜家多店停业背后的困局的温暖瞬间\n画面：慢镜头+暖色调+钢琴BGM\n文案：宜家多店停业背后的困局的那一刻，我明白了什么是真正的幸福\n音效：轻柔钢琴+环境音'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：夜晚关灯，顽顽崽拿手电筒照着脸讲鬼故事 台词：顽顽崽：从前有个黑影…每天晚上都会出现在床边…字幕同步显示台词【分镜2 2-5秒 害怕】镜头：近景，顽顽妹用被子蒙住头只露出一双眼睛 台词：顽顽妹：别说了！我害怕！字幕同步显示台词【分镜3 5-8秒 吓人】镜头：中景，顽顽崽突然扑向顽顽妹大喊 台词：顽顽崽：哇！！字幕同步显示台词【分镜4 8-12秒 反击】镜头：特写，顽顽妹尖叫后一巴掌拍在顽顽崽脸上 台词：顽顽妹：你是不是有病！字幕同步显示台词【分镜5 12-15秒 搞笑】镜头：中景，顽顽崽捂着脸躺在地上求饶【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"马喽单挑全沙滩的垃圾"融入剧情自然衔接'
   },
   {
-    title: '日本熊本地震已致13死 · 搞笑风',
+    title: '噜噜版 · 平戎万里辛弃疾',
     cat: '搞笑',
     source: '噜噜',
-    tag: 'AI教程',
-    prompt: '场景：以为在日本熊本地震已致13死，结果在给荷兰弟赞达亚秀中国功夫\n画面：快速切换+夸张表情+鸭子音效\n文案：当你以为一切都在日本熊本地震已致13死的时候...\n音效：卡点转场音+笑声'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽披着床单当斗篷站在床上 台词：顽顽崽：我是超级英雄！来拯救世界！字幕同步显示台词【分镜2 2-5秒 搞怪】镜头：近景，顽顽崽做出超人飞行姿势 台词：顽顽崽：咻——！字幕同步显示台词【分镜3 5-8秒 吐槽】镜头：中景，顽顽妹面无表情看着 台词：顽顽妹：你连垃圾桶都拯救不了还好意思说拯救世界。字幕同步显示台词【分镜4 8-12秒 摔倒】镜头：中景，顽顽崽从床上"飞"下来摔倒在毛绒小熊堆里 台词：顽顽崽：啊！安全着陆…字幕同步显示台词【分镜5 12-15秒 暖心】镜头：近景，顽顽妹扶起顽顽崽整理床单斗篷 台词：顽顽妹：傻不傻，不过你是我的英雄【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"平戎万里辛弃疾"融入剧情自然衔接'
   },
   {
-    title: '马喽单挑全沙滩的垃圾 · 情感风',
+    title: '噜妹版 · 绝区零3.1版本实况',
     cat: '情感',
     source: '噜妹',
-    tag: '运营技巧',
-    prompt: '场景：关于马喽单挑全沙滩的垃圾的独白\n画面：特写+暗调+雨天背景\n文案：马喽单挑全沙滩的垃圾这件事，每个人都逃不过\n音效：雨声+低沉旁白'
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：夜晚暖光，顽顽崽在床上翻来覆去睡不着 台词：旁白：半夜两点…字幕同步显示台词【分镜2 2-5秒 惊醒】镜头：特写，顽顽崽猛地坐起来大口喘气 台词：顽顽崽：好可怕的噩梦！字幕同步显示台词【分镜3 5-8秒 关心】镜头：中景，顽顽妹被吵醒揉着眼睛坐起来 台词：顽顽妹：怎么了？做噩梦了吗？别怕我在这儿。字幕同步显示台词【分镜4 8-12秒 安慰】镜头：近景，顽顽妹轻轻拍着顽顽崽的头 台词：顽顽妹：梦都是假的~~ 快睡吧。字幕同步显示台词【分镜5 12-15秒 入睡】镜头：全景，顽顽崽靠在顽顽妹肩膀上安心睡去【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"绝区零3.1版本实况"融入剧情自然衔接'
+  },
+  {
+    title: '噜噜版 · Kimi K3官方教程来',
+    cat: '治愈',
+    source: '噜噜',
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，两个小人趴在窗台上看夜空 台词：顽顽妹：看！流星！字幕同步显示台词【分镜2 2-5秒 许愿】镜头：近景，两人闭眼许愿 台词：顽顽崽（闭眼）：希望每天都能和顽顽妹在一起…字幕同步显示台词【分镜3 5-8秒 偷听】镜头：特写，顽顽妹睁开一只眼偷看 台词：顽顽妹（偷笑）：原来你许这个愿望啊~字幕同步显示台词【分镜4 8-12秒 害羞】镜头：近景，顽顽崽脸红 台词：顽顽崽：你偷听我许愿！！字幕同步显示台词【分镜5 12-15秒 拥抱】镜头：全景，顽顽妹笑着给了顽顽崽一个大大的拥抱【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"Kimi K3官方教程来了"融入剧情自然衔接'
+  },
+  {
+    title: '噜妹版 · 绝区零蕾米埃尔丹喂饭级攻',
+    cat: '搞笑',
+    source: '噜妹',
+    tag: 'AI漫剧',
+    prompt: '【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽面前堆着三本书，表情痛苦 台词：顽顽崽：明天考试，今天才开始复习…字幕同步显示台词【分镜2 2-5秒 翻书】镜头：特写，快速翻书特效 台词：顽顽崽：量子力学、微积分、英语…字幕同步显示台词【分镜3 5-8秒 崩溃】镜头：近景，顽顽崽趴在桌上 台词：顽顽崽：根本来不及！我想放弃了！字幕同步显示台词【分镜4 8-12秒 鼓励】镜头：中景，顽顽妹端来热牛奶放桌上 台词：顽顽妹：慢慢来，我陪你，不会的问我。字幕同步显示台词【分镜5 12-15秒 打气】镜头：特写，顽顽崽被鼓励后重新拿起笔【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"绝区零蕾米埃尔丹喂饭级攻略"融入剧情自然衔接'
   }
+
+];
+
+const aiVideos = [
+  { title: '配音如何匹配角色性格', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/%E9%85%8D%E9%9F%B3%E5%A6%82%E4%BD%95%E5%8C%B9%E9%85%8D%E8%A7%92%E8%89%B2%E6%80%A7%E6%A0%BC' },
+  { title: '短视频前3秒如何抓住观众', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/%E7%9F%AD%E8%A7%86%E9%A2%91%E5%89%8D3%E7%A7%92%E5%A6%82%E4%BD%95%E6%8A%93%E4%BD%8F%E8%A7%82%E4%BC%97' },
+  { title: 'AI短剧的转场特效', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/AI%E7%9F%AD%E5%89%A7%E7%9A%84%E8%BD%AC%E5%9C%BA%E7%89%B9%E6%95%88' },
+  { title: '如何设计笑点和反差', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E7%AC%91%E7%82%B9%E5%92%8C%E5%8F%8D%E5%B7%AE' },
+  { title: 'AI视频中的人物动作设计', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/AI%E8%A7%86%E9%A2%91%E4%B8%AD%E7%9A%84%E4%BA%BA%E7%89%A9%E5%8A%A8%E4%BD%9C%E8%AE%BE%E8%AE%A1' },
+  { title: 'AI视频的配音情感表达', author: '抖音AI创作博主', tag: 'AI学习', url: 'https://www.douyin.com/search/AI%E8%A7%86%E9%A2%91%E7%9A%84%E9%85%8D%E9%9F%B3%E6%83%85%E6%84%9F%E8%A1%A8%E8%BE%BE' }
 
 ];
 
@@ -1846,20 +1848,20 @@ const daChapters = [
 ];
 
 const recipes = [
-  { name: '农家一碗香', emoji: '🔥', badge: '下饭', time: '20min', ingredients: ['前腿肉 200g', '鸡蛋 3个', '线椒 3根', '豆豉 1勺', '蒜末 适量'], steps: '1.鸡蛋煎至金黄盛出\n2.肉片下锅炒出油脂\n3.加豆豉蒜末爆香\n4.加线椒翻炒断生\n5.倒回鸡蛋翻炒\n6.生抽蚝油调味出锅', tutorial: '抖音搜「农家一碗香做法」' },
-  { name: '公瑾爆蛋', emoji: '🍳', badge: '爆款', time: '15min', ingredients: ['鸡蛋 5个', '番茄酱 2勺', '白糖 1勺', '生抽 1勺', '白醋 1勺'], steps: '1.调酱汁:番茄酱+糖+生抽+醋+水\n2.热锅多油煎蛋至酥脆\n3.下蒜片爆香\n4.倒入酱汁大火收浓\n5.酱汁裹满鸡蛋出锅', tutorial: '抖音搜「公瑾爆蛋做法」' },
-  { name: '番茄金针菇肥牛汤', emoji: '🍲', badge: '养生', time: '20min', ingredients: ['肥牛卷 200g', '番茄 2个', '金针菇 1把', '豆皮 1张', '葱花 适量'], steps: '1.番茄去皮切丁炒出汤汁\n2.加清水煮开\n3.加豆皮金针菇煮2分钟\n4.肥牛焯水后入锅\n5.加盐胡椒粉调味\n6.撒葱花出锅', tutorial: '抖音搜「番茄肥牛汤做法」' },
-  { name: '凉拌拍黄瓜', emoji: '🥒', badge: '开胃', time: '10min', ingredients: ['黄瓜 2根', '蒜末 适量', '小米辣 2个', '生抽 2勺', '香醋 2勺'], steps: '1.黄瓜用刀背拍裂切段\n2.加盐腌制10分钟\n3.倒掉腌出的水\n4.蒜末小米辣热油泼香\n5.加生抽香醋白糖拌匀\n6.静置3分钟入味', tutorial: '抖音搜「拍黄瓜做法」' },
-  { name: '手撕酸辣茄子', emoji: '🍆', badge: '低脂', time: '20min', ingredients: ['紫长茄 2根', '蒜末 适量', '小米辣 2个', '生抽 2勺', '陈醋 2勺'], steps: '1.茄子整根蒸10分钟\n2.放凉手撕成条\n3.沥干多余水分\n4.调酸辣料汁泼热油\n5.淋在茄子上拌匀\n6.冷藏5分钟更入味', tutorial: '抖音搜「手撕茄子做法」' },
-  { name: '西葫芦炒鸡蛋', emoji: '🥒', badge: '快手', time: '10min', ingredients: ['西葫芦 1根', '鸡蛋 3个', '蒜末 适量', '盐 适量', '白胡椒粉 少许'], steps: '1.鸡蛋打散炒熟盛出\n2.蒜末爆香\n3.西葫芦切片大火翻炒2分钟\n4.倒回鸡蛋翻匀\n5.加盐胡椒粉调味\n6.快速出锅保留脆嫩', tutorial: '抖音搜「西葫芦炒鸡蛋做法」' },
-  { name: '酸辣手撕娃娃菜', emoji: '🥬', badge: '下饭', time: '10min', ingredients: ['娃娃菜 2颗', '蒜末 适量', '小米辣 2个', '生抽 2勺', '蚝油 1勺'], steps: '1.娃娃菜手撕成条\n2.焯水30秒捞出\n3.调酸辣料汁\n4.淋在娃娃菜上拌匀\n5.静置2分钟入味\n6.汤汁拌饭一绝', tutorial: '抖音搜「酸辣娃娃菜做法」' },
-  { name: '苦瓜滑炒牛肉', emoji: '🥩', badge: '解暑', time: '20min', ingredients: ['苦瓜 1根', '牛肉 200g', '姜丝 适量', '淀粉 1勺', '黑胡椒 适量'], steps: '1.苦瓜去白瓤切片焯水\n2.牛肉逆纹切片腌制10分钟\n3.热锅冷油滑炒牛肉至八成熟\n4.盛出备用\n5.苦瓜大火翻炒\n6.倒回牛肉加调料翻匀', tutorial: '抖音搜「苦瓜炒牛肉做法」' },
-  { name: '白糖凉拌番茄', emoji: '🍅', badge: '甜品', time: '5min', ingredients: ['番茄 2个', '白糖 适量'], steps: '1.番茄洗净切块\n2.均匀撒上白糖\n3.静置5分钟出汁\n4.冷藏10分钟口感更佳', tutorial: '抖音搜「糖拌番茄做法」' },
-  { name: '马蹄里脊小炒', emoji: '🐷', badge: '清爽', time: '15min', ingredients: ['猪里脊 200g', '马蹄 8个', '盐 适量', '淀粉 1勺', '白胡椒粉 少许'], steps: '1.里脊切片泡水去血水\n2.加盐淀粉腌制8分钟\n3.马蹄去皮切片\n4.热锅冷油滑炒里脊至七成熟\n5.下马蹄大火翻炒40秒\n6.加盐胡椒粉翻匀出锅', tutorial: '抖音搜「马蹄炒里脊做法」' },
-  { name: '葱花煎鸡饼', emoji: '🍗', badge: '香嫩', time: '15min', ingredients: ['鸡蛋 4个', '小葱 1大把', '盐 少许', '清水 2勺'], steps: '1.鸡蛋加葱花盐清水打散\n2.朝一个方向搅拌至起泡\n3.热锅多油烧至冒烟\n4.倒入蛋液中小火煎\n5.底部焦黄翻面\n6.大火快速出锅保留嫩滑', tutorial: '抖音搜「葱花煎蛋做法」' },
-  { name: '干煸四季豆', emoji: '🌶️', badge: '川菜', time: '20min', ingredients: ['四季豆 300g', '干辣椒 10g', '花椒 5g', '蒜末 适量', '白芝麻 适量'], steps: '1.四季豆去筋掰段\n2.锅中多油炸至表面起皱\n3.捞出控油\n4.留底油爆香辣椒花椒蒜末\n5.下四季豆翻炒\n6.加盐糖撒芝麻出锅', tutorial: '抖音搜「干煸四季豆做法」' },
-  { name: '油菜炒鸡蛋', emoji: '🥬', badge: '家常', time: '10min', ingredients: ['油菜 300g', '鸡蛋 3个', '蒜末 适量', '小米辣 2个', '蚝油 1勺'], steps: '1.鸡蛋打散炒熟盛出\n2.蒜末小米辣爆香\n3.下油菜大火翻炒至软\n4.倒回鸡蛋翻匀\n5.加盐生抽蚝油调味\n6.翻炒均匀出锅', tutorial: '抖音搜「油菜炒鸡蛋做法」' },
-  { name: '冬瓜丸子汤', emoji: '🍲', badge: '清润', time: '25min', ingredients: ['冬瓜 300g', '猪肉末 250g', '鸡蛋 1个', '姜末 适量', '淀粉 1勺'], steps: '1.肉末加蛋姜末淀粉搅拌上劲\n2.冬瓜去皮切块\n3.水烧开下冬瓜煮5分钟\n4.手挤丸子下锅\n5.煮至丸子浮起\n6.加盐胡椒粉香油调味', tutorial: '抖音搜「冬瓜丸子汤做法」' }
+  { name: '西红柿炒鸡蛋', emoji: '🍅', badge: '家常', time: '15min', ingredients: ['西红柿 2个','鸡蛋 3个','葱花 适量','盐 适量','糖 1勺'], steps: '1.鸡蛋打散加盐\n2.热锅冷油炒鸡蛋盛出\n3.西红柿切块下锅\n4.炒出汤汁加糖\n5.加入鸡蛋翻炒\n6.撒葱花出锅', tutorial: '抖音搜「西红柿炒鸡蛋做法」' },
+  { name: '肉沫焖土豆', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','生抽 2勺','老抽 1勺'], steps: '1.土豆切丁\n2.泡水去粉\n3.炒香肉沫\n4.加土豆焖', tutorial: '抖音搜「肉沫焖土豆丁」' },
+  { name: '凉拌黄瓜', emoji: '🥒', badge: '快手', time: '10min', ingredients: ['黄瓜 2根','蒜末 适量','醋 2勺','辣椒油 1勺'], steps: '1.黄瓜拍碎\n2.加盐腌制\n3.调汁拌匀', tutorial: '抖音搜「凉拌黄瓜做法」' },
+  { name: '糖醋里脊', emoji: '🍖', badge: '经典', time: '30min', ingredients: ['猪里脊 300g','番茄酱 3勺','糖 2勺','醋 2勺'], steps: '1.里脊切条腌制\n2.裹淀粉油炸\n3.调糖醋汁\n4.翻裹收汁', tutorial: '抖音搜「糖醋里脊做法」' },
+  { name: '宫保鸡丁', emoji: '🐔', badge: '经典', time: '25min', ingredients: ['鸡胸肉 300g','花生米 50g','黄瓜 1根','干辣椒'], steps: '1.鸡丁腌制\n2.炒花生\n3.爆炒鸡丁\n4.加料翻炒', tutorial: '抖音搜「宫保鸡丁做法」' },
+  { name: '蛋炒饭', emoji: '🍚', badge: '快手', time: '10min', ingredients: ['剩米饭 1碗','鸡蛋 2个','火腿肠 1根','葱花'], steps: '1.先炒蛋\n2.下米饭\n3.加火腿丁\n4.撒葱花出锅', tutorial: '抖音搜「蛋炒饭做法」' },
+  { name: '蒜蓉西兰花', emoji: '🥦', badge: '减脂', time: '10min', ingredients: ['西兰花 1颗','蒜末 适量','蚝油 1勺'], steps: '1.西兰花焯水\n2.炒香蒜末\n3.加西兰花\n4.调味出锅', tutorial: '抖音搜「蒜蓉西兰花做法」' },
+  { name: '麻婆豆腐', emoji: '🌶️', badge: '川菜', time: '20min', ingredients: ['嫩豆腐 1块','肉沫 100g','豆瓣酱 2勺','花椒粉 适量'], steps: '1.豆腐切块焯水\n2.炒香肉沫\n3.加豆瓣酱\n4.加水煮豆腐\n5.勾芡撒花椒', tutorial: '抖音搜「麻婆豆腐做法」' },
+  { name: '可乐鸡翅', emoji: '🥤', badge: '美味', time: '30min', ingredients: ['鸡翅 8个','可乐 1罐','生抽 2勺','姜片 3片'], steps: '1.鸡翅划刀焯水\n2.煎至两面金黄\n3.加姜料\n4.倒可乐炖\n5.收汁', tutorial: '抖音搜「可乐鸡翅做法」' },
+  { name: '金汤肥牛', emoji: '🥘', badge: '开胃', time: '20min', ingredients: ['肥牛 200g','金针菇 1把','南瓜泥 2勺','黄椒酱'], steps: '1.金针菇焯水\n2.炒香蒜末\n3.加黄椒酱\n4.肥牛烫熟', tutorial: '抖音搜「金汤肥牛做法」' },
+  { name: '酸辣土豆丝', emoji: '🥔', badge: '快手', time: '15min', ingredients: ['土豆 2个','干辣椒 适量','醋 2勺'], steps: '1.土豆切丝\n2.泡水去淀粉\n3.爆香辣椒\n4.大火炒\n5.加醋出锅', tutorial: '抖音搜「酸辣土豆丝做法」' },
+  { name: '红烧排骨', emoji: '🥩', badge: '硬菜', time: '45min', ingredients: ['排骨 500g','冰糖 适量','生抽 3勺','八角桂皮'], steps: '1.排骨焯水\n2.炒糖色\n3.加料炖\n4.大火收汁', tutorial: '抖音搜「红烧排骨做法」' },
+  { name: '葱油拌面', emoji: '🍜', badge: '快手', time: '15min', ingredients: ['面条 1把','葱 1大把','生抽 3勺','糖 1勺'], steps: '1.炸葱油\n2.煮面\n3.调酱汁\n4.拌匀即食', tutorial: '抖音搜「葱油拌面做法」' },
+  { name: '清炒时蔬', emoji: '🥬', badge: '减脂', time: '10min', ingredients: ['时令青菜 1把','蒜瓣 3颗','盐 适量','蚝油 1勺'], steps: '1.青菜洗净\n2.爆香蒜\n3.大火翻炒\n4.调味出锅', tutorial: '抖音搜「清炒时蔬做法」' }
 
 ];
 
@@ -1901,8 +1903,6 @@ if (lastTaskDate !== today) {
 
 let water = getData('water', 0);
 let fitSeconds = getData('fitSeconds', 0);
-let fitStreak = getData('fitStreak', 0);
-let fitWeight = getData('fitWeight', '--');
 let timerRunning = false;
 let timerInterval = null;
 
@@ -2106,12 +2106,9 @@ function toggleTimer() {
         timerRunning = false;
         document.getElementById('timerBtn').textContent = '已达成';
         setData('fitDay', true);
-        setData('fitStreak', fitStreak + 1);
-        fitStreak = getData('fitStreak', 0);
         setData('fitSeconds', fitSeconds);
         showToast('🎉 健身1小时目标达成！');
         updateStats();
-        document.getElementById('fitStreak').textContent = fitStreak;
       }
     }, 1000);
   }
@@ -2206,6 +2203,24 @@ document.querySelectorAll('#scriptFilter .filter-tab').forEach(t => {
     renderScripts();
   });
 });
+
+// ==================== AI漫剧学习（每日视频） ====================
+function renderAiVideos() {
+  const shuffled = dailyShuffle(aiVideos);
+  document.getElementById('aiVideoList').innerHTML = shuffled.map(v => `
+    <div class="video-card" onclick="window.open('${v.url}','_blank')">
+      <div class="video-thumb">🤖</div>
+      <div class="video-info">
+        <div class="video-title">${v.title}</div>
+        <div class="video-meta">${v.author} · ${v.tag}</div>
+      </div>
+    </div>
+  `).join('');
+  if (document.getElementById('aiUpdate')) {
+    const today = new Date();
+    document.getElementById('aiUpdate').textContent = `${today.getMonth()+1}月${today.getDate()}日已更新 · 共${aiVideos.length}个视频`;
+  }
+}
 
 // ==================== 学习 ====================
 function renderStudy() {
@@ -2730,18 +2745,18 @@ function recipeCardHTML(r, compact) {
 // ==================== 知识速览（每日更新 - 抖音运营视频） ====================
 function refreshKnowledge() {
   const tips = [
-    { icon: '📈', title: '抖音算法权重:完播率>收藏>互动', tag: '算法机制', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E7%AE%97%E6%B3%95%E6%9D%83%E9%87%8D' },
-    { icon: '🎯', title: '3秒黄金钩子:痛点/悬念/反差', tag: '留人技巧', url: 'https://www.douyin.com/search/3%E7%A7%92%E9%BB%84%E9%87%91%E9%92%A9%E5%AD%90' },
-    { icon: '🔍', title: '账号定位窄而深:越垂直越涨粉', tag: '账号定位', url: 'https://www.douyin.com/search/%E5%B8%90%E5%8F%B7%E5%AE%9A%E4%BD%8D%20%E5%9E%82%E7%9B%B4%E8%B5%9B%E9%81%93' },
-    { icon: '⏰', title: '发布黄金时段:19:00-22:00', tag: '发布时间', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E5%8F%91%E5%B8%83%E9%BB%84%E9%87%91%E6%97%B6%E9%97%B4' },
-    { icon: '💬', title: '评论区运营:置顶神评带动互动', tag: '互动技巧', url: 'https://www.douyin.com/search/%E8%AF%84%E8%AE%BA%E5%8C%BA%E8%BF%90%E8%90%A5%E6%B6%A8%E7%B2%89' },
-    { icon: '🔥', title: '热点宝追踪实时上升话题', tag: '蹭热点', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E7%83%AD%E7%82%B9%E5%AE%9D' },
-    { icon: '📝', title: '爆款内容公式:钩子+干货+引导', tag: '内容模板', url: 'https://www.douyin.com/search/%E7%88%86%E6%AC%BE%E5%86%85%E5%AE%B9%E5%85%AC%E5%BC%8F' },
-    { icon: '🔗', title: '系列化内容:期期引导关注下期', tag: '涨粉策略', url: 'https://www.douyin.com/search/%E7%B3%BB%E5%88%97%E5%8C%96%E5%86%85%E5%AE%B9%E6%B6%A8%E7%B2%89' },
-    { icon: '📊', title: '抖音SEO:标题埋关键词占搜索流量', tag: '搜索优化', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3SEO%E6%90%9C%E7%B4%A2%E6%B5%81%E9%87%8F' },
-    { icon: '🤖', title: 'AI辅助创作:剪映AI脚本生成', tag: 'AI工具', url: 'https://www.douyin.com/search/%E5%89%AA%E6%98%A0AI%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90' },
-    { icon: '💡', title: '内容价值系数:知识+情感+实用', tag: '算法指标', url: 'https://www.douyin.com/search/%E5%86%85%E5%AE%B9%E4%BB%B7%E5%80%BC%E7%B3%BB%E6%95%B0' },
-    { icon: '🎬', title: '视觉锤:固定片头+专属BGM', tag: '品牌记忆', url: 'https://www.douyin.com/search/%E8%A7%86%E8%A7%89%E9%94%A4%E7%89%87%E5%A4%B4%E5%8A%A8%E7%94%BB' }
+    { icon: '🔥', title: '网飞是否造成韩剧寒冬', tag: '今日热搜', url: 'https://www.douyin.com/search/%E7%BD%91%E9%A3%9E%E6%98%AF%E5%90%A6%E9%80%A0%E6%88%90%E9%9F%A9%E5%89%A7%E5%AF%92%E5%86%AC' },
+    { icon: '📈', title: '航天 中国人能飞', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%88%AA%E5%A4%A9%20%E4%B8%AD%E5%9B%BD%E4%BA%BA%E8%83%BD%E9%A3%9E' },
+    { icon: '🎯', title: '深扒大S遗产争夺完整始末', tag: '今日热搜', url: 'https://www.douyin.com/search/%E6%B7%B1%E6%89%92%E5%A4%A7S%E9%81%97%E4%BA%A7%E4%BA%89%E5%A4%BA%E5%AE%8C%E6%95%B4%E5%A7%8B%E6%9C%AB' },
+    { icon: '💡', title: '如何评价蜘蛛侠4首映', tag: '今日热搜', url: 'https://www.douyin.com/search/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E8%9C%98%E8%9B%9B%E4%BE%A04%E9%A6%96%E6%98%A0' },
+    { icon: '🌟', title: '澳洲文班距离NBA有多远', tag: '今日热搜', url: 'https://www.douyin.com/search/%E6%BE%B3%E6%B4%B2%E6%96%87%E7%8F%AD%E8%B7%9D%E7%A6%BBNBA%E6%9C%89%E5%A4%9A%E8%BF%9C' },
+    { icon: '📊', title: '蜘蛛侠4零点场影评', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%9C%98%E8%9B%9B%E4%BE%A04%E9%9B%B6%E7%82%B9%E5%9C%BA%E5%BD%B1%E8%AF%84' },
+    { icon: '🎬', title: '追梦谈詹姆斯加盟76人', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%BF%BD%E6%A2%A6%E8%B0%88%E8%A9%B9%E5%A7%86%E6%96%AF%E5%8A%A0%E7%9B%9F76%E4%BA%BA' },
+    { icon: '💰', title: 'LKs挑战BW最高画质', tag: '今日热搜', url: 'https://www.douyin.com/search/LKs%E6%8C%91%E6%88%98BW%E6%9C%80%E9%AB%98%E7%94%BB%E8%B4%A8' },
+    { icon: '📈', title: '抖音流量池机制', tag: '底层逻辑', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E6%B5%81%E9%87%8F%E6%B1%A0%E6%9C%BA%E5%88%B6' },
+    { icon: '🎯', title: 'AI短剧爆款公式', tag: '选题技巧', url: 'https://www.douyin.com/search/AI%E7%9F%AD%E5%89%A7%E7%88%86%E6%AC%BE%E5%85%AC%E5%BC%8F' },
+    { icon: '🤖', title: 'AI生成短视频教程', tag: 'AI工具', url: 'https://www.douyin.com/search/AI%E7%94%9F%E6%88%90%E7%9F%AD%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B' },
+    { icon: '📝', title: '抖音完播率技巧', tag: '核心技能', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E5%AE%8C%E6%92%AD%E7%8E%87%E6%8A%80%E5%B7%A7' }
   
   ];
   const today = dailyPick(tips, 4);
@@ -2843,6 +2858,7 @@ updateStats();
 renderTasks();
 renderFitVideos();
 renderScripts();
+renderAiVideos();
 renderRecipe();
 renderDa();
 renderMoney();
@@ -2851,8 +2867,6 @@ renderStudy();
 renderRead();
 renderJobs();
 updateTimerDisplay();
-document.getElementById('fitStreak').textContent = fitStreak;
-document.getElementById('fitWeight').textContent = fitWeight + 'kg';
 refreshKnowledge();
 
 /* ===== 书籍阅读器 ===== */

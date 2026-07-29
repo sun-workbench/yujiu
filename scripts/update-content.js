@@ -1,6 +1,7 @@
 /**
  * 每日内容更新脚本 — GitHub Actions 自动运行
- * 从 B站公开 API 抓取热门内容，生成抖音搜索链接，更新 index.html
+ * 从 B站公开 API 抓取热门搜索关键词，生成噜噜/噜妹 AI漫剧脚本和抖音搜索链接
+ * 更新 index.html 中的每日内容数据数组
  */
 
 const https = require('https');
@@ -9,22 +10,17 @@ const fs = require('fs');
 // ============ 工具函数 ============
 
 function fetchJSON(url) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const headers = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       'Referer': 'https://www.bilibili.com/',
-      'Accept': 'application/json, text/plain, */*',
-      'Accept-Language': 'zh-CN,zh;q=0.9'
+      'Accept': 'application/json'
     };
     const req = https.get(url, { headers, timeout: 20000 }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch(e) {
-          resolve(null);
-        }
+        try { resolve(JSON.parse(data)); } catch(e) { resolve(null); }
       });
     });
     req.on('error', () => resolve(null));
@@ -32,19 +28,39 @@ function fetchJSON(url) {
   });
 }
 
-function formatViews(num) {
-  if (num >= 10000) return Math.round(num / 10000) + '万';
-  if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-  return String(num);
-}
-
 function douyinUrl(keyword) {
   return `https://www.douyin.com/search/${encodeURIComponent(keyword)}`;
 }
 
+function formatViews(num) {
+  if (num >= 10000) return Math.round(num / 10000) + '万';
+  return String(num);
+}
+
+// 日期种子 Fisher-Yates 洗牌
+function seededShuffle(arr, seed) {
+  const result = [...arr];
+  let s = seed;
+  function rand() {
+    s = s + 0x6D2B79F5 | 0;
+    let t = Math.imul(s ^ s >>> 15, 1 | s);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function getSeed() {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
 // ============ 数据源：B站公开 API ============
 
-// 热门视频（无需认证）
 async function fetchBilibiliPopular() {
   const res = await fetchJSON('https://api.bilibili.com/x/web-interface/popular?ps=50&pn=1');
   if (res && res.code === 0 && res.data && res.data.list) {
@@ -52,25 +68,21 @@ async function fetchBilibiliPopular() {
       title: v.title.replace(/<[^>]*>/g, '').trim(),
       author: (v.owner && v.owner.name) || '未知UP主',
       views: formatViews((v.stat && v.stat.view) || 0),
-      tag: v.tname || '热门',
-      pic: v.pic || ''
+      tag: v.tname || '热门'
     }));
   }
   return [];
 }
 
-// 热搜关键词
 async function fetchBilibiliHotSearch() {
   const res = await fetchJSON('https://api.bilibili.com/x/web-interface/search/square?limit=20');
   if (res && res.code === 0 && res.data) {
-    // 结构可能是 data.list 或 data.trending.list
     const list = res.data.trending ? res.data.trending.list : (res.data.list || []);
     return list.map(item => item.keyword || item.show_name || '').filter(k => k && k.length < 40);
   }
   return [];
 }
 
-// 分类检索
 async function searchBilibili(keyword) {
   const url = `https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=${encodeURIComponent(keyword)}&ps=20`;
   const res = await fetchJSON(url);
@@ -85,45 +97,174 @@ async function searchBilibili(keyword) {
   return [];
 }
 
+// ============ 顽顽崽 & 顽顽妹 AI漫剧场景库（14套不同剧情） ============
+
+const characterTemplate = `【视频类型】治愈萌系3D动态漫【时长】15秒【人物】顽顽崽（图一穿蓝色云朵短裤）、顽顽妹（图二头顶粉黄花朵，穿粉色碎花连衣裙，眼睛圆且带假睫毛）【场景】暖光温馨卧室，摆放木质大床、毛绒小熊、白色床头柜【BGM】前半段轻快活泼，后半段带点小委屈的搞笑节奏【字幕】白色黑体字，居中显示`;
+
+const storyScenes = [
+  // 1 - 抢被子
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽妹躺在床上盖着被子，顽顽崽站在床边开心地看着 台词：顽顽崽：刚洗完澡好舒服。字幕同步显示台词【分镜2 2-5秒 互动特写】镜头：近景，顽顽崽爬上床钻进被子里抱着顽顽妹撒娇 台词：顽顽崽：被子，我冷，把被子给我抱抱。顽顽妹（嫌弃）：你能不能别学我。字幕同步显示台词【分镜3 5-8秒 表情特写】镜头：特写顽顽崽露出委屈又倔强的表情 台词：顽顽崽：我就是这样。顽顽妹（生气）：啊，你压我头发了！字幕同步显示台词【分镜4 8-12秒 情绪爆发】镜头：中景，顽顽妹皱起眉头一把把顽顽崽从床上推下去 台词：顽顽妹：啊【分镜5 12-15秒 搞笑收尾】镜头：特写坐在地上的顽顽崽一脸委屈`,
+
+  // 2 - 偷吃零食
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽偷偷从背后拿出一袋薯片，顽顽妹在床上看书没发现 台词：顽顽崽（悄悄话）：趁她没注意…字幕同步显示台词【分镜2 2-5秒 特写】镜头：近景，顽顽崽撕开袋子，"咔嚓"一声 台词：顽顽妹（猛地抬头）：嗯？什么声音？字幕同步显示台词【分镜3 5-8秒 互动】镜头：中景，顽顽崽嘴巴塞满薯片拼命摇头 台词：顽顽崽：呜没有没有！顽顽妹：我都看到了！字幕同步显示台词【分镜4 8-12秒 追逐】镜头：中景，顽顽妹从床上跳下来追顽顽崽 台词：顽顽妹：你一个人偷吃！给我留一点！字幕同步显示台词【分镜5 12-15秒 收尾】镜头：特写两人坐在一起开心分享薯片`,
+
+  // 3 - 自拍Battle
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽拿着手机对镜子自拍，顽顽妹嫌弃地看着 台词：顽顽崽：今天的我太帅了。字幕同步显示台词【分镜2 2-5秒 特写】镜头：近景，顽顽妹抢过手机自己自拍 台词：顽顽妹：让开让开，你根本不会找角度。字幕同步显示台词【分镜3 5-8秒 对比】镜头：分屏，左边是顽顽崽的直男角度，右边是顽顽妹的甜美自拍 台词：顽顽崽：哇你怎么拍的！字幕同步显示台词【分镜4 8-12秒 教学】镜头：中景，顽顽妹教顽顽崽自拍技巧 台词：顽顽妹：低头、侧脸、微笑！字幕同步显示台词【分镜5 12-15秒 收尾】镜头：两人一起自拍合照，温馨画面`,
+
+  // 4 - 噩梦安慰
+  `【分镜1 0-2秒 卧室全景】镜头：夜晚暖光，顽顽崽在床上翻来覆去睡不着 台词：旁白：半夜两点…字幕同步显示台词【分镜2 2-5秒 惊醒】镜头：特写，顽顽崽猛地坐起来大口喘气 台词：顽顽崽：好可怕的噩梦！字幕同步显示台词【分镜3 5-8秒 关心】镜头：中景，顽顽妹被吵醒揉着眼睛坐起来 台词：顽顽妹：怎么了？做噩梦了吗？别怕我在这儿。字幕同步显示台词【分镜4 8-12秒 安慰】镜头：近景，顽顽妹轻轻拍着顽顽崽的头 台词：顽顽妹：梦都是假的~~ 快睡吧。字幕同步显示台词【分镜5 12-15秒 入睡】镜头：全景，顽顽崽靠在顽顽妹肩膀上安心睡去`,
+
+  // 5 - 打扫卫生
+  `【分镜1 0-2秒 卧室全景】镜头：中景，卧室很乱，顽顽妹拿着扫把站在门口叹气 台词：顽顽妹：看这屋子乱的…顽顽崽你给我起来打扫！字幕同步显示台词【分镜2 2-5秒 装死】镜头：近景，顽顽崽立刻闭上眼睛假装睡着打呼噜 台词：顽顽崽：Zzzz…我已经睡着了ZZZZZ…字幕同步显示台词【分镜3 5-8秒 拆穿】镜头：中景，顽顽妹一把掀开被子 台词：顽顽妹：别装了！你眼睛还在动！字幕同步显示台词【分镜4 8-12秒 妥协】镜头：中景，顽顽崽不情愿地拿起拖把 台词：顽顽崽：好嘛好嘛，我擦地就是了。字幕同步显示台词【分镜5 12-15秒 反转】镜头：特写，顽顽崽反而把水洒了一地还滑倒了`,
+
+  // 6 - 下雨天
+  `【分镜1 0-2秒 卧室全景】镜头：窗外下雨，顽顽崽和顽顽妹趴在窗边看雨 台词：顽顽妹：又下雨了，好无聊啊…字幕同步显示台词【分镜2 2-5秒 提议】镜头：近景，顽顽崽突然眼睛一亮 台词：顽顽崽：我们来玩猜拳吧！谁输了就讲一个秘密！字幕同步显示台词【分镜3 5-8秒 猜拳】镜头：特写两人出拳的手，顽顽崽输了 台词：顽顽妹：你输了！快说秘密！字幕同步显示台词【分镜4 8-12秒 害羞】镜头：近景，顽顽崽脸红了 台词：顽顽崽：其实…我偷偷给你做了便当但是搞砸了…字幕同步显示台词【分镜5 12-15秒 感动】镜头：中景，顽顽妹愣住了然后噗嗤一笑，伸手摸摸顽顽崽的头`,
+
+  // 7 - 减肥计划
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽在镜子前捏肚子叹气 台词：顽顽崽：我是不是胖了…字幕同步显示台词【分镜2 2-5秒 宣布】镜头：近景，顽顽崽举拳宣布 台词：顽顽崽：从今天开始！我要减肥！！字幕同步显示台词【分镜3 5-8秒 行动】镜头：中景，顽顽崽做俯卧撑、深蹲，很快气喘吁吁 台词：顽顽崽：好累…1、2…够了吧…字幕同步显示台词【分镜4 8-12秒 引诱】镜头：近景，顽顽妹拿着一块蛋糕走进来 台词：顽顽妹：我刚做的蛋糕要不要尝尝？字幕同步显示台词【分镜5 12-15秒 破功】镜头：特写，顽顽崽眼睛放光冲过去，减肥失败`,
+
+  // 8 - 讲鬼故事
+  `【分镜1 0-2秒 卧室全景】镜头：夜晚关灯，顽顽崽拿手电筒照着脸讲鬼故事 台词：顽顽崽：从前有个黑影…每天晚上都会出现在床边…字幕同步显示台词【分镜2 2-5秒 害怕】镜头：近景，顽顽妹用被子蒙住头只露出一双眼睛 台词：顽顽妹：别说了！我害怕！字幕同步显示台词【分镜3 5-8秒 吓人】镜头：中景，顽顽崽突然扑向顽顽妹大喊 台词：顽顽崽：哇！！字幕同步显示台词【分镜4 8-12秒 反击】镜头：特写，顽顽妹尖叫后一巴掌拍在顽顽崽脸上 台词：顽顽妹：你是不是有病！字幕同步显示台词【分镜5 12-15秒 搞笑】镜头：中景，顽顽崽捂着脸躺在地上求饶`,
+
+  // 9 - 打扮比赛
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两人各自拿着衣服在镜子前比划 台词：顽顽崽：今天谁穿搭最好看？字幕同步显示台词【分镜2 2-5秒 展示】镜头：中景，顽顽崽穿上奇奇怪怪的混搭，得意洋洋 台词：顽顽崽：怎么样？潮流之王！字幕同步显示台词【分镜3 5-8秒 嘲笑】镜头：近景，顽顽妹笑得前仰后合 台词：顽顽妹：你这穿得像个行走的调色盘！字幕同步显示台词【分镜4 8-12秒 反击】镜头：中景，顽顽妹优雅换装展示 台词：顽顽妹：看我的，这才是穿搭！字幕同步显示台词【分镜5 12-15秒 结果】镜头：特写，顽顽崽张大嘴看呆了`,
+
+  // 10 - 学做饭
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽系着围裙端着一盘黑乎乎的东西 台词：顽顽崽：我特意给你做的爱心料理！字幕同步显示台词【分镜2 2-5秒 震惊】镜头：特写，顽顽妹看着盘子表情凝固 台词：顽顽妹：这…这是碳吗？字幕同步显示台词【分镜3 5-8秒 解释】镜头：近景，顽顽崽自信满满 台词：顽顽崽：是煎蛋啊！就是火大了亿点点。字幕同步显示台词【分镜4 8-12秒 尝试】镜头：中景，顽顽妹鼓起勇气尝了一口，表情扭曲 台词：顽顽妹：呃…还不错…呕…字幕同步显示台词【分镜5 12-15秒 收尾】镜头：特写，顽顽崽委屈巴巴，顽顽妹哭笑不得`,
+
+  // 11 - 手机没电
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽疯狂按手机屏幕 台词：顽顽崽：完了完了手机没电了！充电器呢充电器呢！字幕同步显示台词【分镜2 2-5秒 寻找】镜头：中景，顽顽崽翻箱倒柜找充电器 台词：顽顽崽：在哪里在哪里！字幕同步显示台词【分镜3 5-8秒 悠闲】镜头：近景，顽顽妹淡定地看着书 台词：顽顽妹：不在床底下，不在抽屉里，也不在我手上。字幕同步显示台词【分镜4 8-12秒 真相】镜头：特写，顽顽妹从背后拿出充电器 台词：顽顽妹：但是在我这里~ 叫姐姐就给你。字幕同步显示台词【分镜5 12-15秒 撒娇】镜头：中景，顽顽崽跪地撒娇求充电器`,
+
+  // 12 - 互相伤害
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽和顽顽妹背对背坐着谁也不理谁 台词：旁白：第N次冷战…字幕同步显示台词【分镜2 2-5秒 试探】镜头：近景，顽顽崽偷偷回头看一眼 台词：顽顽崽（内心）：她是不是也在偷看我…字幕同步显示台词【分镜3 5-8秒 同步】镜头：分屏，两人同时回头偷看对方，四目相对 台词：两人：啊！字幕同步显示台词【分镜4 8-12秒 嘴硬】镜头：中景，两人转过头嘴硬 台词：顽顽崽：我可不是在看你！顽顽妹：我也不是！字幕同步显示台词【分镜5 12-15秒 和好】镜头：特写，两人表情绷不住笑起来`,
+
+  // 13 - 许愿流星
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两个小人趴在窗台上看夜空 台词：顽顽妹：看！流星！字幕同步显示台词【分镜2 2-5秒 许愿】镜头：近景，两人闭眼许愿 台词：顽顽崽（闭眼）：希望每天都能和顽顽妹在一起…字幕同步显示台词【分镜3 5-8秒 偷听】镜头：特写，顽顽妹睁开一只眼偷看 台词：顽顽妹（偷笑）：原来你许这个愿望啊~字幕同步显示台词【分镜4 8-12秒 害羞】镜头：近景，顽顽崽脸红 台词：顽顽崽：你偷听我许愿！！字幕同步显示台词【分镜5 12-15秒 拥抱】镜头：全景，顽顽妹笑着给了顽顽崽一个大大的拥抱`,
+
+  // 14 - 超级英雄梦
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽披着床单当斗篷站在床上 台词：顽顽崽：我是超级英雄！来拯救世界！字幕同步显示台词【分镜2 2-5秒 搞怪】镜头：近景，顽顽崽做出超人飞行姿势 台词：顽顽崽：咻——！字幕同步显示台词【分镜3 5-8秒 吐槽】镜头：中景，顽顽妹面无表情看着 台词：顽顽妹：你连垃圾桶都拯救不了还好意思说拯救世界。字幕同步显示台词【分镜4 8-12秒 摔倒】镜头：中景，顽顽崽从床上"飞"下来摔倒在毛绒小熊堆里 台词：顽顽崽：啊！安全着陆…字幕同步显示台词【分镜5 12-15秒 暖心】镜头：近景，顽顽妹扶起顽顽崽整理床单斗篷 台词：顽顽妹：傻不傻，不过你是我的英雄`,
+
+  // 15 - 生日惊喜
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽偷偷在床头放了一个小蛋糕和气球 台词：顽顽崽（悄悄）：今天是她生日…字幕同步显示台词【分镜2 2-5秒 醒来】镜头：近景，顽顽妹醒来看到蛋糕和气球 台词：顽顽妹：哇！这是…给我的？字幕同步显示台词【分镜3 5-8秒 出现】镜头：中景，顽顽崽跳出来举着自制卡片 台词：顽顽崽：生日快乐！！我准备了好久！字幕同步显示台词【分镜4 8-12秒 感动】镜头：特写，卡片上歪歪扭扭写着"最好的妹妹" 台词：顽顽妹（眼眶红红）：好丑的字…但好开心。字幕同步显示台词【分镜5 12-15秒 温馨】镜头：全景，两人一起吹蜡烛`,
+
+  // 16 - 熬夜被抓
+  `【分镜1 0-2秒 卧室全景】镜头：凌晨，顽顽崽躲在被窝里刷手机 台词：顽顽崽（傻笑）：哈哈哈这个视频好好笑…字幕同步显示台词【分镜2 2-5秒 警觉】镜头：近景，走廊传来脚步声 台词：旁白：脚步声越来越近…字幕同步显示台词【分镜3 5-8秒 装睡】镜头：中景，顽顽崽迅速关手机闭眼假装睡着 台词：顽顽崽（内心）：看不见我看不见我…字幕同步显示台词【分镜4 8-12秒 拆穿】镜头：近景，顽顽妹拿着手电筒照向顽顽崽 台词：顽顽妹：手机还是热的，你又熬夜！字幕同步显示台词【分镜5 12-15秒 求饶】镜头：特写，顽顽崽跪在床上双手合十 台词：顽顽崽：我错了！再给我一次机会！`,
+
+  // 17 - 打针恐惧
+  `【分镜1 0-2秒 卧室全景】镜头：顽顽妹拿着玩具针筒说要打疫苗，顽顽崽脸都白了 台词：顽顽妹：该打针了哦~来手臂伸出来~字幕同步显示台词【分镜2 2-5秒 逃跑】镜头：中景，顽顽崽疯狂躲避 台词：顽顽崽：不要不要！我不要打针！字幕同步显示台词【分镜3 5-8秒 抓回】镜头：中景，顽顽妹一把抓住顽顽崽 台词：顽顽妹：别跑！又不是真的针！字幕同步显示台词【分镜4 8-12秒 假装】镜头：近景，顽顽妹用玩具针筒轻轻碰了一下 台词：顽顽妹：好了打完了。顽顽崽：啊！！字幕同步显示台词【分镜5 12-15秒 发现】镜头：特写，顽顽崽睁开眼睛发现完全不疼，憨笑起来`,
+
+  // 18 - 写日记
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽趴在小桌子上认真写日记 台词：顽顽崽：今天和顽顽妹一起…字幕同步显示台词【分镜2 2-5秒 偷看】镜头：近景，顽顽妹悄悄从后面探过头 台词：顽顽妹：在写什么呢？让我看看！字幕同步显示台词【分镜3 5-8秒 抢夺】镜头：中景，顽顽崽赶紧把日记本藏到身后 台词：顽顽崽：不许看！这是秘密！字幕同步显示台词【分镜4 8-12秒 追闹】镜头：中景，两人在卧室追来追去 台词：顽顽妹：就看一眼！字幕同步显示台词【分镜5 12-15秒 温馨】镜头：特写，日记本翻开：今天顽顽妹笑了，我也开心`,
+
+  // 19 - 打游戏
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两人趴在一起打游戏 台词：顽顽崽：左边左边！顽顽妹：你快挡啊！字幕同步显示台词【分镜2 2-5秒 失误】镜头：特写，顽顽崽手滑按错了 台词：顽顽崽：啊不是这个键！字幕同步显示台词【分镜3 5-8秒 失败】镜头：中景，屏幕显示"GAME OVER" 台词：顽顽妹：都怪你！字幕同步显示台词【分镜4 8-12秒 再来】镜头：近景，顽顽崽斗志昂扬 台词：顽顽崽：再来！这把我带你飞！字幕同步显示台词【分镜5 12-15秒 继续】镜头：全景，两人又进入战斗状态`,
+
+  // 20 - 听音乐
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽戴着耳机摇头晃脑 台词：顽顽崽（跟唱）：嘟噜嘟噜嘟~~字幕同步显示台词【分镜2 2-5秒 好奇】镜头：近景，顽顽妹好奇地凑过来 台词：顽顽妹：你在听什么？给我听听！字幕同步显示台词【分镜3 5-8秒 分享】镜头：中景，两人一人戴一边耳机 台词：顽顽崽：是不是很好听！字幕同步显示台词【分镜4 8-12秒 抢歌】镜头：中景，顽顽崽突然唱起来五音不全 台词：顽顽妹：你还是别唱了！字幕同步显示台词【分镜5 12-15秒 合奏】镜头：全景，两人一起摇头晃脑，画面温馨`,
+
+  // 21 - 画画
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两人在画画 台词：顽顽妹：今天画什么呢？顽顽崽：画你！字幕同步显示台词【分镜2 2-5秒 展示】镜头：近景，顽顽崽得意展示"作品"——歪歪扭扭的火柴人 台词：顽顽崽：怎么样！是不是很像！字幕同步显示台词【分镜3 5-8秒 无语】镜头：特写，顽顽妹的表情逐渐凝固 台词：顽顽妹：这…这是什么鬼…字幕同步显示台词【分镜4 8-12秒 反击】镜头：中景，顽顽妹也画了顽顽崽——同样是火柴人但可爱很多 台词：顽顽妹：这才叫画画好不好！字幕同步显示台词【分镜5 12-15秒 收藏】镜头：特写，顽顽崽把顽顽妹的画贴在了墙上`,
+
+  // 22 - 叠衣服
+  `【分镜1 0-2秒 卧室全景】镜头：中景，一堆洗好的衣服，顽顽妹在认真叠 台词：顽顽妹：今天一定要全部叠完。字幕同步显示台词【分镜2 2-5秒 捣乱】镜头：近景，顽顽崽跑过来把叠好的衣服弄乱 台词：顽顽崽：嘿嘿嘿，要不要比赛谁叠得快？字幕同步显示台词【分镜3 5-8秒 生气】镜头：近景，顽顽妹拿着衣服朝顽顽崽扔过去 台词：顽顽妹：你找死！字幕同步显示台词【分镜4 8-12秒 比赛】镜头：中景，两人开始飞快叠衣服 台词：顽顽崽：我叠好了！顽顽妹：你这叫叠？！字幕同步显示台词【分镜5 12-15秒 结果】镜头：特写，顽顽崽叠得像一团抹布`,
+
+  // 23 - 看恐怖片
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两人关灯用小屏幕看恐怖片 台词：顽顽崽：听说这部超级吓人…字幕同步显示台词【分镜2 2-5秒 恐怖】镜头：特写，屏幕出现恐怖画面 台词：两人：啊啊啊！！字幕同步显示台词【分镜3 5-8秒 抱紧】镜头：近景，两人吓得紧紧抱在一起 台词：顽顽崽：好可怕但还是想看…字幕同步显示台词【分镜4 8-12秒 逗乐】镜头：中景，顽顽崽假装要关灯吓顽顽妹 台词：顽顽崽：后面还有什么更可怕的吗？字幕同步显示台词【分镜5 12-15秒 捂眼】镜头：特写，两人从手指缝里偷偷看`,
+
+  // 24 - 跳广场舞
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽跟着音乐手舞足蹈 台词：顽顽崽：这是最火的舞！来跟我学！字幕同步显示台词【分镜2 2-5秒 拒绝】镜头：近景，顽顽妹摆手 台词：顽顽妹：我不要，好丢人…字幕同步显示台词【分镜3 5-8秒 坚持】镜头：中景，顽顽崽硬拉着顽顽妹一起跳 台词：顽顽崽：来吧来吧！就一分钟！字幕同步显示台词【分镜4 8-12秒 同步】镜头：全景，两人一起跳舞，渐入佳境 台词：顽顽崽：你看你会跳嘛！字幕同步显示台词【分镜5 12-15秒 反转】镜头：特写，顽顽妹跳得比顽顽崽还好`,
+
+  // 25 - 爱美贴面膜
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽妹贴着黄瓜面膜躺在靠枕上 台词：顽顽妹：护肤可是每天必须的~字幕同步显示台词【分镜2 2-5秒 模仿】镜头：近景，顽顽崽也贴了一脸黄瓜片走出来 台词：顽顽崽：我也要美美哒！字幕同步显示台词【分镜3 5-8秒 掉落】镜头：特写，顽顽崽脸上的黄瓜片不停掉下来 台词：顽顽崽：为什么你的不掉我的掉！字幕同步显示台词【分镜4 8-12秒 教学】镜头：近景，顽顽妹帮顽顽崽重新贴好 台词：顽顽妹：要这样才行…字幕同步显示台词【分镜5 12-15秒 收尾】镜头：全景，两人并排贴着面膜自拍`,
+
+  // 26 - 拆快递
+  `【分镜1 0-2秒 卧室全景】镜头：中景，一堆快递盒子堆在地上，两人兴奋 台词：顽顽崽：快递到了！拆拆拆！字幕同步显示台词【分镜2 2-5秒 争抢】镜头：近景，两人抓同一个快递盒 台词：顽顽崽：这是我买的！顽顽妹：明明是我的！字幕同步显示台词【分镜3 5-8秒 拆开】镜头：中景，拆开发现是同一件东西 台词：顽顽崽/妹：啊？字幕同步显示台词【分镜4 8-12秒 尴尬】镜头：近景，两人尴尬对视 台词：顽顽崽：我们买了情侣款？字幕同步显示台词【分镜5 12-15秒 默契】镜头：全景，两人对视一笑`,
+
+  // 27 - 考试前夜
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽面前堆着三本书，表情痛苦 台词：顽顽崽：明天考试，今天才开始复习…字幕同步显示台词【分镜2 2-5秒 翻书】镜头：特写，快速翻书特效 台词：顽顽崽：量子力学、微积分、英语…字幕同步显示台词【分镜3 5-8秒 崩溃】镜头：近景，顽顽崽趴在桌上 台词：顽顽崽：根本来不及！我想放弃了！字幕同步显示台词【分镜4 8-12秒 鼓励】镜头：中景，顽顽妹端来热牛奶放桌上 台词：顽顽妹：慢慢来，我陪你，不会的问我。字幕同步显示台词【分镜5 12-15秒 打气】镜头：特写，顽顽崽被鼓励后重新拿起笔`,
+
+  // 28 - 拍视频
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽架起手机三脚架准备拍视频 台词：顽顽崽：今天要拍爆款视频！字幕同步显示台词【分镜2 2-5秒 互动】镜头：中景，顽顽崽开始表演搞笑段子 台词：顽顽崽：各位宝宝们看好了！字幕同步显示台词【分镜3 5-8秒 抢镜】镜头：中景，顽顽妹突然从背后抢镜做鬼脸 台词：顽顽妹：嗨~~我也要出镜！字幕同步显示台词【分镜4 8-12秒 重拍】镜头：近景，两人争着看回放 台词：顽顽崽：你把我挡住了！字幕同步显示台词【分镜5 12-15秒 合作】镜头：全景，两人一起对着镜头比耶`,
+
+  // 29 - 换季整理
+  `【分镜1 0-2秒 卧室全景】镜头：中景，衣柜门大开衣服全堆在床上 台词：顽顽妹：天热了该把冬天衣服收起来了。字幕同步显示台词【分镜2 2-5秒 回忆】镜头：近景，顽顽崽拿起一件旧毛衣 台词：顽顽崽：这件你好像穿过很久了诶。字幕同步显示台词【分镜3 5-8秒 发现】镜头：特写，毛衣口袋里掉出一张旧照片 台词：顽顽妹：这是我们去年冬天拍的！字幕同步显示台词【分镜4 8-12秒 怀旧】镜头：近景，两人一起看照片 台词：顽顽崽：那时候你还没这么嫌弃我。字幕同步显示台词【分镜5 12-15秒 收尾】镜头：全景，两人笑着继续整理衣柜`,
+
+  // 30 - 练习绕口令
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽拿着小本本对着镜头练绕口令 台词：顽顽崽：四是四，十是十，十四是十四。字幕同步显示台词【分镜2 2-5秒 挑战】镜头：近景，顽顽崽信心满满 台词：顽顽崽：简单！换一个难的！字幕同步显示台词【分镜3 5-8秒 翻车】镜头：特写，顽顽崽舌头打结 台词：顽顽崽：黑化肥发灰…灰化肥…发黑…字幕同步显示台词【分镜4 8-12秒 嘲笑】镜头：中景，顽顽妹笑得满地打滚 台词：顽顽妹：哈哈哈你的舌头打结了！字幕同步显示台词【分镜5 12-15秒 示范】镜头：短景，顽顽妹轻松完成绕口令，顽顽崽张大嘴`,
+
+  // 31 - 养宠物
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽抱着一个小纸箱兴奋跑进卧室 台词：顽顽崽：快看快看！我带了个小可爱回来！字幕同步显示台词【分镜2 2-5秒 揭晓】镜头：特写，箱子里是一只毛绒绒的小仓鼠 台词：顽顽妹：哇！好可爱！字幕同步显示台词【分镜3 5-8秒 起名】镜头：近景，两人对着仓鼠想名字 台词：顽顽崽：叫"小太阳"？顽顽妹：叫"糯米团子"！字幕同步显示台词【分镜4 8-12秒 跑掉】镜头：中景，仓鼠从箱子里跑出来 台词：两人：啊！跑了！快抓！字幕同步显示台词【分镜5 12-15秒 找到】镜头：近景，仓鼠爬到了顽顽崽头上`,
+
+  // 32 - 打扮圣诞树
+  `【分镜1 0-2秒 卧室全景】镜头：中景，一棵小圣诞树放在卧室角落 台词：顽顽妹：今天布置圣诞树！字幕同步显示台词【分镜2 2-5秒 挂球】镜头：近景，两人挂彩色小球 台词：顽顽崽：红色配绿色才是经典！字幕同步显示台词【分镜3 5-8秒 冲突】镜头：中景，两人对装饰风格意见不合 台词：顽顽妹：你太老套了！要混搭！字幕同步显示台词【分镜4 8-12秒 妥协】镜头：近景，最终一人挂左半边一人挂右半边 台词：顽顽崽：那各挂一半！字幕同步显示台词【分镜5 12-15秒 灯亮】镜头：全景，圣诞树亮起小灯，两人开心`,
+
+  // 33 - 数星星
+  `【分镜1 0-2秒 卧室全景】镜头：夜晚，两人趴在被窝里，窗外有星空 台词：顽顽崽：你看今晚星星好多。字幕同步显示台词【分镜2 2-5秒 找星座】镜头：近景，顽顽崽指着窗外 台词：顽顽崽：那是北斗七星！字幕同步显示台词【分镜3 5-8秒 脑洞】镜头：中景，顽顽崽开始编故事 台词：顽顽崽：其实星星是天使撒的面粉。字幕同步显示台词【分镜4 8-12秒 吐槽】镜头：近景，顽顽妹翻了个白眼 台词：顽顽妹：你就不能浪漫一点？那是月亮先生的眼泪。字幕同步显示台词【分镜5 12-15秒 安静】镜头：全景，两人安静地看星空`,
+
+  // 34 - 写信
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽坐在书桌前认真写信 台词：顽顽崽：我要给十年后的自己写一封信。字幕同步显示台词【分镜2 2-5秒 建议】镜头：近景，顽顽妹凑过来 台词：顽顽妹：顺便给十年后的我也写一封吧！字幕同步显示台词【分镜3 5-8秒 内容】镜头：特写，信纸上的字：十年后的你，还记得我偷吃零食被抓吗… 台词：顽顽崽：写完啦，不许偷看！字幕同步显示台词【分镜4 8-12秒 藏信】镜头：中景，两人把信封藏在柜子最深处 台词：顽顽妹：十年后一起拆哦。字幕同步显示台词【分镜5 12-15秒 温馨】镜头：全景，两人拉钩约定`,
+
+  // 35 - 恶作剧
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽偷偷在门框上放了一个水气球 台词：顽顽崽（坏笑）：等下她推门进来就有好戏看了。字幕同步显示台词【分镜2 2-5秒 开门】镜头：中景，顽顽妹推门进来 台词：顽顽妹：我回来啦—字幕同步显示台词【分镜3 5-8秒 反转】镜头：慢动作，水气球掉下来却砸中了顽顽崽自己 台词：顽顽崽：啊！什么？！字幕同步显示台词【分镜4 8-12秒 大笑】镜头：近景，顽顽妹笑得直不起腰 台词：顽顽妹：哈哈哈哈你想整我结果砸到自己？字幕同步显示台词【分镜5 12-15秒 湿淋淋】镜头：特写，顽顽崽头上顶着水气球残骸，表情无辜`,
+
+  // 36 - 深夜谈心
+  `【分镜1 0-2秒 卧室全景】镜头：深夜柔光，两人并排躺在床上 台词：顽顽妹：你说…未来会是什么样子？字幕同步显示台词【分镜2 2-5秒 想象】镜头：近景，顽顽崽眼睛里闪着星星 台词：顽顽崽：未来啊…肯定有吃不完的零食！字幕同步显示台词【分镜3 5-8秒 吐槽】镜头：近景，顽顽妹无语 台词：顽顽妹：我说正经的！字幕同步显示台词【分镜4 8-12秒 认真】镜头：中景，顽顽崽坐起来认真说 台词：顽顽崽：不管未来什么样子，我都在你身边。字幕同步显示台词【分镜5 12-15秒 感动】镜头：特写，顽顽妹眼眶湿润，伸手握住顽顽崽的手`,
+
+  // 37 - 学习新东西
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽妹在弹一把小吉他，顽顽崽好奇看着 台词：顽顽崽：你在弹什么？教我！字幕同步显示台词【分镜2 2-5秒 教学】镜头：近景，顽顽妹手把手教顽顽崽 台词：顽顽妹：食指放这里，中指这里…字幕同步显示台词【分镜3 5-8秒 弹奏】镜头：特写，顽顽崽努力弹出一个音节 台词：顽顽崽：好难！怎么你弹那么好听我弹像锯木头…字幕同步显示台词【分镜4 8-12秒 鼓励】镜头：近景，顽顽妹拍拍顽顽崽肩膀 台词：顽顽妹：我第一次也是这样的，多练就好！字幕同步显示台词【分镜5 12-15秒 合奏】镜头：全景，顽顽妹带着顽顽崽一起拨弦`,
+
+  // 38 - 失眠对策
+  `【分镜1 0-2秒 卧室全景】镜头：深夜，顽顽崽两眼睁大看着天花板 台词：顽顽崽：数到一千只羊了还是睡不着…字幕同步显示台词【分镜2 2-5秒 提议】镜头：中景，顽顽妹坐起来 台词：顽顽妹：我给你讲个无聊的故事，保证秒睡。字幕同步显示台词【分镜3 5-8秒 讲故事】镜头：近景，顽顽妹开始讲 台词：顽顽妹：从前有一只蚂蚁，它走啊走，走啊走…字幕同步显示台词【分镜4 8-12秒 入睡】镜头：特写，顽顽崽眼睛慢慢闭上，呼吸均匀 台词：旁白：走到第十分钟…字幕同步显示台词【分镜5 12-15秒 偷看】镜头：特写，顽顽妹发现自己先把自己讲困了`,
+
+  // 39 - 过新年
+  `【分镜1 0-2秒 卧室全景】镜头：中景，两人在卧室贴春联挂灯笼 台词：顽顽妹：新年快乐！顽顽崽：贴歪了贴歪了！字幕同步显示台词【分镜2 2-5秒 守岁】镜头：近景，两人兴奋地倒数 台词：两人：五、四、三、二、一！新年快乐！！字幕同步显示台词【分镜3 5-8秒 红包】镜头：中景，顽顽崽给顽顽妹递红包 台词：顽顽崽：给你压岁钱！顽顽妹：哇！谢谢崽哥！字幕同步显示台词【分镜4 8-12秒 许愿】镜头：全景，窗外烟花绽放 台词：顽顽妹：新的一年也要吵吵闹闹，开开心心！字幕同步显示台词【分镜5 12-15秒 烟花】镜头：远景，两人并排看窗外烟花`,
+
+  // 40 - 换灯泡
+  `【分镜1 0-2秒 卧室全景】镜头：中景，灯泡不亮了，顽顽崽自告奋勇 台词：顽顽崽：交给我！我可是高空作业专家！字幕同步显示台词【分镜2 2-5秒 爬高】镜头：中景，顽顽崽踩在椅子上还垫了两本书 台词：顽顽妹：你小心啊！字幕同步显示台词【分镜3 5-8秒 摇晃】镜头：近景，椅子开始摇晃 台词：顽顽崽：哎呀哎呀哎呀！字幕同步显示台词【分镜4 8-12秒 摔倒】镜头：中景，顽顽崽从椅子上摔下来 台词：顽顽妹：啊！！顽顽崽：安全着陆…字幕同步显示台词【分镜5 12-15秒 接手】镜头：近景，顽顽妹叹口气自己爬上去换好了灯泡`,
+
+  // 41 - 节日惊喜
+  `【分镜1 0-2秒 卧室全景】镜头：中景，顽顽崽手里藏着一束花站在门边 台词：顽顽崽：今天过节！给她个惊喜。字幕同步显示台词【分镜2 2-5秒 出现】镜头：中景，顽顽妹走进来 台词：顽顽妹：今天怎么怪怪的…字幕同步显示台词【分镜3 5-8秒 献花】镜头：特写，顽顽崽突然掏出花束 台词：顽顽崽：节日快乐！字幕同步显示台词【分镜4 8-12秒 感动】镜头：近景，顽顽妹双手接过花眼眶红了 台词：顽顽妹：你居然记得…字幕同步显示台词【分镜5 12-15秒 拥抱】镜头：全景，一个大大的拥抱`,
+
+  // 42 - 说梦话
+  `【分镜1 0-2秒 卧室全景】镜头：中景，凌晨卧室，顽顽崽睡得很香 台词：旁白：凌晨四点…字幕同步显示台词【分镜2 2-5秒 梦话】镜头：近景，顽顽崽突然说起梦话 台词：顽顽崽：呃…巧克力…别跑…字幕同步显示台词【分镜3 5-8秒 偷笑】镜头：近景，顽顽妹被吵醒，听到梦话捂住嘴笑 台词：顽顽妹（偷笑）：他连做梦都在吃东西。字幕同步显示台词【分镜4 8-12秒 继续】镜头：近景，顽顽崽翻了个身继续梦话 台词：顽顽崽：顽顽妹你又抢我的…字幕同步显示台词【分镜5 12-15秒 收尾】镜头：全景，顽顽妹帮顽顽崽盖好被子，露出笑容`
+];
+
+// 每日热身题目（AI漫剧学习关联话题）
+const warmupTopics = [
+  '如何让3D角色的表情更生动', 'AI短剧的节奏控制技巧', '治愈系视频的配色方案',
+  '3D动态漫的分镜设计', '短视频前3秒如何抓住观众', 'AI视频的配音情感表达',
+  '萌系角色的设计要点', 'AI短剧的转场特效', '如何写出反差萌的剧情',
+  '15秒短视频的故事结构', '配音如何匹配角色性格', '3D场景的灯光氛围打造',
+  '治愈类内容的情绪曲线', 'AI短剧的卡点剪辑技巧', '如何设计笑点和反差',
+  '视频BGM的选择技巧', '分镜脚本的编写方法', '日常搞笑短剧的选题思路',
+  'AI视频中的人物动作设计', '毛绒质感的3D渲染技巧'
+];
+
 // ============ 数据数组生成器 ============
 
-// fallback emoji 列表
-const icons = ['🔥','📈','🎯','💡','🌟','📊','🎬','💰','🤖','📝','🎵','💼','📕','✍️','🚀','⚡'];
+const icons = ['🔥','📈','🎯','💡','🌟','📊','🎬','💰','🤖','📝','🎵','💼','📕','✍️','🚀','⚡','💡','🎧','🎮','🫶'];
 
-function pickIcons(n) {
-  const shuffled = [...icons].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, n);
-}
-
-// 1. 首页知识速览 tips
-function generateTips(hotSearches, popular) {
-  const baseTopics = [
-    { icon: '📈', kw: '抖音流量池机制', tag: '底层逻辑' },
-    { icon: '🎯', kw: '抖音爆款内容公式', tag: '选题技巧' },
-    { icon: '📊', kw: 'SQL面试题', tag: '数据技能' },
-    { icon: '✍️', kw: '标书撰写技巧', tag: '职场技能' },
-    { icon: '🤖', kw: 'AI生成短视频', tag: 'AI工具' },
-    { icon: '📝', kw: '抖音完播率技巧', tag: '核心技能' },
-  ];
-
+// 1. 首页知识速览
+function generateTips(hotSearches) {
   const fresh = hotSearches.slice(0, 8).map((kw, i) => ({
     icon: icons[i % icons.length],
     title: kw,
     tag: '今日热搜',
     url: douyinUrl(kw)
   }));
-
+  const baseTopics = [
+    { icon: '📈', kw: '抖音流量池机制', tag: '底层逻辑' },
+    { icon: '🎯', kw: 'AI短剧爆款公式', tag: '选题技巧' },
+    { icon: '🤖', kw: 'AI生成短视频教程', tag: 'AI工具' },
+    { icon: '📝', kw: '抖音完播率技巧', tag: '核心技能' },
+  ];
   const rest = baseTopics.map(t => ({
-    icon: t.icon,
-    title: t.kw,
-    tag: t.tag,
-    url: douyinUrl(t.kw)
+    icon: t.icon, title: t.kw, tag: t.tag, url: douyinUrl(t.kw)
   }));
-
   return [...fresh, ...rest].slice(0, 12);
 }
 
-// 2. 健身视频 fitVideos
+// 2. 健身视频
 const bodyParts = [
   { part: 'leg', emoji: '🦵', kw: '瘦腿训练 跟练' },
   { part: 'hip', emoji: '🍑', kw: '蜜桃臀训练 居家' },
@@ -133,67 +274,44 @@ const bodyParts = [
   { part: 'stretch', emoji: '🌙', kw: '全身拉伸 睡前瑜伽' }
 ];
 
-function generateFitVideos(popular) {
-  const fitVids = popular.filter(v =>
-    /健身|塑形|减肥|训练|瑜伽|瘦|运动|燃脂|拉伸/.test(v.title)
-  ).slice(0, 12);
-
-  if (fitVids.length < 12) {
-    // 用 B站搜索补充
-    return bodyParts.flatMap(bp => [
-      { part: bp.part, title: `热门·${bp.kw.split(' ')[0]}跟练`, author: '抖音热门', views: '50万', tag: bp.kw.split(' ')[0], emoji: bp.emoji, url: douyinUrl(bp.kw) },
-      { part: bp.part, title: `精选·${bp.kw}`, author: '每日推荐', views: '30万', tag: bp.part, emoji: bp.emoji, url: douyinUrl(bp.kw) }
-    ]);
-  }
-
-  return fitVids.map((v, i) => ({
-    part: bodyParts[i % 6].part,
-    title: v.title,
-    author: v.author,
-    views: v.views,
-    tag: v.tag,
-    emoji: bodyParts[i % 6].emoji,
-    url: douyinUrl(v.title.slice(0, 20))
-  }));
+function generateFitVideos() {
+  return bodyParts.flatMap(bp => [
+    { part: bp.part, title: `跟练·${bp.kw.split(' ')[0]}`, author: '抖音热门博主', views: '48万', tag: bp.kw.split(' ')[0], emoji: bp.emoji, url: douyinUrl(bp.kw) },
+    { part: bp.part, title: `打卡·${bp.kw}`, author: '每日健身推荐', views: '32万', tag: bp.part, emoji: bp.emoji, url: douyinUrl(bp.kw) }
+  ]);
 }
 
-// 3. 求职岗位 allJobs
+// 3. 求职岗位
 const jobPool = [
-  { title: '数据分析师', salary: '8-15K', tags: ['数据分析', 'SQL', '成都'], source: 'BOSS直聘', kw: '数据分析师' },
-  { title: '短视频内容运营', salary: '10-18K', tags: ['短视频', '内容', '成都'], source: 'BOSS直聘', kw: '内容运营' },
-  { title: '新媒体运营', salary: '7-12K', tags: ['新媒体', '抖音', '成都'], source: '智联招聘', kw: '新媒体运营' },
-  { title: '视频剪辑师', salary: '8-15K', tags: ['剪辑', '后期', '成都'], source: '前程无忧', kw: '视频剪辑' },
-  { title: '小红书运营', salary: '6-10K', tags: ['小红书', '运营', '成都'], source: '猎聘', kw: '小红书运营' },
-  { title: '电商运营', salary: '10-20K', tags: ['电商', '淘宝', '成都'], source: '猎聘', kw: '电商运营' },
-  { title: '标书专员', salary: '7-10K', tags: ['标书', '招投标', '成都'], source: '前程无忧', kw: '标书' },
-  { title: '内容运营专员', salary: '6-9K', tags: ['内容', '电商', '成都'], source: '鱼泡直聘', kw: '内容运营' },
-  { title: '运营助理', salary: '5-7K', tags: ['运营', '助理', '成都'], source: 'BOSS直聘', kw: '运营助理' },
-  { title: '数据专员', salary: '6-10K', tags: ['数据', 'Excel', '成都'], source: '智联招聘', kw: '数据专员' },
-  { title: '直播运营', salary: '10-20K', tags: ['直播', '带货', '成都'], source: 'BOSS直聘', kw: '直播运营' },
-  { title: '社群运营', salary: '6-10K', tags: ['社群', '微信', '成都'], source: 'BOSS直聘', kw: '社群运营' },
-  { title: 'AI训练师', salary: '12-25K', tags: ['AI', '数据标注', '成都'], source: '猎聘', kw: 'AI训练师' },
-  { title: '产品运营', salary: '9-15K', tags: ['产品', '用户增长', '成都'], source: 'BOSS直聘', kw: '产品运营' }
+  { title: '数据分析师', salary: '8-15K', tags: ['数据分析','SQL','成都'], source: 'BOSS直聘', kw: '数据分析师' },
+  { title: '短视频内容运营', salary: '10-18K', tags: ['短视频','内容','成都'], source: 'BOSS直聘', kw: '内容运营' },
+  { title: '新媒体运营', salary: '7-12K', tags: ['新媒体','抖音','成都'], source: '智联招聘', kw: '新媒体运营' },
+  { title: '视频剪辑师', salary: '8-15K', tags: ['剪辑','后期','成都'], source: '前程无忧', kw: '视频剪辑' },
+  { title: '小红书运营', salary: '6-10K', tags: ['小红书','运营','成都'], source: '猎聘', kw: '小红书运营' },
+  { title: '电商运营', salary: '10-20K', tags: ['电商','淘宝','成都'], source: '猎聘', kw: '电商运营' },
+  { title: '标书专员', salary: '7-10K', tags: ['标书','招投标','成都'], source: '前程无忧', kw: '标书' },
+  { title: '内容运营专员', salary: '6-9K', tags: ['内容','电商','成都'], source: '鱼泡直聘', kw: '内容运营' },
+  { title: '运营助理', salary: '5-7K', tags: ['运营','助理','成都'], source: 'BOSS直聘', kw: '运营助理' },
+  { title: '数据专员', salary: '6-10K', tags: ['数据','Excel','成都'], source: '智联招聘', kw: '数据专员' },
+  { title: '直播运营', salary: '10-20K', tags: ['直播','带货','成都'], source: 'BOSS直聘', kw: '直播运营' },
+  { title: '社群运营', salary: '6-10K', tags: ['社群','微信','成都'], source: 'BOSS直聘', kw: '社群运营' },
+  { title: 'AI训练师', salary: '12-25K', tags: ['AI','标注','成都'], source: '猎聘', kw: 'AI训练师' },
+  { title: '产品运营', salary: '9-15K', tags: ['产品','增长','成都'], source: 'BOSS直聘', kw: '产品运营' }
 ];
 
 const companyPool = [
-  '字节跳动', '腾讯科技', '某互联网大厂', '某MCN机构', '乐狗科技',
-  '某传媒公司', '微光聚梦', '某电商平台', '某金融科技', '某AI公司',
-  '极米科技', '某在线教育', '某SaaS公司', '某游戏公司'
+  '字节跳动','腾讯科技','某互联网大厂','某MCN机构','乐狗科技',
+  '微光聚梦','某电商平台','某AI公司','极米科技','某游戏公司',
+  '某教育科技','某SaaS公司','某金融科技','某传媒公司'
 ];
 
-function generateJobs(hotSearches) {
-  // 根据当天日期洗牌
-  const d = new Date();
-  const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-  const shuffled = [...jobPool].sort(() => seed % 2 === 0 ? 1 : -1); // 简单日期种子
-  const companies = [...companyPool].sort(() => (seed + 1) % 2 === 0 ? 1 : -1);
-
+function generateJobs() {
+  const seed = getSeed();
+  const shuffled = seededShuffle(jobPool, seed);
+  const companies = seededShuffle(companyPool, seed + 1);
   return shuffled.slice(0, 10).map((j, i) => ({
-    title: j.title,
-    company: companies[i % companies.length],
-    salary: j.salary,
-    tags: j.tags,
-    source: j.source,
+    title: j.title, company: companies[i], salary: j.salary,
+    tags: j.tags, source: j.source,
     url: j.source === 'BOSS直聘'
       ? `https://www.zhipin.com/web/geek/job?query=${encodeURIComponent(j.kw)}`
       : j.source === '猎聘'
@@ -206,105 +324,77 @@ function generateJobs(hotSearches) {
   }));
 }
 
-// 4. 创作脚本 scripts
-const scriptTemplates = [
-  { cat: '治愈', tag: '情感共鸣', template: '场景：{kw}的温暖瞬间\n画面：慢镜头+暖色调+钢琴BGM\n文案：{kw}的那一刻，我明白了什么是真正的幸福\n音效：轻柔钢琴+环境音' },
-  { cat: '搞笑', tag: '反转', template: '场景：以为在{kw}，结果在{kw2}\n画面：快速切换+夸张表情+鸭子音效\n文案：当你以为一切都在{kw}的时候...\n音效：卡点转场音+笑声' },
-  { cat: '情感', tag: '深夜语录', template: '场景：关于{kw}的独白\n画面：特写+暗调+雨天背景\n文案：{kw}这件事，每个人都逃不过\n音效：雨声+低沉旁白' },
-  { cat: '干货', tag: '科普', template: '场景：{kw}的3个冷知识\n画面：图表+快节奏剪辑+文字卡片\n文案：90%的人都不知道的{kw}秘密\n音效：信息提示音' },
-];
-
+// 4. 创作脚本（顽顽崽 & 顽顽妹 AI漫剧，基于当日热搜关键词）
 function generateScripts(hotSearches) {
-  const d = new Date();
-  const seed = (d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate()) % scriptTemplates.length;
-  const rotated = [...scriptTemplates.slice(seed), ...scriptTemplates.slice(0, seed)];
-
+  const seed = getSeed();
+  const shuffledScenes = seededShuffle(storyScenes, seed);
   const sources = ['噜噜', '噜妹'];
-  const extras = [
-    { cat: '治愈', source: '噜噜', tag: '温暖日常' },
-    { cat: '治愈', source: '噜妹', tag: '萌宠时刻' },
-    { cat: '治愈', source: '噜噜', tag: '美食治愈' },
-    { cat: '搞笑', source: '噜妹', tag: '日常翻车' },
-    { cat: '搞笑', source: '噜噜', tag: 'AI整活' },
-    { cat: '搞笑', source: '噜妹', tag: '模仿秀' },
-    { cat: '情感', source: '噜噜', tag: '人生感悟' },
-    { cat: '情感', source: '噜妹', tag: '成长故事' },
-    { cat: '干货', source: '噜噜', tag: 'AI教程' },
-    { cat: '干货', source: '噜妹', tag: '运营技巧' },
-  ];
 
-  return extras.map((extra, i) => {
-    const kw = hotSearches[i % hotSearches.length] || extra.tag;
-    const kw2 = hotSearches[(i + 3) % hotSearches.length] || '意外';
-    const t = rotated[i % rotated.length];
-    const prompt = t.template.replace(/\{kw\}/g, kw).replace(/\{kw2\}/g, kw2);
+  return shuffledScenes.slice(0, 14).map((sceneStoryboard, i) => {
+    const kw = hotSearches[i % hotSearches.length] || '日常';
+    const src = sources[i % 2];
+    const fullPrompt = `${characterTemplate}${sceneStoryboard}【制作要求】1. 人物动作：顽顽崽的撒娇、委屈，顽顽妹的嫌弃、生气表情要自然可爱 2. 光影：暖黄色温馨室内光，突出治愈氛围 3. 音效：对话清晰，顽顽崽和顽顽妹的声音要可爱Q版一点 4. 热搜关联：将当日热点"${kw}"融入剧情自然衔接`;
+
+    // 从分镜提取标题
+    const titleMatch = sceneStoryboard.match(/【分镜1[\s\S]*?台词：(.+?)(?:字幕|【分镜)/);
+    const titleBase = titleMatch ? titleMatch[1].replace(/顽顽[崽妹].?：/g, '').trim() : '日常';
     return {
-      title: `${kw} · ${t.cat}风`,
-      cat: t.cat,
-      source: extra.source,
-      tag: extra.tag,
-      prompt
+      title: `${src}版 · ${kw.slice(0, 12)}`,
+      cat: ['治愈','搞笑','情感','治愈','搞笑','情感','治愈','搞笑','情感','治愈','搞笑','情感','治愈','搞笑'][i],
+      source: src,
+      tag: 'AI漫剧',
+      prompt: fullPrompt
     };
   });
 }
 
-// 5. 菜谱 recipes
+// 5. AI漫剧学习每日视频
+function generateAiVideos(hotSearches) {
+  const seed = getSeed();
+  const shuffledTopics = seededShuffle(warmupTopics, seed);
+  return shuffledTopics.slice(0, 6).map((topic) => ({
+    title: topic,
+    author: '抖音AI创作博主',
+    tag: 'AI学习',
+    url: douyinUrl(topic)
+  }));
+}
+
+// 6. 菜谱
 const recipePool = [
   { name: '西红柿炒鸡蛋', emoji: '🍅', badge: '家常', time: '15min', ingredients: ['西红柿 2个','鸡蛋 3个','葱花 适量','盐 适量','糖 1勺'], steps: '1.鸡蛋打散加盐\n2.热锅冷油炒鸡蛋盛出\n3.西红柿切块下锅\n4.炒出汤汁加糖\n5.加入鸡蛋翻炒\n6.撒葱花出锅', tutorial: '抖音搜「西红柿炒鸡蛋做法」' },
-  { name: '麻婆豆腐', emoji: '🌶️', badge: '川菜', time: '20min', ingredients: ['嫩豆腐 1块','肉沫 100g','豆瓣酱 2勺','花椒粉 适量','葱花 适量'], steps: '1.豆腐切块焯水\n2.热锅炒香肉沫\n3.加豆瓣酱炒出红油\n4.加水和豆腐\n5.小火煮5分钟\n6.勾芡撒花椒粉', tutorial: '抖音搜「麻婆豆腐做法」' },
-  { name: '肉沫焖土豆丁', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','葱姜蒜 适量','生抽 2勺','老抽 1勺'], steps: '1.土豆切小丁\n2.泡水去淀粉\n3.爆香葱姜蒜\n4.加肉沫炒香\n5.加土豆丁翻炒\n6.加生抽老抽\n7.加水焖10分钟\n8.大火收汁', tutorial: '抖音搜「肉沫土豆丁」' },
-  { name: '可乐鸡翅', emoji: '🥤', badge: '美味', time: '30min', ingredients: ['鸡翅中 8个','可乐 1罐','生抽 2勺','姜片 3片','料酒 1勺'], steps: '1.鸡翅划刀焯水\n2.热锅煎至两面金黄\n3.加姜片料酒\n4.倒入可乐没过鸡翅\n5.加生抽\n6.大火收汁', tutorial: '抖音搜「可乐鸡翅做法」' },
-  { name: '蛋炒饭', emoji: '🍚', badge: '快手', time: '10min', ingredients: ['剩米饭 1碗','鸡蛋 2个','葱花 适量','火腿肠 1根','盐 适量'], steps: '1.鸡蛋打散炒熟\n2.下米饭翻炒\n3.加火腿丁翻炒\n4.加盐调味\n5.撒葱花出锅', tutorial: '抖音搜「蛋炒饭做法」' },
-  { name: '糖醋里脊', emoji: '🍖', badge: '经典', time: '30min', ingredients: ['猪里脊 300g','番茄酱 3勺','糖 2勺','醋 2勺','淀粉 适量'], steps: '1.里脊肉切条\n2.加盐料酒腌制\n3.裹淀粉油炸\n4.调糖醋汁\n5.加肉翻炒裹汁', tutorial: '抖音搜「糖醋里脊做法」' },
-  { name: '清炒时蔬', emoji: '🥬', badge: '减脂', time: '10min', ingredients: ['时令青菜 1把','蒜瓣 3颗','盐 适量','蚝油 1勺'], steps: '1.青菜洗净切段\n2.热锅下油爆香蒜\n3.下青菜大火翻炒\n4.加盐蚝油调味\n5.炒至断生出锅', tutorial: '抖音搜「清炒时蔬做法」' },
-  { name: '红烧排骨', emoji: '🥩', badge: '硬菜', time: '45min', ingredients: ['排骨 500g','冰糖 适量','生抽 3勺','老抽 1勺','八角桂皮 适量'], steps: '1.排骨焯水\n2.冰糖炒糖色\n3.下排骨翻炒上色\n4.加调料和水\n5.小火炖30分钟\n6.大火收汁', tutorial: '抖音搜「红烧排骨做法」' },
-  { name: '蒜蓉西兰花', emoji: '🥦', badge: '快手', time: '10min', ingredients: ['西兰花 1颗','蒜末 适量','盐 适量','蚝油 1勺'], steps: '1.西兰花切小朵焯水\n2.热锅炒香蒜末\n3.下西兰花翻炒\n4.加蚝油盐调味\n5.翻炒均匀出锅', tutorial: '抖音搜「蒜蓉西兰花做法」' },
-  { name: '宫保鸡丁', emoji: '🐔', badge: '经典', time: '25min', ingredients: ['鸡胸肉 300g','花生米 50g','黄瓜 1根','干辣椒 适量','豆瓣酱 1勺'], steps: '1.鸡肉切丁腌制\n2.花生米炒香\n3.热锅炒鸡丁\n4.加豆瓣酱辣椒\n5.加黄瓜丁翻炒\n6.加花生拌匀', tutorial: '抖音搜「宫保鸡丁做法」' },
-  { name: '酸辣土豆丝', emoji: '🥔', badge: '快手', time: '15min', ingredients: ['土豆 2个','干辣椒 适量','醋 2勺','花椒 适量','盐 适量'], steps: '1.土豆切细丝\n2.泡水去淀粉\n3.热油爆香花椒辣椒\n4.下土豆丝大火爆炒\n5.加醋和盐出锅', tutorial: '抖音搜「酸辣土豆丝做法」' },
-  { name: '葱油拌面', emoji: '🍜', badge: '快手', time: '15min', ingredients: ['面条 1把','葱 1大把','生抽 3勺','老抽 1勺','糖 1勺'], steps: '1.葱切段炸至金黄\n2.煮面至八分熟\n3.调酱汁\n4.热油浇面\n5.拌匀即可', tutorial: '抖音搜「葱油拌面做法」' },
-  { name: '金汤肥牛', emoji: '🥘', badge: '开胃', time: '20min', ingredients: ['肥牛 200g','金针菇 1把','南瓜泥 2勺','黄灯笼椒酱 1勺','蒜末 适量'], steps: '1.金针菇焯水铺碗底\n2.热锅炒香蒜末\n3.加黄灯笼椒酱\n4.加水和南瓜泥\n5.肥牛下锅烫熟\n6.倒入碗中', tutorial: '抖音搜「金汤肥牛做法」' },
-  { name: '凉拌黄瓜', emoji: '🥒', badge: '快手', time: '10min', ingredients: ['黄瓜 2根','蒜末 适量','醋 2勺','生抽 1勺','辣椒油 1勺'], steps: '1.黄瓜拍碎切段\n2.加盐腌制5分钟\n3.调凉拌汁\n4.拌匀即可', tutorial: '抖音搜「凉拌黄瓜做法」' },
+  { name: '麻婆豆腐', emoji: '🌶️', badge: '川菜', time: '20min', ingredients: ['嫩豆腐 1块','肉沫 100g','豆瓣酱 2勺','花椒粉 适量'], steps: '1.豆腐切块焯水\n2.炒香肉沫\n3.加豆瓣酱\n4.加水煮豆腐\n5.勾芡撒花椒', tutorial: '抖音搜「麻婆豆腐做法」' },
+  { name: '可乐鸡翅', emoji: '🥤', badge: '美味', time: '30min', ingredients: ['鸡翅 8个','可乐 1罐','生抽 2勺','姜片 3片'], steps: '1.鸡翅划刀焯水\n2.煎至两面金黄\n3.加姜料\n4.倒可乐炖\n5.收汁', tutorial: '抖音搜「可乐鸡翅做法」' },
+  { name: '糖醋里脊', emoji: '🍖', badge: '经典', time: '30min', ingredients: ['猪里脊 300g','番茄酱 3勺','糖 2勺','醋 2勺'], steps: '1.里脊切条腌制\n2.裹淀粉油炸\n3.调糖醋汁\n4.翻裹收汁', tutorial: '抖音搜「糖醋里脊做法」' },
+  { name: '蛋炒饭', emoji: '🍚', badge: '快手', time: '10min', ingredients: ['剩米饭 1碗','鸡蛋 2个','火腿肠 1根','葱花'], steps: '1.先炒蛋\n2.下米饭\n3.加火腿丁\n4.撒葱花出锅', tutorial: '抖音搜「蛋炒饭做法」' },
+  { name: '红烧排骨', emoji: '🥩', badge: '硬菜', time: '45min', ingredients: ['排骨 500g','冰糖 适量','生抽 3勺','八角桂皮'], steps: '1.排骨焯水\n2.炒糖色\n3.加料炖\n4.大火收汁', tutorial: '抖音搜「红烧排骨做法」' },
+  { name: '清炒时蔬', emoji: '🥬', badge: '减脂', time: '10min', ingredients: ['时令青菜 1把','蒜瓣 3颗','盐 适量','蚝油 1勺'], steps: '1.青菜洗净\n2.爆香蒜\n3.大火翻炒\n4.调味出锅', tutorial: '抖音搜「清炒时蔬做法」' },
+  { name: '酸辣土豆丝', emoji: '🥔', badge: '快手', time: '15min', ingredients: ['土豆 2个','干辣椒 适量','醋 2勺'], steps: '1.土豆切丝\n2.泡水去淀粉\n3.爆香辣椒\n4.大火炒\n5.加醋出锅', tutorial: '抖音搜「酸辣土豆丝做法」' },
+  { name: '凉拌黄瓜', emoji: '🥒', badge: '快手', time: '10min', ingredients: ['黄瓜 2根','蒜末 适量','醋 2勺','辣椒油 1勺'], steps: '1.黄瓜拍碎\n2.加盐腌制\n3.调汁拌匀', tutorial: '抖音搜「凉拌黄瓜做法」' },
+  { name: '葱油拌面', emoji: '🍜', badge: '快手', time: '15min', ingredients: ['面条 1把','葱 1大把','生抽 3勺','糖 1勺'], steps: '1.炸葱油\n2.煮面\n3.调酱汁\n4.拌匀即食', tutorial: '抖音搜「葱油拌面做法」' },
+  { name: '宫保鸡丁', emoji: '🐔', badge: '经典', time: '25min', ingredients: ['鸡胸肉 300g','花生米 50g','黄瓜 1根','干辣椒'], steps: '1.鸡丁腌制\n2.炒花生\n3.爆炒鸡丁\n4.加料翻炒', tutorial: '抖音搜「宫保鸡丁做法」' },
+  { name: '金汤肥牛', emoji: '🥘', badge: '开胃', time: '20min', ingredients: ['肥牛 200g','金针菇 1把','南瓜泥 2勺','黄椒酱'], steps: '1.金针菇焯水\n2.炒香蒜末\n3.加黄椒酱\n4.肥牛烫熟', tutorial: '抖音搜「金汤肥牛做法」' },
+  { name: '蒜蓉西兰花', emoji: '🥦', badge: '减脂', time: '10min', ingredients: ['西兰花 1颗','蒜末 适量','蚝油 1勺'], steps: '1.西兰花焯水\n2.炒香蒜末\n3.加西兰花\n4.调味出锅', tutorial: '抖音搜「蒜蓉西兰花做法」' },
+  { name: '肉沫焖土豆', emoji: '🥔', badge: '家常', time: '25min', ingredients: ['土豆 2个','肉沫 100g','生抽 2勺','老抽 1勺'], steps: '1.土豆切丁\n2.泡水去粉\n3.炒香肉沫\n4.加土豆焖', tutorial: '抖音搜「肉沫焖土豆丁」' },
 ];
 
 function generateRecipes() {
-  const d = new Date();
-  const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-  // 使用 Fisher-Yates 洗牌
-  const arr = [...recipePool];
-  let s = seed;
-  function nextRand() {
-    s = s + 0x6D2B79F5 | 0;
-    let t = Math.imul(s ^ s >>> 15, 1 | s);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(nextRand() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr.slice(0, 14);
+  return seededShuffle(recipePool, getSeed()).slice(0, 14);
 }
 
 // ============ HTML 替换 ============
 
 function replaceArrayBlock(html, varName, newArrayStr) {
-  const regex = new RegExp(
-    `(const ${varName} = )\\[[\\s\\S]*?\\n\\];`,
-    'm'
-  );
+  const regex = new RegExp(`(const ${varName} = )\\[[\\s\\S]*?\\n\\];`, 'm');
   const result = html.replace(regex, `$1${newArrayStr}\n];`);
-  if (result === html) {
-    console.warn(`警告: 未找到数组 ${varName}`);
-  }
+  if (result === html) console.warn(`警告: 未找到数组 ${varName}`);
   return result;
 }
 
 function replaceTipsBlock(html, newArrayStr) {
   const regex = /(const tips = )\[[\s\S]*?\n  \];/;
   const result = html.replace(regex, `$1${newArrayStr}\n  ];`);
-  if (result === html) {
-    console.warn('警告: 未找到 tips 数组');
-  }
+  if (result === html) console.warn('警告: 未找到 tips 数组');
   return result;
 }
 
@@ -324,7 +414,7 @@ function formatFitVideos(arr) {
 
 function formatJobs(arr) {
   return '[\n  ' + arr.map(j =>
-    `{ title: '${j.title}', company: '${j.company}', salary: '${j.salary}', tags: [${j.tags.map(t => `'${t}'`).join(', ')}], source: '${j.source}', url: '${j.url}' }`
+    `{ title: '${j.title}', company: '${j.company}', salary: '${j.salary}', tags: [${j.tags.map(t=>`'${t}'`).join(',')}], source: '${j.source}', url: '${j.url}' }`
   ).join(',\n  ') + '\n';
 }
 
@@ -336,83 +426,67 @@ function formatScripts(arr) {
 
 function formatRecipes(arr) {
   return '[\n  ' + arr.map(r =>
-    `{ name: '${r.name}', emoji: '${r.emoji}', badge: '${r.badge}', time: '${r.time}', ingredients: [${r.ingredients.map(ing => `'${ing}'`).join(', ')}], steps: '${r.steps.replace(/'/g, "\\'").replace(/\n/g, '\\n')}', tutorial: '${r.tutorial}' }`
+    `{ name: '${r.name}', emoji: '${r.emoji}', badge: '${r.badge}', time: '${r.time}', ingredients: [${r.ingredients.map(ing=>`'${ing}'`).join(',')}], steps: '${r.steps.replace(/'/g,"\\'").replace(/\n/g,'\\n')}', tutorial: '${r.tutorial}' }`
+  ).join(',\n  ') + '\n';
+}
+
+function formatAiVideos(arr) {
+  return '[\n  ' + arr.map(v =>
+    `{ title: '${v.title.replace(/'/g, "\\'")}', author: '${v.author}', tag: '${v.tag}', url: '${v.url}' }`
   ).join(',\n  ') + '\n';
 }
 
 // ============ 主流程 ============
 
 async function main() {
-  console.log('=== 每日内容更新开始 ===');
-  console.log(`时间: ${new Date().toISOString()}`);
+  console.log('=== 每日内容更新 ===');
+  console.log(`日期: ${new Date().toISOString().slice(0,10)}`);
 
   // 1. 抓取实时数据
-  console.log('\n[1/4] 抓取B站热门数据...');
-  const [popular, hotSearches] = await Promise.all([
-    fetchBilibiliPopular(),
-    fetchBilibiliHotSearch()
-  ]);
-  console.log(`  热门视频: ${popular.length} 条`);
-  console.log(`  热搜关键词: ${hotSearches.length} 条`);
+  console.log('\n[1/3] 抓取热门关键词...');
+  const hotSearches = await fetchBilibiliHotSearch();
+  console.log(`  热搜: ${hotSearches.length} 条`);
 
-  // 2. 抓取分类内容
-  console.log('\n[2/4] 抓取分类内容...');
-  const [fitnessResults, cookingResults] = await Promise.all([
-    searchBilibili('健身跟练'),
-    searchBilibili('家常菜做法')
-  ]);
-  console.log(`  健身视频: ${fitnessResults.length} 条`);
-  console.log(`  菜谱视频: ${cookingResults.length} 条`);
+  if (hotSearches.length === 0) {
+    // fallback keywords
+    hotSearches.push('日常', 'AI短剧', '治愈', '搞笑', '萌宠', '美食', 'DIY', '运动', '旅行', '手工');
+  }
 
-  // 3. 生成数据
-  console.log('\n[3/4] 生成内容数组...');
-  const newTips = generateTips(hotSearches, popular);
-  const newFitVideos = generateFitVideos(
-    fitnessResults.length >= 6 ? fitnessResults : popular
-  );
-  const newJobs = generateJobs(hotSearches);
+  // 2. 生成内容
+  console.log('\n[2/3] 生成每日内容...');
+  const newTips = generateTips(hotSearches);
+  const newFitVideos = generateFitVideos();
+  const newJobs = generateJobs();
   const newScripts = generateScripts(hotSearches);
+  const newAiVideos = generateAiVideos(hotSearches);
   const newRecipes = generateRecipes();
 
-  console.log(`  tips: ${newTips.length} 条`);
-  console.log(`  fitVideos: ${newFitVideos.length} 个`);
-  console.log(`  allJobs: ${newJobs.length} 个`);
-  console.log(`  scripts: ${newScripts.length} 个`);
-  console.log(`  recipes: ${newRecipes.length} 个`);
+  console.log(`  tips: ${newTips.length}`);
+  console.log(`  fitVideos: ${newFitVideos.length}`);
+  console.log(`  allJobs: ${newJobs.length}`);
+  console.log(`  scripts: ${newScripts.length}`);
+  console.log(`  aiVideos: ${newAiVideos.length}`);
+  console.log(`  recipes: ${newRecipes.length}`);
 
-  // 4. 更新 HTML
-  console.log('\n[4/4] 更新 index.html...');
+  // 3. 更新 HTML
+  console.log('\n[3/3] 写入 index.html...');
   let html = fs.readFileSync('index.html', 'utf8');
   html = replaceTipsBlock(html, formatTips(newTips));
   html = replaceArrayBlock(html, 'fitVideos', formatFitVideos(newFitVideos));
   html = replaceArrayBlock(html, 'allJobs', formatJobs(newJobs));
   html = replaceArrayBlock(html, 'scripts', formatScripts(newScripts));
+  html = replaceArrayBlock(html, 'aiVideos', formatAiVideos(newAiVideos));
   html = replaceArrayBlock(html, 'recipes', formatRecipes(newRecipes));
 
   fs.writeFileSync('index.html', html);
-  console.log('  已保存更新');
 
-  // 验证
-  if (html.includes('const fitVideos = [')) {
-    console.log('  ✓ fitVideos 替换成功');
-  }
-  if (html.includes('const allJobs = [')) {
-    console.log('  ✓ allJobs 替换成功');
-  }
-  if (html.includes('const scripts = [')) {
-    console.log('  ✓ scripts 替换成功');
-  }
-  if (html.includes('const recipes = [')) {
-    console.log('  ✓ recipes 替换成功');
-  }
-  if (html.includes('const tips = [')) {
-    console.log('  ✓ tips 替换成功');
-  }
+  // 4. 验证
+  ['fitVideos','allJobs','scripts','recipes','tips','aiVideos'].forEach(v => {
+    if (html.includes(`const ${v} = [`)) console.log(`  ✓ ${v} 已更新`);
+    else console.warn(`  ✗ ${v} 未找到`);
+  });
 
-  console.log('\n=== 每日内容更新完成 ===');
+  console.log('\n=== 完成 ===');
 }
 
-main().catch(e => {
-  console.error('\n更新失败:', e.message);
-  process.exit(1);
-});
+main().catch(e => { console.error('失败:', e.message); process.exit(1); });
