@@ -861,37 +861,14 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   </div>
 
-  <!-- 运营知识速览 -->
-  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📚 运营知识速览 <span style="font-size:11px;color:var(--primary);font-weight:400;margin-left:auto;" id="knowledgeUpdate">每日更新</span></div>
-
-  <div id="knowledgeList">
-    <div class="knowledge-card">
-      <div class="knowledge-icon">📈</div>
-      <div class="knowledge-content">
-        <div class="knowledge-title">抖音流量池机制：为什么你的视频卡在500播放</div>
-        <span class="knowledge-tag">底层逻辑</span>
-      </div>
-    </div>
-    <div class="knowledge-card">
-      <div class="knowledge-icon">🎯</div>
-      <div class="knowledge-content">
-        <div class="knowledge-title">抖音四大爆款内容公式（92.7%爆款验证）</div>
-        <span class="knowledge-tag">选题技巧</span>
-      </div>
-    </div>
-    <div class="knowledge-card">
-      <div class="knowledge-icon">🔥</div>
-      <div class="knowledge-content">
-        <div class="knowledge-title">小红书爆款笔记标题模板：直接套用</div>
-        <span class="knowledge-tag">实操干货</span>
-      </div>
-    </div>
-    <div class="knowledge-card">
-      <div class="knowledge-icon">💼</div>
-      <div class="knowledge-content">
-        <div class="knowledge-title">数据分析师30天转型计划：从入门到面试</div>
-        <span class="knowledge-tag">求职方向</span>
-      </div>
+  <!-- 每日任务 -->
+  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📋 今日任务 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;" id="taskDate"></span></div>
+  <div class="card">
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:10px;">完成任务后点击左侧圆圈打勾，可随时增删</div>
+    <div id="homeTaskList"></div>
+    <div class="add-task-bar" style="display:flex;gap:8px;margin-top:12px;">
+      <input type="text" class="form-input" id="newTaskInput" placeholder="+ 添加新任务..." maxlength="40" style="border-radius:20px;">
+      <button class="btn btn-primary" onclick="addTask()">添加</button>
     </div>
   </div>
 
@@ -925,6 +902,30 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <button class="filter-tab" data-part="arm">手臂</button>
     <button class="filter-tab" data-part="abs">腹部</button>
     <button class="filter-tab" data-part="stretch">拉伸</button>
+  </div>
+
+  <!-- 身高体重记录 -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title"><div class="card-title-bar"></div>📏 身高体重记录</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div style="text-align:center;padding:10px;background:var(--primary-soft);border-radius:10px;">
+        <div style="font-size:11px;color:var(--text-3);">📏 身高</div>
+        <div style="font-size:20px;font-weight:700;color:var(--primary);" id="fitHeight">-- cm</div>
+      </div>
+      <div style="text-align:center;padding:10px;background:var(--primary-soft);border-radius:10px;">
+        <div style="font-size:11px;color:var(--text-3);">⚖️ 最新体重</div>
+        <div style="font-size:20px;font-weight:700;color:var(--primary);" id="fitCurWeight">-- kg</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <div style="flex:1;"><input type="number" class="form-input" id="fitHeightInput" placeholder="身高(cm)" step="0.1" style="border-radius:20px;font-size:12px;"></div>
+      <div style="flex:1;"><input type="number" class="form-input" id="fitWeightInput" placeholder="今日体重(kg)" step="0.1" style="border-radius:20px;font-size:12px;"></div>
+      <button class="btn btn-primary btn-sm" onclick="recordFitBody()" style="padding:6px 14px;">记录</button>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">📊 本周体重变化</div>
+      <div id="fitWeightChart" style="display:flex;align-items:flex-end;gap:6px;height:60px;padding:0 4px;"></div>
+    </div>
   </div>
 
   <div class="card-title"><div class="card-title-bar"></div>🎬 博主视频推荐</div>
@@ -1005,14 +1006,6 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <a class="tool-tile" href="javascript:void(0)" onclick="goApp('liepin');"><div class="tool-tile-icon">🎥</div><div class="tool-tile-name">短视频编导</div></a>
   </div>
 
-  <div class="card-title" style="margin-top:8px;"><div class="card-title-bar"></div>📌 薪资参考（成都）</div>
-  <div class="card">
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">数据分析师</div><div class="list-item-sub">初级·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">6-10K</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">新媒体运营</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">7-12K</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">视频剪辑</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">8-15K</div></div>
-    <div class="list-item"><div class="list-item-info"><div class="list-item-title">标书专员</div><div class="list-item-sub">1-3年·成都</div></div><div style="font-size:14px;font-weight:700;color:var(--primary);">5-8K</div></div>
-  </div>
-
 </div>
 
 <!-- ===== 学习页 ===== -->
@@ -1023,8 +1016,8 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   <div class="filter-tabs" id="studyFilter">
     <button class="filter-tab active" data-study="word">单词打卡</button>
     <button class="filter-tab" data-study="scene">场景口语</button>
+    <button class="filter-tab" data-study="work">项目口语</button>
     <button class="filter-tab" data-study="nce">新概念</button>
-    <button class="filter-tab" data-study="movie">影视精听</button>
   </div>
 
   <!-- 单词打卡 -->
@@ -1065,22 +1058,22 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <div id="sceneList"></div>
   </div>
 
+  <!-- 项目口语 -->
+  <div id="studyWork" style="display:none;">
+    <div class="card" style="background:linear-gradient(135deg,#5B8DEF,#7BA0F4);color:#fff;text-align:center;margin-bottom:12px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">💼 项目口语</div>
+      <div style="font-size:12px;opacity:0.85;">真实工作场景对话 · 跟读练习 · 每周更新</div>
+    </div>
+    <div id="workSceneList"></div>
+  </div>
+
   <!-- 新概念 -->
   <div id="studyNce" style="display:none;">
     <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;text-align:center;">
       <div style="font-size:16px;font-weight:700;margin-bottom:4px;">📖 新概念英语</div>
-      <div style="font-size:12px;opacity:0.85;">经典教材 · 每天一课</div>
+      <div style="font-size:12px;opacity:0.85;">经典教材 · 中英对照 · 跟读 · 每周更新</div>
     </div>
     <div id="nceList"></div>
-  </div>
-
-  <!-- 影视精听 -->
-  <div id="studyMovie" style="display:none;">
-    <div class="card" style="background:linear-gradient(135deg,#E89494,#F4A0A0);color:#fff;text-align:center;margin-bottom:12px;">
-      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">🎬 影视精听</div>
-      <div style="font-size:12px;opacity:0.85;">经典台词 · 中英对照 · 跟读练习</div>
-    </div>
-    <div id="movieList"></div>
   </div>
 
 </div>
@@ -1472,6 +1465,65 @@ const scenes = [
   ]}
 ];
 
+const workScenes = [
+  { title: '🧑‍💻 项目需求沟通', emoji: '🧑‍💻', items: [
+    { en: 'I would like to clarify the requirements for this project.', cn: '我想确认一下这个项目的需求。' },
+    { en: 'What is the expected timeline for this deliverable?', cn: '这个交付物的预期时间线是什么？' },
+    { en: 'Could you explain the priority of these tasks?', cn: '你能说明一下这些任务的优先级吗？' },
+    { en: 'Let me make sure I understand your requirements correctly.', cn: '让我确认一下我正确理解了你的需求。' },
+    { en: 'I will prepare a proposal and get back to you by Friday.', cn: '我会准备一个方案，周五前给你回复。' }
+  ]},
+  { title: '📊 数据分析汇报', emoji: '📊', items: [
+    { en: 'Based on the data, our conversion rate has increased by 15%.', cn: '根据数据，我们的转化率提升了15%。' },
+    { en: 'The key takeaway from this analysis is that user retention needs improvement.', cn: '这个分析的核心发现是用户留存需要改进。' },
+    { en: 'Let me walk you through the key metrics for this quarter.', cn: '让我带你过一下本季度的关键指标。' },
+    { en: 'We should dig deeper into this trend before making any decisions.', cn: '在做任何决定之前，我们应该深入分析这个趋势。' },
+    { en: 'I have prepared a dashboard to track these KPIs in real time.', cn: '我准备了一个仪表盘来实时追踪这些KPI。' }
+  ]},
+  { title: '🤝 跨部门协作', emoji: '🤝', items: [
+    { en: 'I will loop in the engineering team for their input on this.', cn: '我会拉上工程团队征求他们的意见。' },
+    { en: 'Could you connect me with the person in charge of this area?', cn: '你能帮我联系一下这个领域的负责人吗？' },
+    { en: 'Let us schedule a sync-up meeting to align on the goals.', cn: '我们安排一个同步会议来对齐目标吧。' },
+    { en: 'I need to confirm with the design team before we move forward.', cn: '继续推进之前我需要和设计团队确认。' },
+    { en: 'Thanks for the update, I will share this with the broader team.', cn: '感谢更新，我会和更广泛的团队分享这个信息。' }
+  ]},
+  { title: '📅 进度跟踪站会', emoji: '📅', items: [
+    { en: 'Quick update: I completed the data pipeline work yesterday.', cn: '快速更新：我昨天完成了数据管道的工作。' },
+    { en: 'Today I am working on the dashboard design.', cn: '今天我在做仪表盘设计。' },
+    { en: 'I encountered a blocker with the API integration, can someone help?', cn: '我在API集成上遇到了阻碍，有人能帮忙吗？' },
+    { en: 'The task is on track and should be completed by the end of the week.', cn: '这个任务进展顺利，周末前应该能完成。' },
+    { en: 'Let us prioritize the critical path items first.', cn: '我们先优先处理关键路径上的事项。' }
+  ]},
+  { title: '📧 英文邮件撰写', emoji: '📧', items: [
+    { en: 'I am writing to follow up on our discussion regarding the project timeline.', cn: '我写信跟进我们关于项目时间表的讨论。' },
+    { en: 'Please find attached the documents you requested.', cn: '你需要的文件已附上，请查收。' },
+    { en: 'I would appreciate it if you could review this by end of day.', cn: '如果你今天下班前能审阅一下，我会很感激。' },
+    { en: 'Let me know if you have any questions or concerns.', cn: '有任何问题或疑虑请告诉我。' },
+    { en: 'Looking forward to hearing from you soon.', cn: '期待很快收到你的回复。' }
+  ]},
+  { title: '💡 方案演示 Pitch', emoji: '💡', items: [
+    { en: 'Thank you for taking the time to listen to my presentation.', cn: '感谢各位花时间听我的演示。' },
+    { en: 'Here is a quick overview of what I will cover today.', cn: '以下是今天要讲的内容概述。' },
+    { en: 'The key advantage of this solution is its scalability.', cn: '这个方案的核心优势是可扩展性。' },
+    { en: 'I would be happy to answer any questions you may have.', cn: '我很乐意回答各位可能有的任何问题。' },
+    { en: 'Next steps: we will run a pilot test and report back in two weeks.', cn: '下一步：我们会做一个试点测试，两周后汇报。' }
+  ]},
+  { title: '⚙️ 技术方案讨论', emoji: '⚙️', items: [
+    { en: 'What tech stack are we using for this project?', cn: '这个项目我们用什么技术栈？' },
+    { en: 'I suggest we go with a microservices architecture for better scalability.', cn: '我建议采用微服务架构以获得更好的可扩展性。' },
+    { en: 'The trade-off here is between performance and development speed.', cn: '这里的权衡是性能和开发速度之间。' },
+    { en: 'Let us do a quick proof of concept before committing to this approach.', cn: '我们做一个快速概念验证再确定这个方法。' },
+    { en: 'I will document the technical specs and share them with the team.', cn: '我会记录技术规格并分享给团队。' }
+  ]},
+  { title: '🎤 入职介绍 & 1-on-1', emoji: '🎤', items: [
+    { en: 'Hi everyone, I am Sun and I just joined the data team.', cn: '大家好，我是Sun，刚刚加入数据团队。' },
+    { en: 'I am excited to work with all of you and learn from the team.', cn: '很高兴和大家一起工作，向团队学习。' },
+    { en: 'What are the current priorities I should focus on first?', cn: '我应该先关注哪些当前优先级事项？' },
+    { en: 'I would love to set up regular one-on-one meetings with the team.', cn: '我希望和团队建立定期的一对一沟通。' },
+    { en: 'Please feel free to reach out if you need anything from me.', cn: '有任何需要我的地方请随时找我。' }
+  ]}
+];
+
 const nceArticles = [
   { title: 'NCE1-L1: Excuse me!', word: 120, sentence: 'Excuse me! Yes? Is this your handbag? Pardon? Is this your handbag? Thank you very much.',
     en: 'Excuse me!\nYes?\nIs this your handbag?\nPardon?\nIs this your handbag?\nYes, it is.\nThank you very much.',
@@ -1727,18 +1779,22 @@ const books = [
 ];
 
 const podcasts = [
-  { title: '纵横四海', author: '即刻 App', desc: '每一代人都值得被记录，访谈类节目，听听别人的人生故事', icon: '🎙️',
+  { title: '组织进化论', author: '飞书旗下', desc: '聚焦职场成长与企业文化，帮你理解组织运作', icon: '💼', tag: '个人提升',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/628e6a7d06c0ef78a2877ae3' },
+  { title: '知行小酒馆', author: '有知有行', desc: '关注投资理财与生活，真正治愈你的财务焦虑', icon: '💰', tag: '经济理财',
     url: 'https://www.xiaoyuzhoufm.com/podcast/6014be78a1b60f9f3c419fcd' },
-  { title: '商业就是这样', author: '商业财经类', desc: '用通俗语言讲商业故事，通勤路上听', icon: '💼',
-    url: 'https://www.xiaoyuzhoufm.com/podcast/6066b407dd1122e4f6728774' },
-  { title: '日谈公园', author: '日谈公园', desc: '都市青年减压必备，聊天趣事', icon: '🎧',
-    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a407418a84a04696b43f' },
-  { title: '文化有限', author: '文化有限', desc: '大冰讲故事，文学青年必备', icon: '📚',
-    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c554f418a84a04696b83a' },
-  { title: '随机波动', author: '随机波动', desc: '女性视角看世界，温柔有力量', icon: '💫',
+  { title: '梁文道·八分', author: '看理想', desc: '文化评论与深度思考，在这个浮躁的世界保持清醒', icon: '🎓', tag: '个人提升',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b448' },
+  { title: '随机波动', author: '随机波动', desc: '女性视角看世界，温柔有力量的社会观察', icon: '💫', tag: '减压放松',
     url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b44d' },
-  { title: '大内密谈', author: '大内密谈', desc: '城市夜晚的心灵庇护所', icon: '🌙',
-    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b448' }
+  { title: '日谈公园', author: '日谈公园', desc: '都市青年减压必备，聊天趣事陪伴你', icon: '🎧', tag: '减压放松',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b43f' },
+  { title: '商业就是这样', author: '商业财经', desc: '用通俗语言讲商业故事，通勤路上轻松学经济', icon: '📈', tag: '经济理财',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/6066b407dd1122e4f6728774' },
+  { title: '文化有限', author: '大壹/星光/超哥', desc: '三人对谈一本书，文学青年精神食粮', icon: '📚', tag: '个人提升',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c554f418a84a04696b83a' },
+  { title: '大内密谈', author: '大内密谈', desc: '城市夜晚的心灵庇护所，卸下一天疲惫', icon: '🌙', tag: '减压放松',
+    url: 'https://www.xiaoyuzhoufm.com/podcast/5e7c54a0418a84a04696b446' }
 ];
 
 const quotes = [
@@ -1746,10 +1802,18 @@ const quotes = [
   { text: '你不必仰望别人，自己亦是风景。', author: '佚名' },
   { text: '世界上只有一种英雄主义，就是看清生活的真相之后依然热爱生活。', author: '罗曼·罗兰' },
   { text: '每一个不曾起舞的日子，都是对生命的辜负。', author: '尼采' },
-  { text: '不管前方的路有多苦，只要走的方向正确，不管多么崎岖，都比站在原地更接近幸福。', author: '宫崎骏' },
+  { text: '不管前方的路有多苦，只要走的方向正确，都比站在原地更接近幸福。', author: '宫崎骏' },
   { text: '你的孤独，虽败犹荣。愿你在迷茫中找到方向。', author: '刘同' },
   { text: '不要因为走得太远，而忘记为什么出发。', author: '纪伯伦' },
-  { text: '所谓无底深渊，下去，也是前程万里。', author: '木心' }
+  { text: '所谓无底深渊，下去，也是前程万里。', author: '木心' },
+  { text: '万物皆有裂痕，那是光照进来的地方。', author: '莱昂纳德·科恩' },
+  { text: '种一棵树最好的时间是十年前，其次是现在。', author: '非洲谚语' },
+  { text: '有些人能感受雨，而其他人只是被淋湿。', author: '鲍勃·迪伦' },
+  { text: '我们终此一生，就是要摆脱他人的期待，找到真正的自己。', author: '伍绮诗' },
+  { text: '如果你因失去了太阳而流泪，那么你也将失去群星了。', author: '泰戈尔' },
+  { text: '最怕你一生碌碌无为，还安慰自己平凡可贵。', author: '佚名' },
+  { text: '真正的自由不是想做什么就做什么，而是不想做什么就不做什么。', author: '康德' },
+  { text: '读书不是为了雄辩和驳斥，而是为了思考和权衡。', author: '培根' }
 ];
 
 const daChapters = [
@@ -1967,12 +2031,13 @@ function updateStats() {
 
 // ==================== 任务 ====================
 function renderTasks() {
-  const list = document.getElementById('taskList');
-  if (tasks.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有任务，添加一个吧</div>';
-    return;
-  }
-  list.innerHTML = tasks.map(t => `
+  const renderTo = (el) => {
+    if (!el) return;
+    if (tasks.length === 0) {
+      el.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有任务，添加一个吧</div>';
+      return;
+    }
+    el.innerHTML = tasks.map(t => `
     <div class="task-item ${t.completed ? 'completed' : ''}">
       <div class="task-check ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
       <div class="task-content">
@@ -1985,6 +2050,9 @@ function renderTasks() {
       <button class="task-del" onclick="deleteTask(${t.id})">✕</button>
     </div>
   `).join('');
+  };
+  renderTo(document.getElementById('homeTaskList'));
+  renderTo(document.getElementById('taskList'));
 }
 
 function toggleTask(id) {
@@ -2048,7 +2116,7 @@ function goPage(page) {
   document.getElementById('fab').style.display = page === 'home' ? 'none' : 'flex';
   window.scrollTo(0, 0);
   // 页面切换时刷新
-  if (page === 'home') refreshKnowledge();
+  if (page === 'home') renderTasks();
   if (page === 'recipe') renderRecipe();
   if (page === 'data') renderDa();
   if (page === 'money') renderMoney();
@@ -2059,6 +2127,68 @@ function goPage(page) {
 }
 
 // ==================== 健身 ====================
+// 身高体重数据 { height: number, records: [{date:'2026-08-01',weight:55.5},...] }
+let fitBodyData = getData('fitBody', { height: null, records: [] });
+
+function recordFitBody() {
+  const h = parseFloat(document.getElementById('fitHeightInput').value);
+  const w = parseFloat(document.getElementById('fitWeightInput').value);
+  if (!h && !w) { showToast('请输入身高或体重'); return; }
+  if (h && (h < 100 || h > 250)) { showToast('请输入合理身高(100-250cm)'); return; }
+  if (w && (w < 30 || w > 300)) { showToast('请输入合理体重(30-300kg)'); return; }
+  if (h) fitBodyData.height = h;
+  if (w) {
+    const today = new Date().toISOString().slice(0,10);
+    const exist = fitBodyData.records.find(r => r.date === today);
+    if (exist) exist.weight = w;
+    else fitBodyData.records.push({ date: today, weight: w });
+    fitBodyData.records.sort((a,b) => a.date.localeCompare(b.date));
+  }
+  setData('fitBody', fitBodyData);
+  document.getElementById('fitHeightInput').value = '';
+  document.getElementById('fitWeightInput').value = '';
+  renderFitBody();
+  showToast('✓ 已记录');
+}
+
+function renderFitBody() {
+  if (fitBodyData.height) {
+    document.getElementById('fitHeight').textContent = fitBodyData.height + ' cm';
+  }
+  if (fitBodyData.records.length > 0) {
+    const latest = fitBodyData.records[fitBodyData.records.length - 1];
+    document.getElementById('fitCurWeight').textContent = latest.weight + ' kg';
+    // 本周体重图（最近7天）
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7*86400000).toISOString().slice(0,10);
+    const weekRecords = fitBodyData.records.filter(r => r.date >= weekAgo);
+    const maxW = Math.max(...weekRecords.map(r => r.weight));
+    const minW = Math.min(...weekRecords.map(r => r.weight));
+    const range = (maxW - minW) || 1;
+    const chart = document.getElementById('fitWeightChart');
+    if (chart && weekRecords.length > 0) {
+      chart.innerHTML = weekRecords.map(r => {
+        const h = 15 + ((r.weight - minW) / range) * 40;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+          <div style="font-size:9px;color:var(--text-3);">${r.weight}</div>
+          <div style="width:100%;max-width:24px;height:${h}px;background:linear-gradient(180deg,var(--primary),var(--primary-light));border-radius:4px 4px 0 0;"></div>
+          <div style="font-size:9px;color:var(--text-3);">${r.date.slice(5)}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+  // 对比提示
+  if (fitBodyData.records.length >= 2) {
+    const latest = fitBodyData.records[fitBodyData.records.length - 1];
+    const prev = fitBodyData.records[fitBodyData.records.length - 2];
+    if (latest.weight > prev.weight) {
+      document.getElementById('fitCurWeight').textContent = latest.weight + ' kg ↑';
+    } else if (latest.weight < prev.weight) {
+      document.getElementById('fitCurWeight').textContent = latest.weight + ' kg ↓';
+    }
+  }
+}
+
 function renderFitVideos() {
   const filtered = currentFitPart === 'all' ? fitVideos : fitVideos.filter(v => v.part === currentFitPart);
   document.getElementById('fitVideoList').innerHTML = filtered.map((v,i) => `
@@ -2222,15 +2352,15 @@ function renderAiVideos() {
   }
 }
 
-// ==================== 学习 ====================
+// ==================== 英语 ====================
 function renderStudy() {
   document.getElementById('studyWord').style.display = currentStudyTab === 'word' ? 'block' : 'none';
   document.getElementById('studyScene').style.display = currentStudyTab === 'scene' ? 'block' : 'none';
+  document.getElementById('studyWork').style.display = currentStudyTab === 'work' ? 'block' : 'none';
   document.getElementById('studyNce').style.display = currentStudyTab === 'nce' ? 'block' : 'none';
-  document.getElementById('studyMovie').style.display = currentStudyTab === 'movie' ? 'block' : 'none';
   if (currentStudyTab === 'scene') renderScenes();
+  if (currentStudyTab === 'work') renderWorkScenes();
   if (currentStudyTab === 'nce') renderNce();
-  if (currentStudyTab === 'movie') renderMovie();
   document.getElementById('wordTotal').textContent = wordTotal;
   document.getElementById('wordStreak').textContent = wordStreak;
   document.getElementById('wordToday').textContent = wordToday;
@@ -2330,6 +2460,22 @@ function changeWordBook(book) {
 
 function renderScenes() {
   document.getElementById('sceneList').innerHTML = scenes.map((s,i) => `
+    <div class="scene-card">
+      <div class="scene-title">${s.emoji} ${s.title}</div>
+      ${s.items.map((it,j) => `
+        <div class="scene-sent" onclick="speakEn('${it.en.replace(/'/g, "\\'")}')">
+          <span class="scene-sent-icon">🔊</span>
+          <div class="scene-sent-en">${it.en}</div>
+          <div class="scene-sent-cn">${it.cn}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function renderWorkScenes() {
+  const shuffled = dailyShuffle(workScenes);
+  document.getElementById('workSceneList').innerHTML = shuffled.map((s,i) => `
     <div class="scene-card">
       <div class="scene-title">${s.emoji} ${s.title}</div>
       ${s.items.map((it,j) => `
@@ -2493,21 +2639,39 @@ function updateBookProgress(idx, delta) {
 
 function renderPodcasts() {
   document.getElementById('podcastList').innerHTML = podcasts.map(p => `
-    <div class="video-card" onclick="window.open('${p.url}', '_blank')">
+    <div class="video-card">
       <div class="video-thumb">${p.icon}</div>
       <div class="video-info">
         <div class="video-title">${p.title}</div>
-        <div class="video-meta">${p.author}</div>
+        <div class="video-meta">${p.author} · <span class="video-tag">${p.tag}</span></div>
         <div style="font-size:11px;color:var(--text-2);margin-top:4px;">${p.desc}</div>
-        <div style="font-size:10px;color:var(--primary);margin-top:6px;font-weight:600;">▶ 点击播放 · 小宇宙FM</div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();speakPodcastIntro('${p.title.replace(/'/g,"\\\'")}','${p.tag.replace(/'/g,"\\\'")}','${p.author.replace(/'/g,"\\\'")}')">🔊 简介</button>
+          <button class="btn btn-outline btn-sm" onclick="window.open('${p.url}','_blank')">🎧 收听</button>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
+function speakPodcastIntro(title, tag, author) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const text = `今天推荐播客：${title}。分类：${tag}。主播：${author}。点击收听按钮即可打开播客。`;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.95;
+  speechSynthesis.speak(u);
+  showToast('🔊 正在朗读简介');
+}
+
 function renderQuotes() {
-  document.getElementById('quoteList').innerHTML = quotes.map(q => `
-    <div class="quote-card">${q.text}<div class="quote-author">—— ${q.author}</div></div>
+  const shuffled = dailyPick(quotes, 8);
+  document.getElementById('quoteList').innerHTML = shuffled.map(q => `
+    <div class="quote-card">
+      <div>${q.text}</div>
+      <div class="quote-author">—— ${q.author}</div>
+    </div>
   `).join('');
 }
 
@@ -2743,36 +2907,6 @@ function recipeCardHTML(r, compact) {
 }
 
 // ==================== 知识速览（每日更新 - 抖音运营视频） ====================
-function refreshKnowledge() {
-  const tips = [
-    { icon: '🔥', title: '网飞是否造成韩剧寒冬', tag: '今日热搜', url: 'https://www.douyin.com/search/%E7%BD%91%E9%A3%9E%E6%98%AF%E5%90%A6%E9%80%A0%E6%88%90%E9%9F%A9%E5%89%A7%E5%AF%92%E5%86%AC' },
-    { icon: '📈', title: '航天 中国人能飞', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%88%AA%E5%A4%A9%20%E4%B8%AD%E5%9B%BD%E4%BA%BA%E8%83%BD%E9%A3%9E' },
-    { icon: '🎯', title: '深扒大S遗产争夺完整始末', tag: '今日热搜', url: 'https://www.douyin.com/search/%E6%B7%B1%E6%89%92%E5%A4%A7S%E9%81%97%E4%BA%A7%E4%BA%89%E5%A4%BA%E5%AE%8C%E6%95%B4%E5%A7%8B%E6%9C%AB' },
-    { icon: '💡', title: '如何评价蜘蛛侠4首映', tag: '今日热搜', url: 'https://www.douyin.com/search/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E8%9C%98%E8%9B%9B%E4%BE%A04%E9%A6%96%E6%98%A0' },
-    { icon: '🌟', title: '澳洲文班距离NBA有多远', tag: '今日热搜', url: 'https://www.douyin.com/search/%E6%BE%B3%E6%B4%B2%E6%96%87%E7%8F%AD%E8%B7%9D%E7%A6%BBNBA%E6%9C%89%E5%A4%9A%E8%BF%9C' },
-    { icon: '📊', title: '蜘蛛侠4零点场影评', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%9C%98%E8%9B%9B%E4%BE%A04%E9%9B%B6%E7%82%B9%E5%9C%BA%E5%BD%B1%E8%AF%84' },
-    { icon: '🎬', title: '追梦谈詹姆斯加盟76人', tag: '今日热搜', url: 'https://www.douyin.com/search/%E8%BF%BD%E6%A2%A6%E8%B0%88%E8%A9%B9%E5%A7%86%E6%96%AF%E5%8A%A0%E7%9B%9F76%E4%BA%BA' },
-    { icon: '💰', title: 'LKs挑战BW最高画质', tag: '今日热搜', url: 'https://www.douyin.com/search/LKs%E6%8C%91%E6%88%98BW%E6%9C%80%E9%AB%98%E7%94%BB%E8%B4%A8' },
-    { icon: '📈', title: '抖音流量池机制', tag: '底层逻辑', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E6%B5%81%E9%87%8F%E6%B1%A0%E6%9C%BA%E5%88%B6' },
-    { icon: '🎯', title: 'AI短剧爆款公式', tag: '选题技巧', url: 'https://www.douyin.com/search/AI%E7%9F%AD%E5%89%A7%E7%88%86%E6%AC%BE%E5%85%AC%E5%BC%8F' },
-    { icon: '🤖', title: 'AI生成短视频教程', tag: 'AI工具', url: 'https://www.douyin.com/search/AI%E7%94%9F%E6%88%90%E7%9F%AD%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B' },
-    { icon: '📝', title: '抖音完播率技巧', tag: '核心技能', url: 'https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E5%AE%8C%E6%92%AD%E7%8E%87%E6%8A%80%E5%B7%A7' }
-  
-  ];
-  const today = dailyPick(tips, 4);
-  document.getElementById('knowledgeList').innerHTML = today.map(t => `
-    <div class="knowledge-card" onclick="window.open('${t.url}','_blank')">
-      <div class="knowledge-icon">${t.icon}</div>
-      <div class="knowledge-content">
-        <div class="knowledge-title">${t.title}</div>
-        <span class="knowledge-tag">${t.tag}</span>
-      </div>
-      <div style="font-size:18px;color:var(--primary);">▶</div>
-    </div>
-  `).join('');
-  document.getElementById('knowledgeUpdate').textContent = new Date().toLocaleDateString('zh-CN') + ' 已更新';
-}
-
 // ==================== 求职 ====================
 function renderJobs() {
   const jobs = allJobs;
@@ -2857,6 +2991,7 @@ updateGreeting();
 updateStats();
 renderTasks();
 renderFitVideos();
+renderFitBody();
 renderScripts();
 renderAiVideos();
 renderRecipe();
@@ -2867,7 +3002,7 @@ renderStudy();
 renderRead();
 renderJobs();
 updateTimerDisplay();
-refreshKnowledge();
+renderTasks();
 
 /* ===== 书籍阅读器 ===== */
 function openBookReader(idx) {
