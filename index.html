@@ -557,13 +557,13 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   flex: 0 0 auto;
   display: flex; align-items: center; gap: 4px;
   padding: 8px 14px;
-  background: linear-gradient(135deg, #FF6B6B 0%, #FF4444 100%);
+  background: linear-gradient(135deg, #C4B5E8 0%, #B8A4D9 100%);
   color: #fff; border-radius: 20px;
   font-size: 12px; font-weight: 600;
   border: none; cursor: pointer; text-decoration: none;
 }
 .data-video-chip:active { transform: scale(0.95); }
-.data-video-chip.dv2 { background: linear-gradient(135deg, #00A1D6, #00B5E5); }
+.data-video-chip.dv2 { background: linear-gradient(135deg, #D4C5E8, #C4B5E8); }
 .tool-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
   margin-bottom: 14px;
@@ -783,7 +783,7 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 <!-- 侧边栏 -->
 <aside class="sidebar" id="sidebar">
   <button class="sb-item active" data-page="home"><span class="sb-icon">🏠</span><span>首页</span></button>
-  <button class="sb-item" data-page="tasks"><span class="sb-icon">✓</span><span>任务</span></button>
+
   <button class="sb-item" data-page="fitness"><span class="sb-icon">💪</span><span>健身</span></button>
   <button class="sb-item" data-page="create"><span class="sb-icon">🎬</span><span>创作</span></button>
   <button class="sb-item" data-page="jobs"><span class="sb-icon">💼</span><span>求职</span></button>
@@ -843,12 +843,17 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 
   <!-- 快捷动作 -->
   <div class="quick-actions">
-    <button class="quick-btn" onclick="goPage('tasks')"><span class="qa-icon">+</span>加任务</button>
+    <button class="quick-btn" onclick="document.getElementById('newTaskInput').focus()"><span class="qa-icon">+</span>加任务</button>
     <button class="quick-btn" onclick="addWater()"><span class="qa-icon">💧</span>喝水</button>
     <button class="quick-btn" onclick="goPage('fitness')"><span class="qa-icon">💪</span>运动</button>
     <button class="quick-btn" onclick="goPage('create')"><span class="qa-icon">🎬</span>创作</button>
     <button class="quick-btn" onclick="goPage('study')"><span class="qa-icon">📚</span>学习</button>
     <button class="quick-btn" onclick="goPage('money')"><span class="qa-icon">💰</span>记账</button>
+  </div>
+
+
+
+
   </div>
 
   <!-- 今日进度 -->
@@ -866,22 +871,6 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   <div class="card">
     <div style="font-size:12px;color:var(--text-2);margin-bottom:10px;">完成任务后点击左侧圆圈打勾，可随时增删</div>
     <div id="homeTaskList"></div>
-    <div class="add-task-bar" style="display:flex;gap:8px;margin-top:12px;">
-      <input type="text" class="form-input" id="newTaskInput" placeholder="+ 添加新任务..." maxlength="40" style="border-radius:20px;">
-      <button class="btn btn-primary" onclick="addTask()">添加</button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ===== 任务页 ===== -->
-<div class="page" id="page-tasks">
-
-  <div class="card">
-    <div class="card-title"><div class="card-title-bar"></div>今日任务 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;" id="taskDate"></span></div>
-    <div style="font-size:12px;color:var(--text-2);margin-bottom:10px;">完成任务后点击左侧圆圈打勾，可随时增删</div>
-    <div id="taskList"></div>
-
     <div class="add-task-bar" style="display:flex;gap:8px;margin-top:12px;">
       <input type="text" class="form-input" id="newTaskInput" placeholder="+ 添加新任务..." maxlength="40" style="border-radius:20px;">
       <button class="btn btn-primary" onclick="addTask()">添加</button>
@@ -1060,7 +1049,7 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 
   <!-- 项目口语 -->
   <div id="studyWork" style="display:none;">
-    <div class="card" style="background:linear-gradient(135deg,#5B8DEF,#7BA0F4);color:#fff;text-align:center;margin-bottom:12px;">
+    <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;text-align:center;margin-bottom:12px;">
       <div style="font-size:14px;font-weight:700;margin-bottom:4px;">💼 项目口语</div>
       <div style="font-size:12px;opacity:0.85;">真实工作场景对话 · 跟读练习 · 每周更新</div>
     </div>
@@ -1137,11 +1126,11 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 <div class="page" id="page-money">
 
   <div class="card" style="background:linear-gradient(135deg,#C4B5E8,#D4C5E8);color:#fff;">
-    <div style="font-size:11px;opacity:0.85;">本月支出</div>
+    <div style="font-size:11px;opacity:0.85;"><span id="moneyMonthLabel">本月</span>支出</div>
     <div style="font-size:28px;font-weight:700;margin:4px 0;" id="monthTotal">¥0</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
       <div><div style="font-size:14px;font-weight:700;" id="todayTotal">¥0</div><div style="font-size:10px;opacity:0.85;">今日</div></div>
-      <div><div style="font-size:14px;font-weight:700;" id="monthTotal2">¥0</div><div style="font-size:10px;opacity:0.85;">本月</div></div>
+      <div><div style="font-size:14px;font-weight:700;" id="monthTotal2">¥0</div><div style="font-size:10px;opacity:0.85;"><span id="moneyMonthLabel2">本月</span></div></div>
       <div><div style="font-size:14px;font-weight:700;" id="recordCount">0</div><div style="font-size:10px;opacity:0.85;">记录数</div></div>
     </div>
   </div>
@@ -1179,13 +1168,16 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
     <button class="btn btn-primary btn-block" onclick="addMoney()">记一笔</button>
   </div>
 
-  <div class="card-title"><div class="card-title-bar"></div>📊 本月分类占比</div>
+  <div class="card-title"><div class="card-title-bar"></div>📊 分类占比 <span style="font-size:11px;color:var(--text-3);font-weight:400;margin-left:auto;">
+    <button class="btn btn-outline btn-sm" style="padding:3px 10px;font-size:10px;border-radius:12px;" onclick="switchMoneyMonth(-1)" id="btnLastMonth">上月</button>
+    <button class="btn btn-primary btn-sm" style="padding:3px 10px;font-size:10px;border-radius:12px;" onclick="switchMoneyMonth(0)" id="btnThisMonth">本月</button>
+  </span></div>
   <div class="card">
     <div id="moneyChart"></div>
     <div class="pie-legend" id="moneyLegend"></div>
   </div>
 
-  <div class="card-title"><div class="card-title-bar"></div>📋 支出记录</div>
+  <div class="card-title"><div class="card-title-bar"></div>📋 <span id="moneyListLabel">本月</span>记录</div>
   <div id="moneyList"></div>
 
 </div>
@@ -1990,6 +1982,7 @@ let currentWordIdx = Math.floor(Math.random() * wordBooks[currentWordBook].lengt
 let daProgress = getData('daProgress', {});
 
 let currentPage = 'home';
+let currentMoneyMonth = 0; // 0=本月, -1=上月
 let currentScriptCat = 'all';
 let currentFitPart = 'all';
 let currentReadTab = 'book';
@@ -2009,8 +2002,8 @@ function updateGreeting() {
   const dateStr = `${d.getMonth()+1}月${d.getDate()}日 ${weeks[d.getDay()]}`;
   document.getElementById('greeting').textContent = g + '，Sun 👋';
   document.getElementById('greetingDate').textContent = dateStr;
-  document.getElementById('taskDate').textContent = dateStr;
   document.getElementById('remindDate').textContent = dateStr;
+  document.getElementById('taskDate').textContent = dateStr;
 }
 
 function updateStats() {
@@ -2029,15 +2022,26 @@ function updateStats() {
   document.getElementById('progressFill').style.width = pct + '%';
 }
 
+function addWater() {
+  if (water >= 5) {
+    showToast('今日喝水已达目标！');
+    return;
+  }
+  water++;
+  setData('water', water);
+  updateStats();
+  showToast(`💧 喝水进度 ${water}/5`);
+}
+
 // ==================== 任务 ====================
 function renderTasks() {
-  const renderTo = (el) => {
-    if (!el) return;
-    if (tasks.length === 0) {
-      el.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有任务，添加一个吧</div>';
-      return;
-    }
-    el.innerHTML = tasks.map(t => `
+  const el = document.getElementById('homeTaskList');
+  if (!el) return;
+  if (tasks.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有任务，添加一个吧</div>';
+    return;
+  }
+  el.innerHTML = tasks.map(t => `
     <div class="task-item ${t.completed ? 'completed' : ''}">
       <div class="task-check ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
       <div class="task-content">
@@ -2050,9 +2054,6 @@ function renderTasks() {
       <button class="task-del" onclick="deleteTask(${t.id})">✕</button>
     </div>
   `).join('');
-  };
-  renderTo(document.getElementById('homeTaskList'));
-  renderTo(document.getElementById('taskList'));
 }
 
 function toggleTask(id) {
@@ -2092,17 +2093,6 @@ function addTask() {
   showToast('✓ 已添加');
 }
 
-function addWater() {
-  if (water >= 5) {
-    showToast('今日喝水已达目标！');
-    return;
-  }
-  water++;
-  setData('water', water);
-  updateStats();
-  showToast(`💧 喝水进度 ${water}/5`);
-}
-
 // ==================== 侧边栏切换 ====================
 function goPage(page) {
   currentPage = page;
@@ -2111,7 +2101,7 @@ function goPage(page) {
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
   const target = document.querySelector(`.sb-item[data-page="${page}"]`);
   if (target) target.classList.add('active');
-  const titles = { home:'🏠 Sun的工作台', tasks:'✓ 每日任务', fitness:'💪 健身打卡', create:'🎬 视频创作', jobs:'💼 求职推荐', study:'🇬🇧 英语学习', read:'📖 阅读中心', data:'📊 数据分析', money:'💰 我的账本', remind:'⏰ 每日提醒', recipe:'🍳 今日菜谱' };
+  const titles = { home:'🏠 Sun的工作台', fitness:'💪 健身打卡', create:'🎬 视频创作', jobs:'💼 求职推荐', study:'🇬🇧 英语学习', read:'📖 阅读中心', data:'📊 数据分析', money:'💰 我的账本', remind:'⏰ 每日提醒', recipe:'🍳 今日菜谱' };
   document.getElementById('topbarTitle').textContent = titles[page] || 'Sun的工作台';
   document.getElementById('fab').style.display = page === 'home' ? 'none' : 'flex';
   window.scrollTo(0, 0);
@@ -2695,7 +2685,7 @@ function renderDa() {
         <div style="display:flex;gap:6px;margin-top:8px;align-items:center;" onclick="event.stopPropagation();">
           <button class="btn btn-outline btn-sm" onclick="updateDaProgress('${c.num}', -10)">-10%</button>
           <button class="btn btn-primary btn-sm" onclick="updateDaProgress('${c.num}', 10)">+10%</button>
-          <button class="btn btn-primary btn-sm" style="background:#FF6B6B;color:#fff;margin-left:auto;" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(c.video)}','_blank')">🎬 ${c.videoTitle.replace('（抖音）','（抖音）')}</button>
+          <button class="btn btn-primary btn-sm" style="background:#B8A4D9;color:#fff;margin-left:auto;" onclick="window.open('https://www.douyin.com/search/${encodeURIComponent(c.video)}','_blank')">🎬 ${c.videoTitle.replace('（抖音）','（抖音）')}</button>
         </div>
       </div>
     `;
@@ -2723,14 +2713,44 @@ function updateDaProgress(num, delta) {
   showToast('✓ 进度已更新');
 }
 // ==================== 记账 ====================
+function getMoneyMonthRecords() {
+  const now = new Date();
+  const targetMonth = now.getMonth() + currentMoneyMonth;
+  const targetYear = now.getFullYear() + (targetMonth < 0 ? -1 : targetMonth > 11 ? 1 : 0);
+  const m = ((targetMonth % 12) + 12) % 12; // normalize month 0-11
+  return moneyRecords.filter(r => {
+    const d = new Date(r.date);
+    return d.getFullYear() === targetYear && d.getMonth() === m;
+  });
+}
+
+function switchMoneyMonth(offset) {
+  currentMoneyMonth = offset;
+  renderMoney();
+}
+
 function renderMoney() {
-  const records = moneyRecords;
-  const todayExp = records.filter(r => r.date === todayStr && r.type === 'expense').reduce((s,r) => s + r.amount, 0);
+  const records = getMoneyMonthRecords();
+  const monthLabel = currentMoneyMonth === 0 ? '本月' : '上月';
+  const todayExp = moneyRecords.filter(r => r.date === todayStr && r.type === 'expense').reduce((s,r) => s + r.amount, 0);
   const monthExp = records.filter(r => r.type === 'expense').reduce((s,r) => s + r.amount, 0);
   document.getElementById('monthTotal').textContent = '¥' + monthExp.toFixed(2);
   document.getElementById('todayTotal').textContent = '¥' + todayExp.toFixed(2);
   document.getElementById('monthTotal2').textContent = '¥' + monthExp.toFixed(2);
   document.getElementById('recordCount').textContent = records.length;
+  document.getElementById('moneyMonthLabel').textContent = monthLabel;
+  document.getElementById('moneyMonthLabel2').textContent = monthLabel;
+  document.getElementById('moneyListLabel').textContent = monthLabel;
+
+  // 按钮状态
+  const btnThis = document.getElementById('btnThisMonth');
+  const btnLast = document.getElementById('btnLastMonth');
+  if (btnThis && btnLast) {
+    btnThis.className = currentMoneyMonth === 0 ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+    btnThis.style.cssText = 'padding:3px 10px;font-size:10px;border-radius:12px;';
+    btnLast.className = currentMoneyMonth === -1 ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+    btnLast.style.cssText = 'padding:3px 10px;font-size:10px;border-radius:12px;';
+  }
 
   // 分类汇总
   const catSum = {};
@@ -2742,7 +2762,6 @@ function renderMoney() {
   const chart = document.getElementById('moneyChart');
   if (total > 0) {
     const entries = Object.entries(catSum).sort((a,b) => b[1] - a[1]);
-    // 饼图SVG
     let startAngle = 0;
     const svgParts = [];
     entries.forEach(([cat, amount]) => {
@@ -2753,7 +2772,7 @@ function renderMoney() {
       svgParts.push(`<path d="${path}" fill="${catColors[cat] || '#9A92A8'}" />`);
       startAngle = endAngle;
     });
-    chart.innerHTML = `<svg viewBox="0 0 140 140" style="width:100%;height:100%;"><circle cx="70" cy="70" r="60" fill="#F0EAF8" />${svgParts.join('')}<circle cx="70" cy="70" r="35" fill="white" /><text x="70" y="68" text-anchor="middle" font-size="11" fill="#9A92A8">本月</text><text x="70" y="84" text-anchor="middle" font-size="14" font-weight="700" fill="#3D3550">¥${total.toFixed(0)}</text></svg>`;
+    chart.innerHTML = `<svg viewBox="0 0 140 140" style="width:100%;height:100%;"><circle cx="70" cy="70" r="60" fill="#F0EAF8" />${svgParts.join('')}<circle cx="70" cy="70" r="35" fill="white" /><text x="70" y="68" text-anchor="middle" font-size="11" fill="#9A92A8">${monthLabel}</text><text x="70" y="84" text-anchor="middle" font-size="14" font-weight="700" fill="#3D3550">¥${total.toFixed(0)}</text></svg>`;
     legend.innerHTML = entries.map(([cat, amount]) => `
       <div class="pie-leg-item">
         <div class="pie-leg-dot" style="background:${catColors[cat] || '#9A92A8'};"></div>
@@ -2771,7 +2790,7 @@ function renderMoney() {
   if (records.length === 0) {
     list.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:30px;">还没有记录</div>';
   } else {
-    list.innerHTML = records.slice(0, 20).map((r,i) => `
+    list.innerHTML = records.slice(0, 30).map((r,i) => `
       <div class="list-item">
         <div style="font-size:24px;width:36px;text-align:center;">${r.cat}</div>
         <div class="list-item-info">
@@ -2779,9 +2798,19 @@ function renderMoney() {
           <div class="list-item-sub">${r.date === todayStr ? '今天' : r.date.slice(5)} · ${r.cat}</div>
         </div>
         <div class="list-item-amount ${r.type === 'income' ? 'income' : ''}">${r.type === 'income' ? '+' : '-'}¥${r.amount.toFixed(2)}</div>
+        <button class="task-del" onclick="deleteMoney(${r.id})" style="margin-left:4px;" title="删除">🗑</button>
       </div>
     `).join('');
   }
+}
+
+function deleteMoney(id) {
+  if (!confirm('确定要删除这条记录吗？')) return;
+  moneyRecords = moneyRecords.filter(r => r.id !== id);
+  setData('money', moneyRecords);
+  renderMoney();
+  updateStats();
+  showToast('🗑 已删除');
 }
 
 function arcPath(cx, cy, r, startAngle, endAngle) {
@@ -2955,14 +2984,12 @@ function goApp(name) {
 
 // ==================== FAB ====================
 function fabAction() {
-  if (currentPage === 'tasks') {
-    document.getElementById('newTaskInput').focus();
-  } else if (currentPage === 'money') {
+  if (currentPage === 'money') {
     document.getElementById('moneyAmount').focus();
   } else if (currentPage === 'remind') {
     document.getElementById('remindContent').focus();
   } else {
-    showToast('快速添加：回到任务页添加任务');
+    showToast('快速添加：前往记账或提醒页');
   }
 }
 
@@ -3002,7 +3029,6 @@ renderStudy();
 renderRead();
 renderJobs();
 updateTimerDisplay();
-renderTasks();
 
 /* ===== 书籍阅读器 ===== */
 function openBookReader(idx) {
