@@ -880,17 +880,6 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
 <!-- ===== 健身页 ===== -->
 <div class="page" id="page-fitness">
 
-  <div class="card-title"><div class="card-title-bar"></div>🎯 选择训练部位</div>
-  <div class="filter-tabs" id="fitParts">
-    <button class="filter-tab active" data-part="all">全部</button>
-    <button class="filter-tab" data-part="leg">瘦腿</button>
-    <button class="filter-tab" data-part="hip">提臀</button>
-    <button class="filter-tab" data-part="back">背部</button>
-    <button class="filter-tab" data-part="arm">手臂</button>
-    <button class="filter-tab" data-part="abs">腹部</button>
-    <button class="filter-tab" data-part="stretch">拉伸</button>
-  </div>
-
   <!-- 身高体重记录 -->
   <div class="card" style="margin-bottom:12px;">
     <div class="card-title"><div class="card-title-bar"></div>📏 身高体重记录</div>
@@ -913,6 +902,17 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
       <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">📊 本周体重变化</div>
       <div id="fitWeightChart" style="display:flex;align-items:flex-end;gap:6px;height:60px;padding:0 4px;"></div>
     </div>
+  </div>
+
+  <div class="card-title"><div class="card-title-bar"></div>🎯 选择训练部位</div>
+  <div class="filter-tabs" id="fitParts">
+    <button class="filter-tab active" data-part="all">全部</button>
+    <button class="filter-tab" data-part="leg">瘦腿</button>
+    <button class="filter-tab" data-part="hip">提臀</button>
+    <button class="filter-tab" data-part="back">背部</button>
+    <button class="filter-tab" data-part="arm">手臂</button>
+    <button class="filter-tab" data-part="abs">腹部</button>
+    <button class="filter-tab" data-part="stretch">拉伸</button>
   </div>
 
   <div class="card-title"><div class="card-title-bar"></div>🎬 博主视频推荐</div>
@@ -1028,9 +1028,9 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
         <div class="summary-item"><div class="num" id="wordStreak">0</div><div class="label">连续天数</div></div>
         <div class="summary-item"><div class="num" id="wordToday">0</div><div class="label">今日已学</div></div>
       </div>
-      <div style="font-size:12px;color:var(--text-2);margin-top:10px;">📚 词库：四级高频 / 雅思核心 / BEC商务 / 求职面试</div>
+      <div style="font-size:12px;color:var(--text-2);margin-top:10px;">📚 词库：六级高频 / 雅思核心 / BEC商务 / 求职面试</div>
       <div class="form-row" style="margin-top:10px;">
-        <button class="btn btn-outline btn-sm" onclick="changeWordBook('cet4')">四级词汇</button>
+        <button class="btn btn-outline btn-sm" onclick="changeWordBook('cet6')">六级词汇</button>
         <button class="btn btn-outline btn-sm" onclick="changeWordBook('ielts')">雅思核心</button>
         <button class="btn btn-outline btn-sm" onclick="changeWordBook('job')">求职面试</button>
       </div>
@@ -1704,7 +1704,7 @@ const movieDialogues = [
 ];
 
 const wordBooks = {
-  cet4: ['abandon','ability','abnormal','abolish','abound','abrupt','absence','absolute','absorb','abstract','absurd','abuse','academic','accelerate','accent','accept','access','accident','acclaim','accommodate'],
+  cet6: ['abide','alleviate','ambiguous','anonymous','apprehend','articulate','assertive','baffle','barren','bewilder','blunder','boycott','breach','brisk','bureaucracy','captivate','catastrophe','chronic','commemorate','commute'],
   ielts: ['aesthetic','altruistic','ambivalent','anachronistic','antagonistic','arbitrary','archaic','articulate','audacious','austere','benevolent','boisterous','candid','capricious','clandestine'],
   job: ['candidate','colleague','compensation','deadline','efficient','executive','feedback','interview','negotiation','opportunity','promotion','qualification','responsibility','salary','strategy']
 };
@@ -1974,7 +1974,7 @@ if (wordLastDate !== todayStr) {
   setData('wordLastDate', todayStr);
   setData('wordToday', 0);
 }
-let currentWordBook = getData('wordBook', 'cet4');
+let currentWordBook = getData('wordBook', 'cet6');
 let currentWordIdx = Math.floor(Math.random() * wordBooks[currentWordBook].length);
 
 let daProgress = getData('daProgress', {});
