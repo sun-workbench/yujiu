@@ -1151,16 +1151,17 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
   <div class="card">
     <div class="form-row">
       <div class="form-group"><label class="form-label">金额</label><input type="number" class="form-input" id="moneyAmount" placeholder="0.00"></div>
+      <div class="form-group"><label class="form-label">日期</label><input type="date" class="form-input" id="moneyDate"></div>
+    </div>
+    <div class="form-row">
       <div class="form-group"><label class="form-label">类型</label>
         <select class="form-select" id="moneyType">
           <option value="expense">支出</option>
           <option value="income">收入</option>
         </select>
       </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">分类</label>
-      <select class="form-select" id="moneyCat">
+      <div class="form-group"><label class="form-label">分类</label>
+        <select class="form-select" id="moneyCat">
         <option value="🍱">🍱 餐饮</option>
         <option value="🛒">🛒 日用</option>
         <option value="🚇">🚇 交通</option>
@@ -2451,7 +2452,11 @@ function getPhonetic(w) {
     candidate:'/ˈkændɪdeɪt/', colleague:'/ˈkɒliːɡ/', compensation:'/ˌkɒmpenˈseɪʃən/', deadline:'/ˈdedlaɪn/',
     efficient:'/ɪˈfɪʃənt/', executive:'/ɪɡˈzekjʊtɪv/', feedback:'/ˈfiːdbæk/', interview:'/ˈɪntərvjuː/',
     negotiation:'/nɪˌɡəʊʃiˈeɪʃən/', opportunity:'/ˌɒpərˈtuːnəti/', promotion:'/prəˈməʊʃən/',
-    qualification:'/ˌkwɒlɪfɪˈkeɪʃən/', responsibility:'/rɪˌspɒnsəˈbɪləti/', salary:'/ˈsæləri/', strategy:'/ˈstrætədʒi/'
+    qualification:'/ˌkwɒlɪfɪˈkeɪʃən/', responsibility:'/rɪˌspɒnsəˈbɪləti/', salary:'/ˈsæləri/', strategy:'/ˈstrætədʒi/',
+    abide:'/əˈbaɪd/', alleviate:'/əˈliːvieɪt/', ambiguous:'/æmˈbɪɡjuəs/', anonymous:'/əˈnɒnɪməs/', apprehend:'/ˌæprɪˈhend/',
+    articulate:'/ɑːrˈtɪkjələt/', assertive:'/əˈsɜːrtɪv/', baffle:'/ˈbæfl/', barren:'/ˈbærən/', bewilder:'/bɪˈwɪldər/',
+    blunder:'/ˈblʌndər/', boycott:'/ˈbɔɪkɒt/', breach:'/briːtʃ/', brisk:'/brɪsk/', bureaucracy:'/bjʊəˈrɒkrəsi/',
+    captivate:'/ˈkæptɪveɪt/', catastrophe:'/kəˈtæstrəfi/', chronic:'/ˈkrɒnɪk/', commemorate:'/kəˈmeməreɪt/', commute:'/kəˈmjuːt/'
   };
   return map[w] || '/wɜːrd/';
 }
@@ -2468,9 +2473,13 @@ function getCn(w) {
     candid:'adj. 坦率的；公正的', capricious:'adj. 反复无常的；任性的', clandestine:'adj. 秘密的；暗中的',
     candidate:'n. 候选人；求职者', colleague:'n. 同事；同僚', compensation:'n. 补偿；薪酬', deadline:'n. 截止日期', efficient:'adj. 高效的',
     executive:'n. 高管 adj. 行政的', feedback:'n. 反馈；意见', interview:'n./v. 面试；采访', negotiation:'n. 谈判；协商', opportunity:'n. 机会；机遇',
-    promotion:'n. 晋升；推广', qualification:'n. 资历；资格', responsibility:'n. 责任；职责', salary:'n. 薪水；工资', strategy:'n. 策略；战略'
+    promotion:'n. 晋升；推广', qualification:'n. 资历；资格', responsibility:'n. 责任；职责', salary:'n. 薪水；工资', strategy:'n. 策略；战略',
+    abide:'v. 遵守；忍受', alleviate:'v. 减轻；缓解', ambiguous:'adj. 模棱两可的；含糊的', anonymous:'adj. 匿名的', apprehend:'v. 逮捕；理解',
+    articulate:'adj. 善于表达的；发音清晰的', assertive:'adj. 坚定自信的；有主见的', baffle:'v. 使困惑；阻碍', barren:'adj. 贫瘠的；不生育的', bewilder:'v. 使迷惑；使不知所措',
+    blunder:'n./v. 大错；犯大错', boycott:'v./n. 抵制；拒绝参加', breach:'n./v. 违反；破坏', brisk:'adj. 轻快的；凉爽的；兴隆的', bureaucracy:'n. 官僚制度；官僚作风',
+    captivate:'v. 迷住；吸引', catastrophe:'n. 大灾难；灾祸', chronic:'adj. 慢性的；长期的', commemorate:'v. 纪念；庆祝', commute:'v. 通勤；交换'
   };
-  return map[w] || 'n. 常用词';
+  return map[w] || '暂无释义';
 }
 
 function speakWord() {
@@ -2893,11 +2902,13 @@ function addMoney() {
   const type = document.getElementById('moneyType').value;
   const cat = document.getElementById('moneyCat').value;
   const note = document.getElementById('moneyNote').value.trim();
+  let dateInput = document.getElementById('moneyDate').value;
+  let date = dateInput ? new Date(dateInput).toDateString() : todayStr;
   if (!amount || amount <= 0) { showToast('请输入金额'); return; }
   moneyRecords.unshift({
     id: Date.now(),
     amount, type, cat, note,
-    date: todayStr
+    date: date
   });
   setData('money', moneyRecords);
   document.getElementById('moneyAmount').value = '';
@@ -3124,6 +3135,8 @@ document.getElementById('newTaskInput').addEventListener('keypress', (e) => {
 });
 
 // ==================== 初始化 ====================
+const todayDate = new Date();
+document.getElementById('moneyDate').value = `${todayDate.getFullYear()}-${String(todayDate.getMonth()+1).padStart(2,'0')}-${String(todayDate.getDate()).padStart(2,'0')}`;
 updateGreeting();
 updateStats();
 renderTasks();
