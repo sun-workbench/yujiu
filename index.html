@@ -1172,7 +1172,8 @@ body { padding-left: 56px; padding-top: 0; min-height: 100vh; padding-bottom: ca
         <option value="💰">💰 工资</option>
         <option value="🎁">🎁 红包</option>
         <option value="📦">📦 其他</option>
-      </select>
+        </select>
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">备注</label>
@@ -2925,7 +2926,7 @@ function renderReminds() {
     if (groups[r.period]) groups[r.period].push(r);
   });
   const titles = { morning: '🌅 上午', afternoon: '☀️ 下午', evening: '🌙 晚上' };
-  const html = ['morning','afternoon','evening'].map(p => {
+  let html = ['morning','afternoon','evening'].map(p => {
     if (groups[p].length === 0) return '';
     return `
       <div class="time-period">${titles[p]}</div>
@@ -2942,11 +2943,18 @@ function renderReminds() {
       `).join('')}
     `;
   }).join('');
+  if (reminds.length === 0) {
+    html = '<div style="text-align:center;color:var(--text-3);padding:30px;font-size:13px;">还没有提醒，在上方添加一个吧 ✨</div>';
+  }
   document.getElementById('remindList').innerHTML = html;
   const total = reminds.length;
   const done = reminds.filter(r => r.done).length;
   document.getElementById('remindCount').textContent = total + ' 项待办';
   document.getElementById('remindDone').textContent = done;
+  // 动态更新日期
+  const now = new Date();
+  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('remindDate').textContent = `${now.getMonth()+1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
 }
 
 function addRemind() {
